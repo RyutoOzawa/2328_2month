@@ -147,6 +147,7 @@
     <ClCompile Include="DrawInfo.cpp" />
     <ClCompile Include="GpPipeline.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="MagnetBlock.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MathInfo.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="DrawInfo.h" />
     <ClInclude Include="GpPipeline.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="MagnetBlock.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathInfo.h" />
     <ClInclude Include="Matrix4.h" />
