@@ -27,9 +27,6 @@ struct PipelineSet {
 	ComPtr<ID3D12RootSignature> rootsignature;
 };
 
-void CreatepipeLine3D(ID3D12Device* dev);
-
-
 
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -89,11 +86,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//ランダムな数値を取得
 	float randValue = Random(-100, 100);
 
-	////定数バッファ用データ構造体(マテリアル)
-	//struct ConstBufferDataMaterial {
-	//	XMFLOAT4 color;//色（RGBA）
-	//};
-
 	//ワールド変換行列
 //	XMMATRIX matWorld0;
 	//XMMATRIX matWorld1;
@@ -108,41 +100,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	XMFLOAT3 eye(0, 0, 0);	//視点座標
 	XMFLOAT3 target(0, 0, 10);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-	XMFLOAT3 scale = { 1.0f,1.0f,1.0f };
-	XMFLOAT3 rotation = { 0.0f,0.0f,0.0f };
-	XMFLOAT3 position = { 0.0f,0.0f,0.0f };
-	XMFLOAT4 color_ = { 1.0f,1.0f,1.0f,1.0f };
-
-	XMFLOAT3 pos{};
-
-
-	////配列内の全オブジェクトに対して
-	//for (int i = 0; i < _countof(obj); i++) {
-	//	//初期化
-	//	obj[i].Initialize(directX->GetDevice());
-
-	//	obj[i].scale = { 1,1,1 };
-	//	obj[i].rotation = { 0.0f,0.0f,0.0f };
-	//	obj[i].position = { Random(-100, 100),Random(-100, 100),Random(-100, 100) };
-	//}
-
-	//object.Initialize(directX->GetDevice());
-
 	
-	Matrix4 mat{
-		1,2,1,3,
-        2,3,1,5,
-        4,7,3,5,
-        1,6,3,7
-	};
-
-	mat.Inverse();
-
-	int i = 20;
-
-	mat.Inverse();
-
-
 
 	//透視東映返還行列の計算
 	//専用の行列を宣言
@@ -230,12 +188,4 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	return 0;
 }
 
-void MatrixUpdate()
-{
-}
 
-void CreatepipeLine3D(ID3D12Device* dev)
-{
-
-
-}
