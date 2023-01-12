@@ -52,7 +52,7 @@ class Model {
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexBuff;	//インデックスバッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff;	//インデックスバッファ
 
-	
+
 	Material material;			//マテリアル
 
 public:

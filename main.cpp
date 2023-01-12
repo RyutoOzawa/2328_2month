@@ -67,11 +67,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	uint32_t magnetTextureS = Texture::LoadTexture(L"Resources/blue1×1.png");
 
 	//スプライト一枚の初期化
-	Sprite* sprite = new Sprite();
+	/*Sprite* sprite = new Sprite();
 	sprite->Initialize(spriteManager,marioGraph);
 
 	Sprite* sprite2 = new Sprite();
-	sprite2->Initialize(spriteManager,reimuGraph);
+	sprite2->Initialize(spriteManager,reimuGraph);*/
 	//sprite2->SetTextureNum(1);
 
 	Model* skyDome;
@@ -129,10 +129,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma endregion 基盤システム初期化
 #pragma region シーン更新処理
 
-		sprite->SetPos({ 100, 100 });
-		sprite2->SetPos({ WindowsAPI::winW/2,WindowsAPI::winH/2 });
-		sprite->SetSize({ 64,64 });
-
 		if (input->IsPress(DIK_A)) {
 			object1.rotation.y+= 0.1f;
 		}
@@ -162,7 +158,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//スプライト描画処理
 		spriteManager->beginDraw();
-		sprite->Draw();
+		//sprite->Draw();
 		//sprite2->Draw();
 
 #pragma endregion シーン描画処理
@@ -174,7 +170,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//WindowsAPI終了処理
 	windowsAPI->Finalize();
 
-	delete sprite;
+	//delete sprite;
 
 	delete windowsAPI;
 	delete input;

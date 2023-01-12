@@ -1,4 +1,5 @@
 #include "MagnetBlock.h"
+#include"Player.h"
 using namespace DirectX;
 
 void MagnetBlock::Initialize(const XMFLOAT3& pos, bool isNorth_)
