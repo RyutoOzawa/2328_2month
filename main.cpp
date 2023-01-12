@@ -95,15 +95,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Object3d object;
 
+	//ビュー行列、射影行列に必要な変数宣言
 	XMMATRIX matProjection;
 	XMMATRIX matView;
 	XMFLOAT3 eye(5,25, 5);	//視点座標
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-
+	
 
 	//透視東映返還行列の計算
-	//専用の行列を宣言
 	matProjection = XMMatrixPerspectiveFovLH(
 		XMConvertToRadians(45.0f),					//上下画角45度
 		(float)WindowsAPI::winW / WindowsAPI::winH,	//アスペクト比（画面横幅/画面縦幅）
@@ -145,14 +145,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ゲームループ
 	while (true) {
 
-#pragma region 基盤システム初期化
+#pragma region 基盤システム更新
 		//windowsのメッセージ処理
 		if (windowsAPI->ProcessMessage()) {
 			//ループを抜ける
 			break;
 		}
 		input->Update();
-#pragma endregion 基盤システム初期化
+#pragma endregion 基盤システム更新
+
 #pragma region シーン更新処理
 
 		if (input->IsPress(DIK_A)) {
@@ -213,18 +214,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//WindowsAPI終了処理
 	windowsAPI->Finalize();
 
-	//delete sprite;
-
+	//基盤システムを初期化した順番に解放。その後ゲームループで使用した物を解放
 	delete windowsAPI;
 	delete input;
 	delete directX;
 	delete spriteManager;
 
+	//ここからゲームループで使用したもの
+	//delete sprite;
 	delete skyDome;
 
 #pragma endregion シーン終了処理
-
 	return 0;
 }
-
-
