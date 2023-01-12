@@ -63,8 +63,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma region 描画初期化処理
 
 	//画像読み込み
-	uint32_t magnetTextureN = Texture::LoadTexture(L"Resources/red1×1.jpg");
-	uint32_t magnetTextureS = Texture::LoadTexture(L"Resources/blue1×1.png");
+	uint32_t magnetTextureN = Texture::LoadTexture(L"Resources/red1x1.png");
+	uint32_t magnetTextureS = Texture::LoadTexture(L"Resources/blue1x1.png");
 
 	//スプライト一枚の初期化
 	/*Sprite* sprite = new Sprite();

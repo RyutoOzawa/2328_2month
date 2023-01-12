@@ -27,8 +27,8 @@ public:
 	void OnMapCollisionY2();
 	void OnMapCollisionZ2();
 
-	(//ゲッターまとめ
-		DirectX::XMFLOAT3 GetTranslation()const { return obj.position; }
+	//ゲッターまとめ
+	DirectX::XMFLOAT3 GetTranslation()const { return obj.position; }
 	DirectX::XMFLOAT3 GetPosition()const { return pos; }
 	DirectX::XMFLOAT3 GetMove()const { return move; }
 	float GetSize()const { return size; }
