@@ -62,7 +62,7 @@ private:
 	void Move();
 	void ChangeState();
 
-	~Player();
+
 	//プライベートメンバ変数
 private:
 

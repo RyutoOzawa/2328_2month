@@ -18,6 +18,8 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 #include"Matrix4.h"
 #include"Map.h"
+#include"Player.h"
+#include"MagnetBlock.h"
 
 //パイプラインステートとルートシグネチャのセット
 struct PipelineSet {
@@ -61,10 +63,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #pragma region 描画初期化処理
 
-	//画像読み込み
-	uint32_t magnetTextureN = Texture::LoadTexture(L"Resources/red1x1.png");
-	uint32_t magnetTextureS = Texture::LoadTexture(L"Resources/blue1x1.png");
-	uint32_t groundTexture = Texture::LoadTexture(L"Resources/ground.png");
+	///-------------------------------///
+	/// 　ゲームループで使用する変数の宣言   ///
+	///-------------------------------///
 
 	//スプライト一枚の初期化
 	/*Sprite* sprite = new Sprite();
@@ -74,34 +75,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sprite2->Initialize(spriteManager,reimuGraph);*/
 	//sprite2->SetTextureNum(1);
 
-	Model* skyDome;
-	skyDome = Model::CreateModel("skydome");
+	//画像読み込み
+	uint32_t magnetTextureN = Texture::LoadTexture(L"Resources/red1x1.png");
+	uint32_t magnetTextureS = Texture::LoadTexture(L"Resources/blue1x1.png");
+	uint32_t groundTexture = Texture::LoadTexture(L"Resources/ground.png");
+	uint32_t playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
 
-	Object3d object1;
-	object1.Initialize();
-	object1.SetModel(skyDome);
-	//object1.scale = XMFLOAT3(0.2f, 0.2f, 0.2f);
-	object1.position = XMFLOAT3(0, 0, 50.0f);
+		//マップの座標
+	Object3d blockObj[10][10][10];
 
-	//ランダムな数値を取得
-	float randValue = Random(-100, 100);
+	Player* player = nullptr;
 
-	//ワールド変換行列
-//	XMMATRIX matWorld0;
-	//XMMATRIX matWorld1;
-
-	const size_t kObjCount = 50;
-	Object3d obj[kObjCount];
-
-	Object3d object;
+	std::vector<MagnetBlock> magnetBlocks;
 
 	//ビュー行列、射影行列に必要な変数宣言
 	XMMATRIX matProjection;
 	XMMATRIX matView;
-	XMFLOAT3 eye(5,25, 5);	//視点座標
+	XMFLOAT3 eye(5, 25, 5);	//視点座標
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-	
+
+	///-------------------------------///
+	/// 　変数の宣言ここまで			  ///
+	///-------------------------------///
+
+//------------------------------------------------------------------------
+
+	///-------------------------------///
+	/// 　ゲームループの初期化処理         ///
+	///-------------------------------///
+
 
 	//透視東映返還行列の計算
 	matProjection = XMMatrixPerspectiveFovLH(
@@ -118,8 +121,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Map* map_ = new Map;
 	map_->Loding("map/map1.csv");
 
-	//マップの座標
-	Object3d blockObj[10][10][10];
 
 	//マップの座標の初期化
 	for (int i = 0; i < blockY; i++)
@@ -140,6 +141,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 
+	//プレイヤー初期化
+	player = new Player();
+	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input);
+
+
+	///-------------------------------///
+	/// 　初期化処理ここまで	　        ///
+	///-------------------------------///
+
 
 #pragma endregion 描画初期化処理
 	// ゲームループ
@@ -156,22 +166,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #pragma region シーン更新処理
 
-		if (input->IsPress(DIK_A)) {
-			object1.rotation.y += 0.1f;
-		}
-		else if (input->IsPress(DIK_D)) {
-			object1.rotation.y -= 0.1f;
-		}
-		if (input->IsPress(DIK_W)) {
-			object1.rotation.z += 0.1f;
-		}
-		else if (input->IsPress(DIK_S)) {
-			object1.rotation.z -= 0.1f;
-		}
-
-		//object1.scale = { 50,50,50 };
-
-		object1.Update(matView, matProjection);
+		player->Update(matView, matProjection);
 
 #pragma endregion シーン更新処理
 
@@ -182,6 +177,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//3Dオブジェクト描画処理
 		Object3d::BeginDraw();
 		//object1.Draw();
+
+		player->Draw();
 
 		//マップの描画
 		for (int i = 0; i < blockY; i++)
@@ -203,7 +200,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//sprite->Draw();
 		//sprite2->Draw();
 
-		
+
 
 #pragma endregion シーン描画処理
 		// ４．描画コマンドここまで
@@ -222,7 +219,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//ここからゲームループで使用したもの
 	//delete sprite;
-	delete skyDome;
+	//delete skyDome;
+	delete map_;
+	delete player;
+
 
 #pragma endregion シーン終了処理
 	return 0;

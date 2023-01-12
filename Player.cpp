@@ -11,6 +11,7 @@ void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32
 
 	//オブジェクトデータ初期化
 	obj.Initialize();
+	obj.model = Model::CreateModel();
 	//プレイヤーのデフォルトカラーは白
 	playerTexture = whiteTexture;
 	//サイズ調整
@@ -128,8 +129,6 @@ void Player::Move() {
 	obj.position = pos;
 }
 
-Player ::~Player()
-{
-}
+
 
 
