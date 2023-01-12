@@ -14,7 +14,7 @@ public:
 	void Initialize(const uint32_t& texW, const uint32_t& texR,
 		const uint32_t& texB,Input* input);
 
-	void Update();
+	void Update(DirectX::XMMATRIX& matview, DirectX::XMMATRIX& matProjection);
 
 	void Draw();
 
@@ -33,7 +33,7 @@ public:
 	DirectX::XMFLOAT3 GetMove()const { return move; }
 	float GetSize()const { return size; }
 	float GetSpeed()const { return playerSpd; }
-	float GetAdjustPixelSpeed()const { return adjustpixelSpeed; }
+	float GetAdjustPixelSpeed()const { return adjustPixelSpeed; }
 	int GetState()const { return state; }
 
 	//セッター
@@ -48,7 +48,7 @@ public:
 	DirectX::XMFLOAT3 move = { 0,0,0 };
 
 	float playerSpd = 0.05f;
-	float adjustpixelSpeed = 0.001f;
+	float adjustPixelSpeed = 0.001f;
 
 	int size = 2;
 
@@ -65,6 +65,7 @@ private:
 	~Player();
 	//プライベートメンバ変数
 private:
+
 	Input* input = nullptr;
 
 	uint32_t whiteTexture = 0;
@@ -74,4 +75,5 @@ private:
 
 	int state;
 };
+
 
