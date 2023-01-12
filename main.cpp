@@ -17,7 +17,7 @@ using namespace DirectX;
 #include"Material.h"
 using namespace Microsoft::WRL;
 #include"Matrix4.h"
-
+#include"Map.h"
 
 //パイプラインステートとルートシグネチャのセット
 struct PipelineSet {
@@ -52,11 +52,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SpriteManager* spriteManager = nullptr;
 	//スプライト共通部の初期化
 	spriteManager = new SpriteManager;
-	spriteManager->Initialize(directX,WindowsAPI::winW,WindowsAPI::winH);
+	spriteManager->Initialize(directX, WindowsAPI::winW, WindowsAPI::winH);
 
 	//3Dオブジェクトの初期化
 	Object3d::StaticInitialize(directX);
-
 
 #pragma endregion 基盤システム初期化
 
@@ -65,6 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//画像読み込み
 	uint32_t magnetTextureN = Texture::LoadTexture(L"Resources/red1x1.png");
 	uint32_t magnetTextureS = Texture::LoadTexture(L"Resources/blue1x1.png");
+	uint32_t groundTexture = Texture::LoadTexture(L"Resources/ground.png");
 
 	//スプライト一枚の初期化
 	/*Sprite* sprite = new Sprite();
@@ -97,10 +97,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	XMMATRIX matProjection;
 	XMMATRIX matView;
-	XMFLOAT3 eye(0, 0, 0);	//視点座標
-	XMFLOAT3 target(0, 0, 10);	//注視点座標
+	XMFLOAT3 eye(5,25, 5);	//視点座標
+	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-	
+
 
 	//透視東映返還行列の計算
 	//専用の行列を宣言
@@ -110,9 +110,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		0.1f, 1000.0f								//前橋、奥橋
 	);
 
-		//ビュー変換行列の計算
+	//ビュー変換行列の計算
 	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
 
+
+	//Map読み込み
+	Map* map_ = new Map;
+	map_->Loding("map/map1.csv");
+
+	//マップの座標
+	Object3d blockObj[10][10][10];
+
+	//マップの座標の初期化
+	for (int i = 0; i < blockY; i++)
+	{
+		for (int j = 0; j < blockZ; j++)
+		{
+			for (int k = 0; k < blockX; k++)
+			{
+				blockObj[i][j][k].Initialize();
+				blockObj[i][j][k].model = Model::CreateModel();
+				blockObj[i][j][k].model->textureIndex = groundTexture;
+				blockObj[i][j][k].position.x = k * blockSize * blockScale;
+				blockObj[i][j][k].position.y = i * blockSize * blockScale;
+				blockObj[i][j][k].position.z = j * blockSize * blockScale;
+				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
+				blockObj[i][j][k].Update(matView, matProjection);
+			}
+		}
+	}
 
 
 #pragma endregion 描画初期化処理
@@ -130,7 +156,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma region シーン更新処理
 
 		if (input->IsPress(DIK_A)) {
-			object1.rotation.y+= 0.1f;
+			object1.rotation.y += 0.1f;
 		}
 		else if (input->IsPress(DIK_D)) {
 			object1.rotation.y -= 0.1f;
@@ -154,12 +180,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//3Dオブジェクト描画処理
 		Object3d::BeginDraw();
-		object1.Draw();
+		//object1.Draw();
+
+		//マップの描画
+		for (int i = 0; i < blockY; i++)
+		{
+			for (int j = 0; j < blockZ; j++)
+			{
+				for (int k = 0; k < blockX; k++)
+				{
+					if (map_->map[i][j][k] == 1)
+					{
+						blockObj[i][j][k].Draw();
+					}
+				}
+			}
+		}
 
 		//スプライト描画処理
 		spriteManager->beginDraw();
 		//sprite->Draw();
 		//sprite2->Draw();
+
+		
 
 #pragma endregion シーン描画処理
 		// ４．描画コマンドここまで
