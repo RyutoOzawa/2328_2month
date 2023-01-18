@@ -14,7 +14,7 @@ public:
 	void Initialize(const uint32_t& texW, const uint32_t& texR,
 		const uint32_t& texB,Input* input);
 
-	void Update(DirectX::XMMATRIX& matview, DirectX::XMMATRIX& matProjection);
+	void Update();
 
 	void Draw();
 
