@@ -144,7 +144,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//プレイヤー初期化
 	player = new Player();
 	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input);
-
+	player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
 	///-------------------------------///
 	/// 　初期化処理ここまで	　        ///
