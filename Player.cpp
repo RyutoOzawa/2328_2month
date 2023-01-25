@@ -135,6 +135,7 @@ void Player::Move() {
 	ImGui::Begin("player");
 	ImGui::SliderFloat("pos.x", &pos.x, -10.0f, 10.0f);
 	ImGui::SliderFloat("pos.z", &pos.z, -10.0f, 10.0f);
+	ImGui::Text("imgui iikanji!!!");
 	ImGui::End();
 
 	obj.position = pos;
