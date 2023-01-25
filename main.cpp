@@ -95,7 +95,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	//ビュー行列、射影行列に必要な変数宣言
-	XMFLOAT3 eye(5, 25, 5);	//視点座標
+	XMFLOAT3 eye(5, 25, 6);	//視点座標
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
 
@@ -190,51 +190,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		skydomeObj.Update();
 
-		//カメラ操作
-		float cameraSpd = 0.05f;
-		if (input->IsPress(DIK_A)) {
-			camera.eye.x -= cameraSpd;
-		}else if (input->IsPress(DIK_D)) {
-			camera.eye.x += cameraSpd;
-		}
-
-		if (input->IsPress(DIK_S)) {
-			camera.eye.z -= cameraSpd;
-		}else if (input->IsPress(DIK_W)) {
-			camera.eye.z += cameraSpd;
-		}
-
-		if (input->IsPress(DIK_Q)) {
-			camera.eye.y += cameraSpd;
-		}
-		else if (input->IsPress(DIK_E)) {
-			camera.eye.y -= cameraSpd;
-		}
-
-		if (input->IsPress(DIK_U)) {
-			camera.target.x -= cameraSpd;
-		}
-		else if (input->IsPress(DIK_I)) {
-			camera.target.x += cameraSpd;
-		}
-
-		if (input->IsPress(DIK_J)) {
-			camera.target.y -= cameraSpd;
-		}
-		else if (input->IsPress(DIK_K)) {
-			camera.target.y += cameraSpd;
-		}
-
-		//if (input->IsPress(DIK_Q)) {
-		//	camera.eye.y += cameraSpd;
-		//}
-		//else if (input->IsPress(DIK_E)) {
-		//	camera.eye.y -= cameraSpd;
-		//}
-
-	/*	camera.target.x = blockObj[0][4][4].position.x;
-		camera.target.y = blockObj[0][4][4].position.y;
-		camera.target.z = blockObj[0][4][4].position.z;*/
+		//カメラ座標は自機に追従
+		camera.target.x = player->GetPosition().x;
+		camera.target.y = player->GetPosition().y;
+		camera.target.z= player->GetPosition().z;
+		camera.eye = camera.target;
+		camera.eye.y += 20.0f;
+		camera.eye.z -= 2.5f;
 
 		camera.UpdateMatrix();
 
