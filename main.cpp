@@ -22,6 +22,7 @@ using namespace Microsoft::WRL;
 #include"MagnetBlock.h"
 #include"Camera.h"
 #include"ImguiManager.h"
+#include"AudioManager.h"
 
 //パイプラインステートとルートシグネチャのセット
 struct PipelineSet {
@@ -68,7 +69,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImguiManager* imguiManager = new ImguiManager();
 	imguiManager->Initialize(windowsAPI, directX);
 
-
+	//オーディオ初期化
+	AudioManager::StaticInitialize();
 #pragma endregion 基盤システム初期化
 
 #pragma region 描画初期化処理
