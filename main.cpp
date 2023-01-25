@@ -21,6 +21,7 @@ using namespace Microsoft::WRL;
 #include"Player.h"
 #include"MagnetBlock.h"
 #include"Camera.h"
+#include"ImguiManager.h"
 
 //パイプラインステートとルートシグネチャのセット
 struct PipelineSet {
@@ -62,6 +63,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//カメラクラス初期化
 	Camera::StaticInitialize(directX->GetDevice());
+
+	//imgui//imgui初期化
+	ImguiManager* imguiManager = new ImguiManager();
+	imguiManager->Initialize(windowsAPI, directX);
+
 
 #pragma endregion 基盤システム初期化
 
@@ -185,6 +191,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma endregion 基盤システム更新
 
 #pragma region シーン更新処理
+		//imgui開始処理
+		imguiManager->Begin();
+
 
 		player->Update();
 
@@ -201,6 +210,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		camera.UpdateMatrix();
 
 #pragma endregion シーン更新処理
+
+		//imgui終了
+		imguiManager->End();
 
 		//描画前処理
 		directX->BeginDraw();
@@ -234,7 +246,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//sprite->Draw();
 		//sprite2->Draw();
 
-
+		//imgui描画
+		imguiManager->Draw();
 
 #pragma endregion シーン描画処理
 		// ４．描画コマンドここまで
@@ -250,6 +263,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	delete input;
 	delete directX;
 	delete spriteManager;
+
+	imguiManager->Finalize();
+	delete imguiManager;
 
 	//ここからゲームループで使用したもの
 	//delete sprite;

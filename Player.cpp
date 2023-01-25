@@ -1,5 +1,6 @@
 
 #include "Player.h"
+#include"ImguiManager.h"
 using namespace DirectX;
 
 void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32_t& texB, Input* input)
@@ -40,6 +41,9 @@ void Player::Update()
 
 	//行列更新
 	obj.Update();
+
+
+
 }
 
 void Player::Draw()
@@ -95,7 +99,7 @@ void Player::ChangeState()
 
 void Player::Move() {
 
-	if(input->IsPress(DIK_A)) {
+	if (input->IsPress(DIK_A)) {
 		if (colX.y == 0) {
 			pos.x -= playerSpd;
 			move.x = -playerSpd;
@@ -126,6 +130,12 @@ void Player::Move() {
 	else {
 		move.z = 0;
 	}
+
+	//自機座標をimguiでいじる
+	ImGui::Begin("player");
+	ImGui::SliderFloat("pos.x", &pos.x, -10.0f, 10.0f);
+	ImGui::SliderFloat("pos.z", &pos.z, -10.0f, 10.0f);
+	ImGui::End();
 
 	obj.position = pos;
 }
