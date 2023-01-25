@@ -7,7 +7,7 @@ class MagnetBlock
 public:
 	void Initialize(const DirectX::XMFLOAT3& pos, bool isNorth_);
 
-	void Update(const DirectX::XMFLOAT3& playerPos, int playerState, float moveDistance,DirectX::XMMATRIX& matView,DirectX::XMMATRIX& matProjection);
+	void Update(const DirectX::XMFLOAT3& playerPos, int playerState, float moveDistance);
 
 	void Draw(const uint32_t& nPoleTexuture, const uint32_t& sPoleTexture);
 

@@ -18,7 +18,7 @@ void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32
 	obj.scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
 }
 
-void Player::Update(DirectX::XMMATRIX& matview, DirectX::XMMATRIX& matProjection)
+void Player::Update()
 {
 	//à⁄ìÆ
 	Move();
@@ -38,7 +38,7 @@ void Player::Update(DirectX::XMMATRIX& matview, DirectX::XMMATRIX& matProjection
 	}
 
 	//çsóÒçXêV
-	obj.Update(matview, matProjection);
+	obj.Update();
 }
 
 void Player::Draw()

@@ -14,7 +14,7 @@ void MagnetBlock::Initialize(const XMFLOAT3& pos, bool isNorth_)
 	obj->scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
 }
 
-void MagnetBlock::Update(const XMFLOAT3& playerPos, int playerState, float moveDistance,XMMATRIX& matView,XMMATRIX& matProjection)
+void MagnetBlock::Update(const XMFLOAT3& playerPos, int playerState, float moveDistance)
 {
 	if (move == 1) {
 		//Ž©‹@‚Ìó‘Ô‚ªŽ¥Î‚È‚çˆø‚«Šñ‚¹“™‚Ìˆ—‚ðs‚¤
@@ -77,7 +77,7 @@ void MagnetBlock::Update(const XMFLOAT3& playerPos, int playerState, float moveD
 
 	//À•W‚ð”½‰f
 	obj->position = pos;
-	obj->Update(matView,matProjection);
+	obj->Update();
 }
 
 void MagnetBlock::Draw(const uint32_t& nPoleTexuture, const uint32_t& sPoleTexture)

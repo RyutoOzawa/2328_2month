@@ -20,6 +20,7 @@ using namespace Microsoft::WRL;
 #include"Map.h"
 #include"Player.h"
 #include"MagnetBlock.h"
+#include"Camera.h"
 
 //パイプラインステートとルートシグネチャのセット
 struct PipelineSet {
@@ -59,6 +60,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//3Dオブジェクトの初期化
 	Object3d::StaticInitialize(directX);
 
+	//カメラクラス初期化
+	Camera::StaticInitialize(directX->GetDevice());
+
 #pragma endregion 基盤システム初期化
 
 #pragma region 描画初期化処理
@@ -88,12 +92,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::vector<MagnetBlock> magnetBlocks;
 
+
+
 	//ビュー行列、射影行列に必要な変数宣言
-	XMMATRIX matProjection;
-	XMMATRIX matView;
 	XMFLOAT3 eye(5, 25, 5);	//視点座標
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
+
+	/*eye = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	target = XMFLOAT3(0, 0, 10);
+	up = XMFLOAT3(0, 1, 0);*/
+
+	Camera camera;
+	camera.Initialize(eye,target,up);
+
+	Model* skydome;
+	skydome = Model::CreateModel("skydome");
+	Object3d skydomeObj;
+	skydomeObj.Initialize();
+	skydomeObj.SetModel(skydome);
+	skydomeObj.position = XMFLOAT3(0, 0.0f, 10.0f);
 
 	///-------------------------------///
 	/// 　変数の宣言ここまで			  ///
@@ -107,14 +125,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	//透視東映返還行列の計算
-	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(45.0f),					//上下画角45度
-		(float)WindowsAPI::winW / WindowsAPI::winH,	//アスペクト比（画面横幅/画面縦幅）
-		0.1f, 1000.0f								//前橋、奥橋
-	);
+	//matProjection = XMMatrixPerspectiveFovLH(
+	//	XMConvertToRadians(45.0f),					//上下画角45度
+	//	(float)WindowsAPI::winW / WindowsAPI::winH,	//アスペクト比（画面横幅/画面縦幅）
+	//	0.1f, 1000.0f								//前橋、奥橋
+	//);
 
-	//ビュー変換行列の計算
-	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+	////ビュー変換行列の計算
+	//matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
 
 
 	//Map読み込み
@@ -136,10 +154,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				blockObj[i][j][k].position.y = i * blockSize * blockScale;
 				blockObj[i][j][k].position.z = j * blockSize * blockScale;
 				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
-				blockObj[i][j][k].Update(matView, matProjection);
+				blockObj[i][j][k].Update();
 			}
 		}
 	}
+
+	//camera.target = blockObj[0][0][0].position;
 
 	//プレイヤー初期化
 	player = new Player();
@@ -166,7 +186,57 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #pragma region シーン更新処理
 
-		player->Update(matView, matProjection);
+		player->Update();
+
+		skydomeObj.Update();
+
+		//カメラ操作
+		float cameraSpd = 0.05f;
+		if (input->IsPress(DIK_A)) {
+			camera.eye.x -= cameraSpd;
+		}else if (input->IsPress(DIK_D)) {
+			camera.eye.x += cameraSpd;
+		}
+
+		if (input->IsPress(DIK_S)) {
+			camera.eye.z -= cameraSpd;
+		}else if (input->IsPress(DIK_W)) {
+			camera.eye.z += cameraSpd;
+		}
+
+		if (input->IsPress(DIK_Q)) {
+			camera.eye.y += cameraSpd;
+		}
+		else if (input->IsPress(DIK_E)) {
+			camera.eye.y -= cameraSpd;
+		}
+
+		if (input->IsPress(DIK_U)) {
+			camera.target.x -= cameraSpd;
+		}
+		else if (input->IsPress(DIK_I)) {
+			camera.target.x += cameraSpd;
+		}
+
+		if (input->IsPress(DIK_J)) {
+			camera.target.y -= cameraSpd;
+		}
+		else if (input->IsPress(DIK_K)) {
+			camera.target.y += cameraSpd;
+		}
+
+		//if (input->IsPress(DIK_Q)) {
+		//	camera.eye.y += cameraSpd;
+		//}
+		//else if (input->IsPress(DIK_E)) {
+		//	camera.eye.y -= cameraSpd;
+		//}
+
+	/*	camera.target.x = blockObj[0][4][4].position.x;
+		camera.target.y = blockObj[0][4][4].position.y;
+		camera.target.z = blockObj[0][4][4].position.z;*/
+
+		camera.UpdateMatrix();
 
 #pragma endregion シーン更新処理
 
@@ -175,7 +245,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma region シーン描画処理
 
 		//3Dオブジェクト描画処理
-		Object3d::BeginDraw();
+		Object3d::BeginDraw(camera);
 		//object1.Draw();
 
 		player->Draw();
@@ -194,6 +264,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 		}
+
+		//skydomeObj.Draw();
 
 		//スプライト描画処理
 		spriteManager->beginDraw();
