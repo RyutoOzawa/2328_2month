@@ -99,9 +99,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
 
-	eye = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	/*eye = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	target = XMFLOAT3(0, 0, 10);
-	up = XMFLOAT3(0, 1, 0);
+	up = XMFLOAT3(0, 1, 0);*/
 
 	Camera camera;
 	camera.Initialize(eye,target,up);
@@ -259,13 +259,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					if (map_->map[i][j][k] == 1)
 					{
-						//blockObj[i][j][k].Draw();
+						blockObj[i][j][k].Draw();
 					}
 				}
 			}
 		}
 
-		skydomeObj.Draw();
+		//skydomeObj.Draw();
 
 		//スプライト描画処理
 		spriteManager->beginDraw();

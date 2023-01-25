@@ -9,9 +9,9 @@
 #include <wrl.h>
 
 //ブロックのサイズ 変更不可
-const float blockSize = 2.0f;
+const float blockSize = 10.0f;
 //ブロックのサイズ 変更可
-const float blockScale = 1.0f;
+const float blockScale = 0.1f;
 
 //xyzのブロックの数
 const int blockX = 10;
