@@ -1,37 +1,91 @@
-#pragma once
+﻿#pragma once
+//#include"WorldTransform.h"
 #include"Object3d.h"
+//#include"DebugText.h"
+
+#include <DirectXMath.h>
+using namespace DirectX;
+
+struct MagnetData
+{
+	XMFLOAT3 pos;
+	bool isNorth_;
+};
 
 class MagnetBlock
 {
-
 public:
-	void Initialize(const DirectX::XMFLOAT3& pos, bool isNorth_);
+	~MagnetBlock();
 
-	void Update(const DirectX::XMFLOAT3& playerPos, int playerState, float moveDistance);
+	/// <summary>
+	/// ‰Šú‰»
+	/// </summary>
+	/// <param name="pos"></param>
+	void Initialize(MagnetData magnetData);
 
-	void Draw(const uint32_t& nPoleTexuture, const uint32_t& sPoleTexture);
+	void Update();
 
-	DirectX::XMFLOAT3 GetPos() { return pos; };
-	void SetPos(DirectX::XMFLOAT3 pos) { this->pos = pos; };
+	void Draw(/*const ViewProjection& viewProjection,*/ const uint32_t& nPoleTexture, const uint32_t& sPoleTexture);
 
-	void SetMove(int i) { this->move = i; }
-	DirectX::XMFLOAT3 GetMoveVec() { return moveVec; }
+	XMFLOAT3 GetPos() { return pos; };
+	void SetPos(XMFLOAT3 pos) { this->pos = pos; };
 
+	//XMFLOAT3 GetTenPos() { return tentativePos; };
+	//void SetTenPos(XMFLOAT3 tentativePos) { this->tentativePos = tentativePos; };
+	//void AddTenPos(XMFLOAT3 pos);
+	//void SubTenPos(XMFLOAT3 pos);
+
+
+	//自機との磁力ON,OFF
+	void SetIsMove(bool isMove) { this->isMove = isMove; }
+	bool GetIsMove() { return isMove; }
+
+	//磁石との磁力ON,OFF
+	void SetIsMagMove(int num, bool isMagMove) { this->isMagMove[num] = isMagMove; }
+	bool GetIsMagMove(int num) { return isMagMove[num]; }
+
+	//N極かS極か
 	bool GetIsNorth() const { return isNorth; }
 
+	//移動するスピード
 	float GetMoveSpd()const { return moveSpd; }
 
+	//当たっていたらtrueを返す
+	bool Colision(XMFLOAT3 pos1, float pos1Size, XMFLOAT3 pos2, float pos2Size);
+
+	float GetSize()const { return size; }
+
+	//numにどの面か　contactNumにあったったブロック
+	void SetContactNum(int num, int contactNum) { this->contactNum[num] = contactNum; }
+	int GetContactNum(int num) { return  contactNum[num]; }
+	void ReSetContactNum(int num) { this->contactNum[num] = 100; }
+
+
+public:
+	Object3d obj;
 
 private:
-	Object3d* obj = nullptr;
-	DirectX::XMFLOAT3 pos{};
+
+	//DebugText* debugText = nullptr;
+	//WorldTransform worldTransform;
+
+	XMFLOAT3 pos{};
+	////仮座標
+	//XMFLOAT3 tentativePos{};
 	uint32_t textureHandle = 0;
-	DirectX::XMFLOAT3 moveVec;
+	XMFLOAT3 moveVec;
 
 	bool isNorth = false;
 	float moveSpd = 0.025f;
 
-	bool move = 1;
+	//引き寄せ処理ON OFF
+	//プレイヤーとの
+	bool isMove = true;
+	//磁石との
+	bool isMagMove[20] = {};
+
+	float size = 1;
+
+	int contactNum[5] = {};
 
 };
-

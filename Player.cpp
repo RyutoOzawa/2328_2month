@@ -116,13 +116,13 @@ void Player::Move() {
 	}
 
 	if (input->IsPress(DIK_S)) {
-		if (colX.y == 0) {
+		if (colZ.y == 0) {
 			pos.z -= playerSpd;
 			move.z = -playerSpd;
 		}
 	}
 	else  if (input->IsPress(DIK_W)) {
-		if (colX.x == 0) {
+		if (colZ.x == 0) {
 			pos.z += playerSpd;
 			move.z = playerSpd;
 		}
@@ -132,11 +132,11 @@ void Player::Move() {
 	}
 
 	//é©ã@ç¿ïWÇimguiÇ≈Ç¢Ç∂ÇÈ
-	ImGui::Begin("player");
-	ImGui::SliderFloat("pos.x", &pos.x, -10.0f, 10.0f);
-	ImGui::SliderFloat("pos.z", &pos.z, -10.0f, 10.0f);
-	ImGui::Text("imgui iikanji!!!");
-	ImGui::End();
+	//ImGui::Begin("player");
+	//ImGui::SliderFloat("pos.x", &pos.x, -10.0f, 10.0f);
+	//ImGui::SliderFloat("pos.z", &pos.z, -10.0f, 10.0f);
+	//ImGui::Text("imgui iikanji!!!");
+	//ImGui::End();
 
 	obj.position = pos;
 }
