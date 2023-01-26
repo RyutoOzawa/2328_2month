@@ -189,12 +189,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//ループを抜ける
 			break;
 		}
+		//imgui開始処理
+		imguiManager->Begin();
+
 		input->Update();
 #pragma endregion 基盤システム更新
 
 #pragma region シーン更新処理
-		//imgui開始処理
-		imguiManager->Begin();
+	
 
 
 		player->Update();
