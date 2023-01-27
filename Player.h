@@ -12,7 +12,7 @@ class Player
 {
 public:
 	void Initialize(const uint32_t& texW, const uint32_t& texR,
-		const uint32_t& texB,Input* input);
+		const uint32_t& texB, Input* input);
 
 	void Update();
 
@@ -50,7 +50,7 @@ public:
 	float playerSpd = 0.05f;
 	float adjustPixelSpeed = 0.001f;
 
-	int size = 2;
+	int size = 1;
 
 
 	DirectX::XMFLOAT2 colX{};

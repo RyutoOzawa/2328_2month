@@ -23,6 +23,7 @@ using namespace Microsoft::WRL;
 #include"Camera.h"
 #include"ImguiManager.h"
 #include"AudioManager.h"
+#include"Colision.h"
 
 //パイプラインステートとルートシグネチャのセット
 struct PipelineSet {
@@ -65,7 +66,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//カメラクラス初期化
 	Camera::StaticInitialize(directX->GetDevice());
 
-	//imgui//imgui初期化
+	////imgui//imgui初期化
 	ImguiManager* imguiManager = new ImguiManager();
 	imguiManager->Initialize(windowsAPI, directX);
 
@@ -93,14 +94,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	uint32_t groundTexture = Texture::LoadTexture(L"Resources/ground.png");
 	uint32_t playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
 
-		//マップの座標
+	//マップの座標
 	Object3d blockObj[10][10][10];
 
 	Player* player = nullptr;
 
 	std::vector<MagnetBlock> magnetBlocks;
+	std::vector<MagnetData> magnetDatas;
 
-
+	//当たり判定クラス
+	Colision* colision = nullptr;
 
 	//ビュー行列、射影行列に必要な変数宣言
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
@@ -112,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	up = XMFLOAT3(0, 1, 0);*/
 
 	Camera camera;
-	camera.Initialize(eye,target,up);
+	camera.Initialize(eye, target, up);
 
 	Model* skydome;
 	skydome = Model::CreateModel("skydome");
@@ -174,6 +177,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input);
 	player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
+	//磁石初期化
+	MagnetData nBlockPos{ XMFLOAT3(3,2,2),true };
+	MagnetData sBlockPos{ XMFLOAT3(6,2,2), false };
+
+	MagnetData n2BlockPos{ XMFLOAT3(3, 2, 5), true };
+	MagnetData s2BlockPos{ XMFLOAT3(6, 2, 5), false };
+
+	magnetDatas.push_back(nBlockPos);
+	magnetDatas.push_back(sBlockPos);
+	magnetDatas.push_back(n2BlockPos);
+	magnetDatas.push_back(s2BlockPos);
+
+
+	for (int i = 0; i < magnetDatas.size(); i++) {
+
+		MagnetBlock newBlock{};
+		newBlock.Initialize(magnetDatas[i]);
+		//ゲームで使うようの配列に格納
+		magnetBlocks.push_back(newBlock);
+
+		magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+
+	}
+
+	colision = new Colision();
+
+	//当たり判定初期化
+	for (int i = 0; i < magnetDatas.size(); i++) {
+		colision->Initialize(player, magnetBlocks[i], i);
+	}
+
 	///-------------------------------///
 	/// 　初期化処理ここまで	　        ///
 	///-------------------------------///
@@ -198,6 +232,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma region シーン更新処理
 	
 
+		//磁力計算
+		for (int i = 0; i < magnetDatas.size(); i++) {
+			colision->UpdateDeta(player, magnetBlocks[i], i);
+		}
+
+		colision->Update();
+
+		//座標の更新
+		for (int i = 0; i < magnetBlocks.size(); i++) {
+
+			magnetBlocks[i] = colision->magnetBlocks[i];
+
+			magnetBlocks[i].Update();
+
+		}
 
 		player->Update();
 
@@ -206,7 +255,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//カメラ座標は自機に追従
 		camera.target.x = player->GetPosition().x;
 		camera.target.y = player->GetPosition().y;
-		camera.target.z= player->GetPosition().z;
+		camera.target.z = player->GetPosition().z;
 		camera.eye = camera.target;
 		camera.eye.y += 20.0f;
 		camera.eye.z -= 2.5f;
@@ -227,6 +276,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//object1.Draw();
 
 		player->Draw();
+
+		//磁石描画
+		for (int i = 0; i < magnetBlocks.size(); i++) {
+			magnetBlocks[i].Draw(magnetTextureN, magnetTextureS);
+		}
 
 		//マップの描画
 		for (int i = 0; i < blockY; i++)
@@ -268,7 +322,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	delete directX;
 	delete spriteManager;
 
-	imguiManager->Finalize();
+	//imguiManager->Finalize();
 	delete imguiManager;
 
 	//ここからゲームループで使用したもの

@@ -1,92 +1,107 @@
 #include "MagnetBlock.h"
+//#include"Matrix.h"
 #include"Player.h"
-using namespace DirectX;
+//using namespace MathUtility;
 
-void MagnetBlock::Initialize(const XMFLOAT3& pos, bool isNorth_)
+MagnetBlock::~MagnetBlock()
 {
-	//モデル生成、初期化
-	obj->model->CreateModel();
-	obj->Initialize();
-	this->pos = pos;
+}
+
+void MagnetBlock::Initialize(MagnetData magnetData)
+{
+	//デバッグテキストなど、汎用機能のインスタンス取得
+	//debugText = DebugText::GetInstance();
+
+	//model = Model::Create();
+
+	//worldTransform.Initialize();
+
+	this->pos = magnetData.pos;
 
 	//引数で受け取った座標を反映
-	obj->position = pos;
-	obj->scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
-}
+	obj.position = magnetData.pos;
 
-void MagnetBlock::Update(const XMFLOAT3& playerPos, int playerState, float moveDistance)
-{
-	if (move == 1) {
-		//自機の状態が磁石なら引き寄せ等の処理を行う
-		if (playerState != UnMagnet) {
-			bool isPlayerNorth = false;
-			if (playerState == NorthPole) {
-				isPlayerNorth = true;
-			}
-			else if (playerState == SouthPole) {
-				isPlayerNorth = false;
-			}
-			bool isPull;
-			if (isPlayerNorth == isNorth) {
+	//オブジェクトデータ初期化
+	obj.Initialize();
+	obj.model = Model::CreateModel();
+	//プレイヤーのデフォルトカラーは白
+	//playerTexture = whiteTexture;
+	//サイズ調整
+	obj.scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
 
-				isPull = false;
-			}
-			else {
-				isPull = true;
-			}
+	isNorth = magnetData.isNorth_;
 
-	
-
-			//自機座標を参照し、自機と磁石の距離を計算
-			XMFLOAT3 vecPlayerToblock;
-			vecPlayerToblock.x = playerPos.x - pos.x;
-			vecPlayerToblock.y = playerPos.y - pos.y;
-			vecPlayerToblock.z = playerPos.z - pos.z;
-			//ベクトルの長さは移動開始距離以下なら自機、磁石の磁力を使って引き寄せ等の処理
-			float vecLength = 0;
-			XMStoreFloat(&vecLength, XMVector3Length(XMLoadFloat3(&vecPlayerToblock)));
-			if (isPull) {
-
-				if (vecLength <= moveDistance) {
-					/*Vector3 moveVec;*/
-					XMStoreFloat3(&moveVec, XMVector3Normalize(XMLoadFloat3(&vecPlayerToblock)));
-					moveVec.x *= moveSpd;
-					moveVec.y *= moveSpd;
-					moveVec.z *= moveSpd;
-					pos.x += moveVec.x;
-					pos.y += moveVec.y;
-					pos.z += moveVec.z;
-				}
-			}
-			else {
-
-				if (vecLength <= moveDistance) {
-					/*Vector3 moveVec;*/
-					XMStoreFloat3(&moveVec, XMVector3Normalize(XMLoadFloat3(&vecPlayerToblock)));
-					moveVec.x *= moveSpd;
-					moveVec.y *= moveSpd;
-					moveVec.z *= moveSpd;
-					pos.x -= moveVec.x;
-					pos.y -= moveVec.y;
-					pos.z -= moveVec.z;
-				}
-			}
-		}
+	for (int i = 0; i < 20; i++) {
+		isMagMove[i] = true;
 
 	}
+
+	for (int j = 0; j < 5; j++) {
+		contactNum[j] = 100;
+	}
+}
+
+void MagnetBlock::Update()
+{
+	obj.position = pos;
+
+	//行列更新
+	obj.Update();
 
 	//座標を反映
-	obj->position = pos;
-	obj->Update();
+	//worldTransform.translation_ = pos;
+	//worldTransformUpdate(&worldTransform);
+	//moveVec = { 0.0f,0.0f,0.0f };z
 }
 
-void MagnetBlock::Draw(const uint32_t& nPoleTexuture, const uint32_t& sPoleTexture)
+void MagnetBlock::Draw(/*const ViewProjection& viewProjection,*/ const uint32_t& nPoleTexture, const uint32_t& sPoleTexture)
 {
-	uint32_t magTex = 0;
-	magTex = sPoleTexture;
+	uint32_t magnetTex = 0;
+	magnetTex = sPoleTexture;
 	if (isNorth) {
-		magTex = nPoleTexuture;
+		magnetTex = nPoleTexture;
 	}
-	obj->model->textureIndex = magTex;
-	obj->Draw();
+	obj.model->textureIndex = magnetTex;
+
+	obj.Draw();
+}
+
+//void MagnetBlock::AddTenPos(XMFLOAT3 pos)
+//{
+//	this->tentativePos.x += pos.x; 
+//	this->tentativePos.y += pos.y;
+//	this->tentativePos.z += pos.z;
+//}
+//
+//void MagnetBlock::SubTenPos(XMFLOAT3 pos)
+//{
+//	this->tentativePos.x -= pos.x;
+//	this->tentativePos.y -= pos.y;
+//	this->tentativePos.z -= pos.z;
+//}
+
+bool MagnetBlock::Colision(XMFLOAT3 pos1, float pos1Size, XMFLOAT3 pos2, float pos2Size)
+{
+	float pos1X1 = pos1.x - (pos1Size / 2);
+	float pos1X2 = pos1.x + (pos1Size / 2);
+
+	float pos1Z1 = pos1.z - (pos1Size / 2);
+	float pos1Z2 = pos1.z + (pos1Size / 2);
+
+	float pos2X1 = pos2.x - (pos2Size / 2);
+	float pos2X2 = pos2.x + (pos2Size / 2);
+
+	float pos2Z1 = pos2.z - (pos2Size / 2);
+	float pos2Z2 = pos2.z + (pos2Size / 2);
+
+	if (pos1X1 < pos2X2 && pos2X1 < pos1X2) {
+
+		if (pos1Z1 < pos2Z2 && pos2Z1 < pos1Z2) {
+
+			return true;
+
+		}
+	}
+
+	return false;
 }
