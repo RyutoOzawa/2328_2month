@@ -115,14 +115,14 @@ void Player::Move() {
 		move.x = 0;
 	}
 
-	if (input->IsPress(DIK_S)) {
+	if (input->IsKeyPress(DIK_S)) {
 		if (colZ.y == 0) {
 
 			pos.z -= playerSpd;
 			move.z = -playerSpd;
 		}
 	}
-	else  if (input->IsPress(DIK_W)) {
+	else  if (input->IsKeyPress(DIK_W)) {
 		if (colZ.x == 0) {
 
 			pos.z += playerSpd;
