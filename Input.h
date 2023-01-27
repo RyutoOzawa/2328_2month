@@ -9,6 +9,27 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 #include<wrl.h>
+#include<Xinput.h>
+#pragma comment(lib,"xinput.lib")
+
+//////////////////////////////////////////
+/////////////PADのボタン一覧////////////////
+/////////////////////////////////////////
+//XINPUT_GAMEPAD_DPAD_UP				スティック上
+//XINPUT_GAMEPAD_DPAD_DOWN				スティック下
+//XINPUT_GAMEPAD_DPAD_LEFT				スティック左
+//XINPUT_GAMEPAD_DPAD_RIGHT				スティック右
+//XINPUT_GAMEPAD_START					スタートボタン
+//XINPUT_GAMEPAD_BACK					セレクトボタン
+//XINPUT_GAMEPAD_LEFT_THUMB				左スティック押し込み
+//XINPUT_GAMEPAD_RIGHT_THUMB			右スティック押し込み
+//XINPUT_GAMEPAD_LEFT_SHOULDER			Lボタン(LBは別)
+//XINPUT_GAMEPAD_RIGHT_SHOULDER			Rボタン(RBは別)
+//XINPUT_GAMEPAD_A						Aボタン
+//XINPUT_GAMEPAD_B						Bボタン
+//XINPUT_GAMEPAD_X						Xボタン
+//XINPUT_GAMEPAD_Y						Yボタン
+
 
 class Input
 {
@@ -20,12 +41,29 @@ private:
 	BYTE key[256]{};
 	BYTE oldkey[256]{};
 
+
 	WindowsAPI* windowsApi = nullptr;
 public:
+	XINPUT_STATE padState;
+	XINPUT_STATE oldPadState;
+
 	void Initialize(WindowsAPI* windowsApi);
 	void Update();
-	bool IsTrigger(BYTE key_);
-	bool IsPress(BYTE key_);
-	bool IsRelease(BYTE key_);
+	bool IsKeyTrigger(BYTE key_);
+	bool IsKeyPress(BYTE key_);
+	bool IsKeyRelease(BYTE key_);
+
+	bool IsPadTrigger(WORD Button);
+	bool IsPadPress(WORD Button);
+	bool IsPadRelease(WORD Button);
+
+	bool IsDownLStickLeft(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsDownLStickRight(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsDownLStickUp(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsDownLStickDown(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsDownRStickLeft(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsDownRStickRight(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsDownRStickUp(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsDownRStickDown(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
 };
 
