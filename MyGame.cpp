@@ -117,23 +117,26 @@ void MyGame::Initialize()
 
 void MyGame::Finalize()
 {
-	//WindowsAPI終了処理
-	windowsAPI->Finalize();
-
-	//基盤システムを初期化した順番に解放。その後ゲームループで使用した物を解放
-	delete windowsAPI;
-	delete input;
-	delete directX;
-	delete spriteManager;
-
-	//imguiManager->Finalize();
-	delete imguiManager;
+	//ゲームループで使用した物を解放後、基盤システムの後処理と解放を行う
 
 	//ここからゲームループで使用したもの
 	//delete sprite;
 	//delete skyDome;
 	delete map_;
 	delete player;
+
+	//-------------ここまでにループ内で使用したものの後処理------------//
+
+	//WindowsAPI終了処理
+	windowsAPI->Finalize();
+	
+	delete windowsAPI;
+	delete input;
+	delete directX;
+	delete spriteManager;
+
+	imguiManager->Finalize();
+	delete imguiManager;
 }
 
 void MyGame::Update()
