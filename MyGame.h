@@ -1,4 +1,5 @@
 #pragma once
+#include"KEngineFramework.h"
 #include"WindowsAPI.h"
 #include"DirectX.h"
 #include"Input.h"
@@ -14,33 +15,36 @@
 #include"MagnetBlock.h"
 #include"Colision.h"
 
-class MyGame
+
+class MyGame : public KEngineFramework
 {
 public://メンバ関数
+
+	MyGame();
+
 	//初期化
-	void Initialize();
+	void Initialize() override;
 
 	//終了
-	void Finalize();
+	void Finalize()override;
 
 	//毎フレーム更新
-	void Update();
+	void Update()override;
 
 	//描画
-	void Draw();
+	void Draw()override;
 
-	//終了フラグチェック
-	bool IsEndReqest() { return endRequest; }
+	
 
 public://メンバ関数
 
 	//システム基盤の変数まとめ
 
-	WindowsAPI* windowsAPI;
-	ReDirectX* directX;
-	Input* input;
-	SpriteManager* spriteManager;
-	ImguiManager* imguiManager;
+	WindowsAPI* windowsAPI = nullptr;
+	ReDirectX* directX = nullptr;
+	Input* input = nullptr;
+	SpriteManager* spriteManager = nullptr;
+	ImguiManager* imguiManager = nullptr;
 	bool endRequest = false;
 
 	//////////////////////////////////////////////
@@ -53,16 +57,16 @@ public://メンバ関数
 
 	Object3d blockObj[10][10][10];
 
-	Player* player;
+	Player* player = nullptr;
 
 	std::vector<MagnetBlock> magnetBlocks;
 	std::vector<MagnetData> magnetDatas;
 
-	Colision* colision;
+	Colision* colision = nullptr;
 
-	Camera camera;
+	Camera camera{};
 
-	Map* map_;
+	Map* map_ = nullptr;
 
 };
 

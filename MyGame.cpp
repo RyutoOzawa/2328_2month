@@ -1,6 +1,12 @@
 #include "MyGame.h"
 using namespace DirectX;
 
+
+
+MyGame::MyGame()
+{
+}
+
 void MyGame::Initialize()
 {
 	//////////////////////////
