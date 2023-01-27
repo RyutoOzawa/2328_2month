@@ -5,30 +5,30 @@ using namespace DirectX;
 
 void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32_t& texB, Input* input)
 {
-	//ˆø”‚©‚çƒƒ“ƒo‚Ö
+	//å¼•æ•°ã‹ã‚‰ãƒ¡ãƒ³ãƒã¸
 	whiteTexture = texW;
 	blueTexture = texB;
 	redTexture = texR;
 	this->input = input;
 
-	//ƒIƒuƒWƒFƒNƒgƒf[ƒ^‰Šú‰»
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ‡ãƒ¼ã‚¿åˆæœŸåŒ–
 	obj.Initialize();
 	obj.model = Model::CreateModel();
-	//ƒvƒŒƒCƒ„[‚ÌƒfƒtƒHƒ‹ƒgƒJƒ‰[‚Í”’
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ©ãƒ¼ã¯ç™½
 	playerTexture = whiteTexture;
-	//ƒTƒCƒY’²®
+	//ã‚µã‚¤ã‚ºèª¿æ•´
 	obj.scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
 }
 
 void Player::Update()
 {
-	//ˆÚ“®
+	//ç§»å‹•
 	Move();
 
-	//©‹@‚Ìó‘Ô‚ğ•Ï‚¦‚é
+	//è‡ªæ©Ÿã®çŠ¶æ…‹ã‚’å¤‰ãˆã‚‹
 	ChangeState();
 
-	//©‹@‚Ìó‘Ô‚É‚æ‚Á‚Äg‚¤‰æ‘œ‚ğ•Ï‚¦‚é
+	//è‡ªæ©Ÿã®çŠ¶æ…‹ã«ã‚ˆã£ã¦ä½¿ã†ç”»åƒã‚’å¤‰ãˆã‚‹
 	if (state == UnMagnet) {
 		playerTexture = whiteTexture;
 	}
@@ -39,7 +39,7 @@ void Player::Update()
 		playerTexture = blueTexture;
 	}
 
-	//s—ñXV
+	//è¡Œåˆ—æ›´æ–°
 	obj.Update();
 
 
@@ -115,14 +115,16 @@ void Player::Move() {
 		move.x = 0;
 	}
 
-	if (input->IsKeyPress(DIK_S)) {
-		if (colX.y == 0) {
+	if (input->IsPress(DIK_S)) {
+		if (colZ.y == 0) {
+
 			pos.z -= playerSpd;
 			move.z = -playerSpd;
 		}
 	}
-	else  if (input->IsKeyPress(DIK_W)) {
-		if (colX.x == 0) {
+	else  if (input->IsPress(DIK_W)) {
+		if (colZ.x == 0) {
+
 			pos.z += playerSpd;
 			move.z = playerSpd;
 		}
@@ -131,12 +133,12 @@ void Player::Move() {
 		move.z = 0;
 	}
 
-	//©‹@À•W‚ğimgui‚Å‚¢‚¶‚é
-	ImGui::Begin("player");
-	ImGui::SliderFloat("pos.x", &pos.x, -10.0f, 10.0f);
-	ImGui::SliderFloat("pos.z", &pos.z, -10.0f, 10.0f);
-	ImGui::Text("imgui iikanji!!!");
-	ImGui::End();
+	//è‡ªæ©Ÿåº§æ¨™ã‚’imguiã§ã„ã˜ã‚‹
+	//ImGui::Begin("player");
+	//ImGui::SliderFloat("pos.x", &pos.x, -10.0f, 10.0f);
+	//ImGui::SliderFloat("pos.z", &pos.z, -10.0f, 10.0f);
+	//ImGui::Text("imgui iikanji!!!");
+	//ImGui::End();
 
 	obj.position = pos;
 }
