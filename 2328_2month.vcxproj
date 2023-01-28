@@ -151,6 +151,7 @@
     <ClCompile Include="GpPipeline.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="KEngineFramework.cpp" />
     <ClCompile Include="MagnetBlock.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="GpPipeline.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="KEngineFramework.h" />
     <ClInclude Include="MagnetBlock.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Material.h" />

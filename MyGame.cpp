@@ -1,50 +1,22 @@
 #include "MyGame.h"
 using namespace DirectX;
 
+
+
+MyGame::MyGame()
+{
+}
+
 void MyGame::Initialize()
 {
-	//////////////////////////
-	////////共通部初期化////////
-	//////////////////////////
 
-	HRESULT result;
-	//windowsAPI初期化処理
-	windowsAPI = new WindowsAPI();
-	windowsAPI->Initialize();
-
-	// DirectX初期化処理
-	directX = new ReDirectX();
-	directX->Initialize(windowsAPI);
-
-	//キーボード初期化処理
-	input = new Input();
-	input->Initialize(windowsAPI);
-
-	//テクスチャマネージャーの初期化
-	Texture::Initialize(directX->GetDevice());
-
-	//スプライト共通部の初期化
-	spriteManager = new SpriteManager;
-	spriteManager->Initialize(directX, WindowsAPI::winW, WindowsAPI::winH);
-
-	//3Dオブジェクトの初期化
-	Object3d::StaticInitialize(directX);
-
-	//カメラクラス初期化
-	Camera::StaticInitialize(directX->GetDevice());
-
-	////imgui//imgui初期化
-	imguiManager = new ImguiManager();
-	imguiManager->Initialize(windowsAPI, directX);
-
-	//オーディオ初期化
-	AudioManager::StaticInitialize();
-
-	//////////////////////////
-	/////共通部初期化ここまで/////
-	//////////////////////////
+	//基底クラスの初期化処理
+	KEngineFramework::Initialize();
 
 	//--------------ゲーム内変数初期化--------------//
+
+	imguiManager = new ImguiManager();
+	imguiManager->Initialize(windowsAPI,directX);
 
 	//テクスチャデータ初期化
 	magnetTextureN = Texture::LoadTexture(L"Resources/red1x1.png");
@@ -113,6 +85,7 @@ void MyGame::Initialize()
 	for (int i = 0; i < magnetDatas.size(); i++) {
 		colision->Initialize(player, magnetBlocks[i], i);
 	}
+
 }
 
 void MyGame::Finalize()
@@ -120,6 +93,8 @@ void MyGame::Finalize()
 	//ゲームループで使用した物を解放後、基盤システムの後処理と解放を行う
 
 	//ここからゲームループで使用したもの
+	imguiManager->Finalize();
+	delete imguiManager;
 	//delete sprite;
 	//delete skyDome;
 	delete map_;
@@ -127,31 +102,21 @@ void MyGame::Finalize()
 
 	//-------------ここまでにループ内で使用したものの後処理------------//
 
-	//WindowsAPI終了処理
-	windowsAPI->Finalize();
-	
-	delete windowsAPI;
-	delete input;
-	delete directX;
-	delete spriteManager;
+	//基底クラスの終了処理
+	KEngineFramework::Finalize();
 
-	imguiManager->Finalize();
-	delete imguiManager;
 }
 
 void MyGame::Update()
 {
-	//windowsのメッセージ処理
-	if (windowsAPI->ProcessMessage()) {
-		//ループを抜ける
-		endRequest = true;
-	}
-	//imgui開始処理
-	imguiManager->Begin();
-//入力系更新
-	input->Update();
+	//基底クラスの更新処理
+	KEngineFramework::Update();
 
 	//----------------------ゲーム内ループはここから---------------------//
+
+	//imgui受付開始処理
+	imguiManager->Begin();
+
 
 	//磁力計算
 	for (int i = 0; i < magnetDatas.size(); i++) {
@@ -183,7 +148,7 @@ void MyGame::Update()
 
 	//----------------------ゲーム内ループはここまで---------------------//
 
-	//imgui終了
+	//imgui受付終了
 	imguiManager->End();
 
 }

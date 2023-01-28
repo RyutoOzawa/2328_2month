@@ -1,68 +1,55 @@
 #pragma once
-#include"WindowsAPI.h"
-#include"DirectX.h"
-#include"Input.h"
-#include"Texture.h"
-#include"SpriteManager.h"
-#include"Sprite.h"
-#include"Object3d.h"
-#include"Camera.h"
-#include"ImguiManager.h"
-#include"AudioManager.h"
+#include"KEngineFramework.h"
+
 #include"Player.h"
 #include"Map.h"
 #include"MagnetBlock.h"
 #include"Colision.h"
 
-class MyGame
+
+class MyGame : public KEngineFramework
 {
 public://メンバ関数
+
+	MyGame();
+
 	//初期化
-	void Initialize();
+	void Initialize() override;
 
 	//終了
-	void Finalize();
+	void Finalize()override;
 
 	//毎フレーム更新
-	void Update();
+	void Update()override;
 
 	//描画
-	void Draw();
-
-	//終了フラグチェック
-	bool IsEndReqest() { return endRequest; }
+	void Draw()override;
 
 public://メンバ関数
 
-	//システム基盤の変数まとめ
-
-	WindowsAPI* windowsAPI;
-	ReDirectX* directX;
-	Input* input;
-	SpriteManager* spriteManager;
-	ImguiManager* imguiManager;
-	bool endRequest = false;
 
 	//////////////////////////////////////////////
 
+	ImguiManager* imguiManager = nullptr;	//imgui用
+
 	//ゲーム内で使用する変数まとめ
-	uint32_t magnetTextureN = 0;
-	uint32_t magnetTextureS = 0;
-	uint32_t groundTexture = 0;
-	uint32_t playerTexture = 0;
+	uint32_t magnetTextureN = 0;	//N極のテクスチャ
+	uint32_t magnetTextureS = 0;	//S極のテクスチャ
+	uint32_t groundTexture = 0;		//地面のテクスチャ
+	uint32_t playerTexture = 0;		//プレイヤーのテクスチャ
 
-	Object3d blockObj[10][10][10];
+	Object3d blockObj[10][10][10];	//ブロック(マップのオブジェクト)
+	
+	Player* player = nullptr;		//プレイヤー
 
-	Player* player;
+	std::vector<MagnetBlock> magnetBlocks;	//磁石オブジェクト
+	std::vector<MagnetData> magnetDatas;	//磁石データ格納用
 
-	std::vector<MagnetBlock> magnetBlocks;
-	std::vector<MagnetData> magnetDatas;
+	Colision* colision = nullptr;			//当たり判定管理クラス
 
-	Colision* colision;
+	Camera camera{};						//カメラ
 
-	Camera camera;
-
-	Map* map_;
+	Map* map_ = nullptr;					//マップ情報
 
 };
 

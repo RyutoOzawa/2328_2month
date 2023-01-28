@@ -43,22 +43,6 @@ void Input::Update()
 	DWORD flag = XInputGetState(0, &padState);
 
 
-	ImGui::Begin("padInput");
-
-	ImGui::Text("leftTrigger : %d", padState.Gamepad.bLeftTrigger);
-	ImGui::Text("rightTrigger : %d", padState.Gamepad.bRightTrigger);
-	ImGui::Text("lStickX : %d", padState.Gamepad.sThumbLX);
-	ImGui::Text("lstickY : %d", padState.Gamepad.sThumbLY);
-	ImGui::Text("rStickX : %d", padState.Gamepad.sThumbRX);
-	ImGui::Text("rStickY : %d", padState.Gamepad.sThumbRY);
-	if (IsDownRStickLeft()) ImGui::Text("stick down left!");
-	if (IsDownRStickRight()) ImGui::Text("stick down right!");
-	if (IsDownRStickUp()) ImGui::Text("stick down up!");
-	if (IsDownRStickDown()) ImGui::Text("stick down down!");
-
-	ImGui::End();
-
-
 }
 
 bool Input::IsKeyTrigger(BYTE key_)
