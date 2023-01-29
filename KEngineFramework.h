@@ -38,7 +38,7 @@ public:
 	ReDirectX* directX = nullptr;
 	Input* input = nullptr;
 	SpriteManager* spriteManager = nullptr;
-
+	ImguiManager* imguiManager = nullptr;
 
 
 };

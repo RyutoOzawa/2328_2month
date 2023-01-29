@@ -6,24 +6,23 @@
 
 void KEngineFramework::Initialize()
 {
-	HRESULT result;
 	//windowsAPI初期化処理
-	windowsAPI = new WindowsAPI();
+	windowsAPI = WindowsAPI::GetInstance();
 	windowsAPI->Initialize();
 
 	// DirectX初期化処理
-	directX = new ReDirectX();
+	directX = ReDirectX::GetInstance();
 	directX->Initialize(windowsAPI);
 
 	//キーボード初期化処理
-	input = new Input();
-	input->Initialize(windowsAPI);
+	input =  Input::GetInstance();
+	input->Initialize();
 
 	//テクスチャマネージャーの初期化
 	Texture::Initialize(directX->GetDevice());
 
 	//スプライト共通部の初期化
-	spriteManager = new SpriteManager;
+	spriteManager = SpriteManager::GetInstance();
 	spriteManager->Initialize(directX, WindowsAPI::winW, WindowsAPI::winH);
 
 	//3Dオブジェクトの初期化
@@ -32,22 +31,19 @@ void KEngineFramework::Initialize()
 	//カメラクラス初期化
 	Camera::StaticInitialize(directX->GetDevice());
 
-
 	//オーディオ初期化
 	AudioManager::StaticInitialize();
 
+	//デバッグテキスト(imgui初期化)
+	imguiManager = ImguiManager::GetInstance();
+	imguiManager->Initialize();
 }
 
 void KEngineFramework::Finalize()
 {
+	imguiManager->Finalize();
+
 	windowsAPI->Finalize();
-
-	delete windowsAPI;
-	delete input;
-	delete directX;
-	delete spriteManager;
-
-
 }
 
 void KEngineFramework::Update()

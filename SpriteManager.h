@@ -18,9 +18,18 @@ struct ConstBufferData {
 
 class SpriteManager
 {
-
+private:
+	SpriteManager();
+	~SpriteManager();
 	
 public:
+	//コピーコンストラクタ無効
+	SpriteManager(const SpriteManager& obj) = delete;
+	//代入演算子を無効
+	SpriteManager& operator=(const SpriteManager& obj) = delete;
+
+	//インスタンスアクセス専用関数
+	static SpriteManager* GetInstance();
 	
 	static std::string defaultTextureDirectoryPath;
 	ReDirectX* directX = nullptr;
@@ -29,7 +38,7 @@ public:
 
 	DirectX::XMMATRIX matProjection;//射影行列
 
-	
+
 public:
 	//初期化
 	void Initialize(ReDirectX* directX,int windowWidth,int windowHeight);

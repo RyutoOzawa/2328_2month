@@ -3,6 +3,10 @@
 Microsoft::WRL::ComPtr<IXAudio2>AudioManager::xAudio2_;
 IXAudio2MasteringVoice* AudioManager::masterVoice_;
 
+AudioManager::AudioManager()
+{
+}
+
 AudioManager::~AudioManager()
 {
 	// xaudio2の解放
@@ -13,6 +17,14 @@ AudioManager::~AudioManager()
 	soundData_.pBuffer = 0;
 	soundData_.bufferSize = 0;
 	soundData_.wfex = {};
+}
+
+AudioManager* AudioManager::GetInstance()
+{
+	//関数内共通の変数として宣言
+	static AudioManager instance;
+	return &instance;
+
 }
 
 void AudioManager::StaticInitialize()
@@ -27,7 +39,6 @@ void AudioManager::StaticInitialize()
 //音声データの読み込み
 void AudioManager::SoundLoadWave(const char* filename) {
 
-	HRESULT result;
 
 	//-------①ファイルオープン-------//
 

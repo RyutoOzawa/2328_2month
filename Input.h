@@ -41,13 +41,22 @@ private:
 	BYTE key[256]{};
 	BYTE oldkey[256]{};
 
-
-	WindowsAPI* windowsApi = nullptr;
+	Input();
+	~Input();
 public:
+
+	//コピーコンストラクタ無効
+	Input(const Input& obj) = delete;
+	//代入演算子を無効
+	Input& operator=(const Input& obj) = delete;
+
+	//インスタンスアクセス専用関数
+	static Input* GetInstance();
+
 	XINPUT_STATE padState;
 	XINPUT_STATE oldPadState;
 
-	void Initialize(WindowsAPI* windowsApi);
+	void Initialize();
 	void Update();
 	bool IsKeyTrigger(BYTE key_);
 	bool IsKeyPress(BYTE key_);

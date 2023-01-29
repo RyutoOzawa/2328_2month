@@ -9,15 +9,24 @@
 
 class ImguiManager
 {
+private:
+	ImguiManager();
+	~ImguiManager();
+
 public:
+	//コピーコンストラクタ無効
+	ImguiManager(const ImguiManager& obj) = delete;
+	//代入演算子を無効
+	ImguiManager& operator=(const ImguiManager& obj) = delete;
+
+	//インスタンスアクセス専用関数
+	static ImguiManager* GetInstance();
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descHeap;
 
-public:
-
 	ReDirectX* directX = nullptr;
 
-	void Initialize(WindowsAPI* winApp, ReDirectX* directX_);
+	void Initialize();
 
 	void Begin();
 

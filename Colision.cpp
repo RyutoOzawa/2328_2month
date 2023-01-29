@@ -83,7 +83,7 @@ void Colision::MapCollision()
 	//当たらないよう調整する用
 	float adjustPixcelSpeed = player->GetAdjustPixelSpeed();
 	//自機サイズ調整用
-	float adjustPlayerSize = 0.03;
+	float adjustPlayerSize = 0.03f;
 
 	//座標を用意
 	float leftplayer = player->GetPosition().x + adjustPlayerSize;
