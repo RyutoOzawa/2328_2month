@@ -50,7 +50,7 @@ public:
 	float playerSpd = 0.05f;
 	float adjustPixelSpeed = 0.001f;
 
-	int size = 1;
+	float size = 1;
 
 
 	DirectX::XMFLOAT2 colX{};
@@ -73,7 +73,7 @@ private:
 	uint32_t redTexture = 0;
 	uint32_t playerTexture = 0;
 
-	int state;
+	int state =UnMagnet;
 };
 
 

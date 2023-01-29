@@ -51,7 +51,18 @@ public:
 	ID3D12Device* GetDevice() { return device.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() { return commandList.Get(); }
 	size_t GetBackBufferCount()const { return backBuffers.size(); }
+
+	//コピーコンストラクタ無効
+	ReDirectX(const ReDirectX& obj) = delete;
+	//代入演算子を無効
+	ReDirectX& operator=(const ReDirectX& obj) = delete;
+
+	//インスタンスアクセス専用関数
+	static ReDirectX* GetInstance();
+
 private:
+	ReDirectX();
+	~ReDirectX();
 
 	//各種初期化関数
 	void InitializeDevice();
