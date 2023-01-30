@@ -36,7 +36,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;		//パイプラインステート
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;		//ルートシグネチャ
 
-	DirectX::XMMATRIX matProjection;//射影行列
+	DirectX::XMMATRIX matProjection{};//射影行列
 
 
 public:

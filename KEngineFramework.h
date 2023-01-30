@@ -9,6 +9,7 @@
 #include"Camera.h"
 #include"ImguiManager.h"
 #include"AudioManager.h"
+#include"GameSceneManager.h"
 
 class KEngineFramework
 {
@@ -40,6 +41,7 @@ public:
 	SpriteManager* spriteManager = nullptr;
 	ImguiManager* imguiManager = nullptr;
 
-
+protected:
+	GameSceneManager* sceneManager = nullptr;
 };
 

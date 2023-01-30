@@ -1,7 +1,7 @@
 #pragma once
 #include"KEngineFramework.h"
 #include"GamePlayScene.h"
-
+#include"GameTitleScene.h"
 
 
 class MyGame : public KEngineFramework
@@ -24,7 +24,5 @@ public://メンバ関数
 
 public://メンバ関数
 
-	//シーン
-	GamePlayScene* gameScene = nullptr;
 };
 
