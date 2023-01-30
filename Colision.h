@@ -122,6 +122,9 @@ public: // メンバ変数
 	float bPosZ1[blockSizeMax] = {};
 	float bPosZ2[blockSizeMax] = {};
 
+	float bPosY1[blockSizeMax] = {};
+	float bPosY2[blockSizeMax] = {};
+
 	//ブロックの当たり判定の大きさ
 	float bSize = 0.99; // (2 * 0.99)
 

@@ -1,6 +1,7 @@
 #pragma once
 #include"Object3d.h"
 #include"Input.h"
+#include "Map.h"
 
 enum stateIndex {
 	UnMagnet,
@@ -12,11 +13,15 @@ class Player
 {
 public:
 	void Initialize(const uint32_t& texW, const uint32_t& texR,
-		const uint32_t& texB, Input* input);
+		const uint32_t& texB, Input* input, Map* map);
 
 	void Update();
 
 	void Draw();
+
+	void Fall();
+
+	void Jump();
 
 	//当たり判定用 2はマイナス
 	void OnMapCollision();
@@ -40,11 +45,14 @@ public:
 	void SetColX(DirectX::XMFLOAT2 colX_) { colX = colX_; }
 	void SetColY(DirectX::XMFLOAT2 colY_) { colY = colY_; }
 	void SetColZ(DirectX::XMFLOAT2 colZ_) { colZ = colZ_; }
+	void SetFall(bool isfall) { fall = isfall; }
+	void SetJump(bool isJump) { this->isJump = isJump; }
+
 public:
 
 	Object3d obj;
 
-	DirectX::XMFLOAT3 pos = DirectX::XMFLOAT3(0, 1, 0);
+	DirectX::XMFLOAT3 pos = DirectX::XMFLOAT3(0, 2, 0);
 	DirectX::XMFLOAT3 move = { 0,0,0 };
 
 	float playerSpd = 0.05f;
@@ -74,6 +82,17 @@ private:
 	uint32_t playerTexture = 0;
 
 	int state;
+
+	Map* map = nullptr;
+
+	bool fall = false;
+
+	bool isJump = false;
+
+	float jumpHight = 4.0f;
+
+	float jumpBeforePosY;
+
 };
 
 

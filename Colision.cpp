@@ -87,7 +87,7 @@ void Colision::MapCollision()
 {
 
 	//当たらないよう調整する用
-	float adjustPixcelSpeed = 0.1;
+	float adjustPixcelSpeed = 0.01;
 	//自機サイズ調整用
 	float adjustPlayerSize = 0.0;
 
@@ -97,7 +97,7 @@ void Colision::MapCollision()
 	float frontplayer = player->GetPosition().z + adjustPlayerSize;
 
 	float rightplayer = player->GetPosition().x + player->GetSize() - adjustPlayerSize;
-	float upplayer = player->GetPosition().y - player->GetSize() - adjustPlayerSize;
+	float upplayer = player->GetPosition().y + player->GetSize() - adjustPlayerSize;
 	float backplayer = player->GetPosition().z + player->GetSize() - adjustPlayerSize;
 
 	//当たっているか
@@ -166,12 +166,55 @@ void Colision::MapCollision()
 	}
 
 
-	//leftplayer = player->GetPosition().x + adjust;
-	//rightplayer = player->GetPosition().x + player->GetSize() - adjust;
+	////上に仮想的に移動して当たったら
+	//if (map_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer))
+	//{
 
-	//upplayer = player->GetPosition().y - player->GetSize() - adjust;
-	//downplayer = player->GetPosition().y + adjust;
+	//	if (player->GetMove().x > 0 && ColX.x == 0) {
+	//		//１ピクセル先に壁が来るまで移動
+	//		while (true)
+	//		{
+	//			if ((map_->mapcol(leftplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, backplayer))) {
+	//				break;
+	//			}
 
+	//			player->OnMapCollisionX2();
+	//			rightplayer = player->GetPosition().x + player->GetSize() - adjustPlayerSize;
+	//			leftplayer = player->GetPosition().x + adjustPlayerSize;
+
+	//		}
+
+
+	//	}
+	//	
+
+	//}
+
+
+	//下に仮想的に移動して当たったら
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer))
+	{
+		player->SetFall(false);
+
+	}
+	else {
+
+		player->SetFall(true);
+
+	}
+
+	//上に仮想的に移動して当たったら
+	if (map_->mapcol(leftplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, backplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(leftplayer, upplayer + playerSpeed, backplayer))
+	{
+		//player->SetFall(true);
+		player->SetJump(false);
+
+	}
+	else {
+
+		//player->SetFall(false);
+
+	}
 
 	//z軸に対しての当たり判定
 	//奥に仮想的に移動して当たったら
@@ -300,12 +343,19 @@ void Colision::MapCollision()
 		}
 
 
-		//	//leftmagnetBlocks = magnetBlocks[i].GetPosition().x + adjust;
-		//	//rightmagnetBlocks = magnetBlocks[i].GetPosition().x + magnetBlocks[i].GetSize() - adjust;
+		////下に仮想的に移動して当たったら
+		//if (map_->mapcol(leftmagnetBlocks, downmagnetBlocks - 0.1, frontmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downplayer - 0.1, backmagnetBlocks))
+		//{
+		//	rightmagnetBlocks -= adjustPixcelSpeed - adjustmagnetBlocksSize;
+		//	leftmagnetBlocks -= adjustPixcelSpeed + adjustmagnetBlocksSize;
 
-		//	//upmagnetBlocks = magnetBlocks[i].GetPosition().y - magnetBlocks[i].GetSize() - adjust;
-		//	//downmagnetBlocks = magnetBlocks[i].GetPosition().y + adjust;
+		//	bMoveVec[i].x -= adjustPixcelSpeed;
+		//}
+		//else {
 
+		//	player->SetFall(true);
+
+		//}
 
 			//z軸に対しての当たり判定
 			//奥に仮想的に移動して当たったら
@@ -565,19 +615,19 @@ void Colision::PosCollision()
 							//あたったのがx軸かz軸かで押し戻しを変更
 							if (contact == 1 || contact == 2) {
 
-								pos2.y += adjust.y;
+								//pos2.y += adjust.y;
 								pos2.z += adjust.z;
 
-								bMoveVec[i].y += adjust.y;
+								//bMoveVec[i].y += adjust.y;
 								bMoveVec[i].z += adjust.z;
 
 							}
 							else {
 								pos2.x += adjust.x;
-								pos2.y += adjust.y;
+								//pos2.y += adjust.y;
 
 								bMoveVec[i].x += adjust.x;
-								bMoveVec[i].y += adjust.y;
+								//bMoveVec[i].y += adjust.y;
 
 							}
 						}
@@ -883,18 +933,18 @@ void Colision::PosCollision()
 							//あたったのがx軸かz軸かで押し戻しを変更
 							if (contact1 == 1 || contact1 == 2) {
 
-								pos1.y -= adjust.y;
+								//pos1.y -= adjust.y;
 								pos1.z -= adjust.z;
 
-								bMoveVec[i].y -= adjust.y;
+								//bMoveVec[i].y -= adjust.y;
 								bMoveVec[i].z -= adjust.z;
 
 
 
-								pos2.y += adjust.y;
+								//pos2.y += adjust.y;
 								pos2.z += adjust.z;
 
-								bMoveVec[j].y += adjust.y;
+								//bMoveVec[j].y += adjust.y;
 								bMoveVec[j].z += adjust.z;
 
 							}
@@ -914,20 +964,20 @@ void Colision::PosCollision()
 
 
 								pos1.x -= adjust.x;
-								pos1.y -= adjust.y;
+								//pos1.y -= adjust.y;
 
 								bMoveVec[i].x -= adjust.x;
-								bMoveVec[i].y -= adjust.y;
+								//bMoveVec[i].y -= adjust.y;
 
 								//}
 
 								//if (magnetBlocks[j].GetRockMove(3) == false) {
 
 								pos2.x += adjust.x;
-								pos2.y += adjust.y;
+								//pos2.y += adjust.y;
 
 								bMoveVec[j].x += adjust.x;
-								bMoveVec[j].y += adjust.y;
+								//bMoveVec[j].y += adjust.y;
 
 
 								//}
@@ -1325,7 +1375,7 @@ void Colision::MagToPlayerUpdate()
 
 						//if (magnetBlocks[i].GetRockMove(2) == false) {
 
-							bMoveVec[i].z += moveVec.z;
+						bMoveVec[i].z += moveVec.z;
 
 						//}
 					}
@@ -1342,13 +1392,13 @@ void Colision::MagToPlayerUpdate()
 						//setPos[i].z -= moveVec.z;
 
 						//if (magnetBlocks[i].GetRockMove(3) == false || magnetBlocks[i].GetRockMove(4) == false) {
-							bMoveVec[i].x -= moveVec.x;
+						bMoveVec[i].x -= moveVec.x;
 						//}
 
 						bMoveVec[i].y -= moveVec.y;
 
 						//if (magnetBlocks[i].GetRockMove(1) == false || magnetBlocks[i].GetRockMove(2) == false) {
-							bMoveVec[i].z -= moveVec.z;
+						bMoveVec[i].z -= moveVec.z;
 						//}
 
 					}
@@ -1576,6 +1626,9 @@ void Colision::InforUpdate()
 		bPosX1[i] = bPos[i].x - (bSize / 2);
 		bPosX2[i] = bPos[i].x + (bSize / 2);
 
+		bPosY1[i] = bPos[i].y - (bSize / 2);
+		bPosY2[i] = bPos[i].y + (bSize / 2);
+
 		bPosZ1[i] = bPos[i].z - (bSize / 2);
 		bPosZ2[i] = bPos[i].z + (bSize / 2);
 
@@ -1774,11 +1827,11 @@ void Colision::InforUpdateMagnetPos()
 		bPosX1[i] = setPos[i].x - (bSize / 2) + bMoveVec[i].x;
 		bPosX2[i] = setPos[i].x + (bSize / 2) + bMoveVec[i].x;
 
-
-
 		bPosZ1[i] = setPos[i].z - (bSize / 2) + bMoveVec[i].z;
 		bPosZ2[i] = setPos[i].z + (bSize / 2) + bMoveVec[i].z;
 
+		bPosY1[i] = setPos[i].y - (bSize / 2) + bMoveVec[i].y;
+		bPosY2[i] = setPos[i].y + (bSize / 2) + bMoveVec[i].y;
 	}
 }
 

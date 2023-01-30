@@ -3,7 +3,7 @@
 #include"ImguiManager.h"
 using namespace DirectX;
 
-void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32_t& texB, Input* input)
+void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32_t& texB, Input* input, Map* map)
 {
 	//引数からメンバへ
 	whiteTexture = texW;
@@ -18,12 +18,20 @@ void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32
 	playerTexture = whiteTexture;
 	//サイズ調整
 	obj.scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
+
+	this->map = map;
+
 }
 
 void Player::Update()
 {
 	//移動
 	Move();
+
+	Jump();
+
+	//落下
+	Fall();
 
 	//自機の状態を変える
 	ChangeState();
@@ -50,6 +58,46 @@ void Player::Draw()
 {
 	obj.model->textureIndex = playerTexture;
 	obj.Draw();
+}
+
+void Player::Fall()
+{
+
+
+	if (fall && isJump == false) {
+
+		pos.y -= playerSpd;
+		move.y = -playerSpd;
+
+	}
+
+
+	obj.position = pos;
+
+}
+
+void Player::Jump()
+{
+	if (input->IsKeyPress(DIK_RETURN)) {
+		isJump = true;
+	}
+
+	if (isJump) {
+
+		pos.y += playerSpd;
+		move.y = playerSpd;
+
+		obj.position = pos;
+
+		if (jumpBeforePosY + jumpHight <= pos.y) {
+			isJump = false;
+		}
+
+	}
+	else {
+		jumpBeforePosY = pos.y;
+	}
+
 }
 
 void Player::OnMapCollision()
@@ -132,6 +180,8 @@ void Player::Move() {
 	else {
 		move.z = 0;
 	}
+
+
 
 	//自機座標をimguiでいじる
 	//ImGui::Begin("player");

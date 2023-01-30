@@ -57,6 +57,14 @@ void MyGame::Initialize()
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
 
+	//XMFLOAT3 eye(25, 5, -10);	//視点座標
+	//XMFLOAT3 target(10, 5, 0);	//注視点座標
+	//XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
+
+	//XMFLOAT3 eye(30, 3, 5);	//視点座標
+	//XMFLOAT3 target(5, 3, 5);	//注視点座標
+	//XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
+
 	camera.Initialize(eye, target, up);
 
 	//マップ読み込み
@@ -84,16 +92,16 @@ void MyGame::Initialize()
 
 	//プレイヤー初期化
 	player = new Player();
-	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input);
+	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input,map_);
 	player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	//player->obj.position = XMFLOAT3(0,1,0);
 
 
 	//磁石データ初期化
-	//MagnetData nBlockPos{ XMFLOAT3(3,1,0.9),true };
-	//MagnetData sBlockPos{ XMFLOAT3(6,1,0.9), false };
-	MagnetData n2BlockPos{ XMFLOAT3(3, 1, 5), true };
-	MagnetData s2BlockPos{ XMFLOAT3(6, 1, 5), false };
+	//MagnetData nBlockPos{ XMFLOAT3(3,2,0.9),true };
+	//MagnetData sBlockPos{ XMFLOAT3(6,2,0.9), false };
+	MagnetData n2BlockPos{ XMFLOAT3(3, 2, 5), true };
+	MagnetData s2BlockPos{ XMFLOAT3(6, 2, 5), false };
 
 	//磁石データを配列に差し込む
 	//magnetDatas.push_back(nBlockPos);
