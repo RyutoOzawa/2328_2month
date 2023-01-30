@@ -44,7 +44,7 @@ public:
 
 	Object3d obj;
 
-	DirectX::XMFLOAT3 pos = DirectX::XMFLOAT3(0, 2, 0);
+	DirectX::XMFLOAT3 pos = DirectX::XMFLOAT3(0, 1, 0);
 	DirectX::XMFLOAT3 move = { 0,0,0 };
 
 	float playerSpd = 0.05f;

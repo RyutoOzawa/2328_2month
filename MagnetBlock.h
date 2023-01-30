@@ -60,6 +60,9 @@ public:
 	int GetContactNum(int num) { return  contactNum[num]; }
 	void ReSetContactNum(int num) { this->contactNum[num] = 100; }
 
+	//進めない方向 第一引数に 進めなくする = true 進める = false 第二引数にどの面か
+	void SetRockMove(bool rock, int num) { this->rockMove[num] = rock; }
+	bool GetRockMove(int num) { return this->rockMove[num]; }
 
 public:
 	Object3d obj;
@@ -87,5 +90,8 @@ private:
 	float size = 1;
 
 	int contactNum[5] = {};
+
+	//進めない方向
+	int rockMove[5] = {};
 
 };

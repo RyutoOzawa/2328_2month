@@ -86,16 +86,18 @@ void MyGame::Initialize()
 	player = new Player();
 	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input);
 	player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	//player->obj.position = XMFLOAT3(0,1,0);
+
 
 	//磁石データ初期化
-	MagnetData nBlockPos{ XMFLOAT3(3,2,2),true };
-	MagnetData sBlockPos{ XMFLOAT3(6,2,2), false };
-	MagnetData n2BlockPos{ XMFLOAT3(3, 2, 5), true };
-	MagnetData s2BlockPos{ XMFLOAT3(6, 2, 5), false };
+	//MagnetData nBlockPos{ XMFLOAT3(3,1,0.9),true };
+	//MagnetData sBlockPos{ XMFLOAT3(6,1,0.9), false };
+	MagnetData n2BlockPos{ XMFLOAT3(3, 1, 5), true };
+	MagnetData s2BlockPos{ XMFLOAT3(6, 1, 5), false };
 
 	//磁石データを配列に差し込む
-	magnetDatas.push_back(nBlockPos);
-	magnetDatas.push_back(sBlockPos);
+	//magnetDatas.push_back(nBlockPos);
+	//magnetDatas.push_back(sBlockPos);
 	magnetDatas.push_back(n2BlockPos);
 	magnetDatas.push_back(s2BlockPos);
 
@@ -111,7 +113,7 @@ void MyGame::Initialize()
 	//当たり判定初期化
 	colision = new Colision();
 	for (int i = 0; i < magnetDatas.size(); i++) {
-		colision->Initialize(player, magnetBlocks[i], i);
+		colision->Initialize(player, magnetBlocks[i], map_,i);
 	}
 }
 

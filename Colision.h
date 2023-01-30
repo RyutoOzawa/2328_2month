@@ -24,7 +24,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Player* player, MagnetBlock magnetBlock, int i);
+	void Initialize(Player* player, MagnetBlock magnetBlock, Map *map,int i);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -58,6 +58,12 @@ public:
 	//くっついたブロックの移動ベクトルを統一させる
 	void StickMag();
 
+	//くっついたブロックは何か
+	void SetStickMag();
+
+	//移動ベクトルを足したMagnetBlocksに更新(変わるのはbPos関係のみ)
+	void InforUpdateMagnetPos();
+
 	//mainPos のどの面にsubPosにあったっか
 	int GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos);
 
@@ -79,7 +85,7 @@ public: // メンバ変数
 
 	Player* player = nullptr;
 
-	Map* savemap_ = new Map;
+	Map* map_ = new Map;
 
 	//std::vector<MagnetData> magnetDatas;
 
