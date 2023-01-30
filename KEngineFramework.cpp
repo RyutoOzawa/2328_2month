@@ -37,10 +37,14 @@ void KEngineFramework::Initialize()
 	//デバッグテキスト(imgui初期化)
 	imguiManager = ImguiManager::GetInstance();
 	imguiManager->Initialize();
+
+	//シーンマネージャの生成
+	sceneManager = GameSceneManager::GetInstance();
 }
 
 void KEngineFramework::Finalize()
 {
+
 	imguiManager->Finalize();
 
 	windowsAPI->Finalize();
@@ -56,6 +60,9 @@ void KEngineFramework::Update()
 
 	//入力系更新
 	input->Update();
+
+	//シーンマネージャの更新処理
+	sceneManager->Update();
 }
 
 void KEngineFramework::Run()
@@ -72,6 +79,7 @@ void KEngineFramework::Run()
 			break;
 		}
 		//描画
+
 		Draw();
 	}
 

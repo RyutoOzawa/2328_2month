@@ -2,6 +2,9 @@
 #include"Texture.h"
 #include"DirectX.h"
 #include"SpriteManager.h"
+#include"GameTitleScene.h"
+#include"GameSceneManager.h"
+
 using namespace DirectX;
 
 void GamePlayScene::Initialize()
@@ -9,8 +12,6 @@ void GamePlayScene::Initialize()
 
 
 	//--------------ゲーム内変数初期化--------------//
-
-
 
 	//inputのインスタンス取得
 	input = Input::GetInstance();
@@ -20,6 +21,10 @@ void GamePlayScene::Initialize()
 	magnetTextureS = Texture::LoadTexture(L"Resources/blue1x1.png");
 	groundTexture = Texture::LoadTexture(L"Resources/ground.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
+	backGroundTexture = Texture::LoadTexture(L"Resources/dummyPlayGame.png");
+	
+	backGroundSprite = new Sprite();
+	backGroundSprite->Initialize( backGroundTexture);
 
 	//カメラ初期化
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
@@ -94,6 +99,7 @@ void GamePlayScene::Finalize()
 	delete map_;
 	delete player;
 
+	delete backGroundSprite;
 	//-------------ここまでにループ内で使用したものの後処理------------//
 
 
@@ -136,6 +142,15 @@ void GamePlayScene::Update()
 
 	camera.UpdateMatrix();
 
+	ImGui::Begin("sceneChangeTest");
+	if (ImGui::Button("go title")) {
+		GameBaseScene* newScene = new GameTitleScene();
+		sceneManager->SetNextScene(newScene);
+	}
+
+	ImGui::End();
+
+
 	//----------------------ゲーム内ループはここまで---------------------//
 
 
@@ -146,6 +161,7 @@ void GamePlayScene::Draw()
 	//-------背景スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
+	backGroundSprite->Draw();
 
 	//-------3Dオブジェクト描画処理-------//
 	Object3d::BeginDraw(camera);
