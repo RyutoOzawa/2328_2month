@@ -3,6 +3,7 @@
 #include"DirectX.h"
 #include"SpriteManager.h"
 #include"GameSceneManager.h"
+#include"ShareData.h"
 
 using namespace DirectX;
 
@@ -35,7 +36,10 @@ void GamePlayScene::Initialize()
 
 	//マップ読み込み
 	map_ = new Map;
-	map_->Loding("map/map3.csv");
+
+	//ステージ選択時に変更された文字列で読み込む
+	SetStage(ShareData::stageNumber);
+	map_->Loding(stageStr.c_str());
 
 	//マップの座標の初期化
 	for (int i = 0; i < blockY; i++)
@@ -215,6 +219,31 @@ void GamePlayScene::Draw()
 
 	if (goal->isGoal) {
 		goalSprite.Draw();
+	}
+
+}
+
+void GamePlayScene::SetStage(int stageNumber)
+{
+	switch (stageNumber)
+	{
+	case Sample1:
+		stageStr = "map/map1.csv";
+		break;
+	case Sample2:
+		stageStr = "map/map2.csv";
+		break;
+	case Sample3:
+		stageStr = "map/map3.csv";
+		break;
+	case Sample4:
+		stageStr = "map/map4.csv";
+		break;
+	case tutorial1:
+		stageStr = "map/Tuto1.csv";
+		break;
+	default:
+		break;
 	}
 
 }

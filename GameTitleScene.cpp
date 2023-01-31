@@ -4,6 +4,7 @@
 #include"SpriteManager.h"
 using namespace DirectX;
 #include"GameSceneManager.h"
+#include"ShareData.h"
 
 void GameTitleScene::Initialize()
 {
@@ -20,6 +21,8 @@ void GameTitleScene::Initialize()
 	titleSprite = new Sprite();
 	titleSprite->Initialize(titleTexture);
 
+	//フェーズをスペースキー押し待ち状態に
+	phase = WaitInputSpaceKey;
 }
 
 void GameTitleScene::Finalize()
@@ -42,13 +45,42 @@ void GameTitleScene::Update()
 
 	//----------------------ゲーム内ループはここから---------------------//
 
-	//スペースキーでメインゲームへ
-	if (input->IsKeyTrigger(DIK_SPACE))
-	{
-		//シーンの切り替えを依頼
-		sceneManager->ChangeScene("GAMEPLAY");
+
+	ImGui::Begin("debug");
+	if (phase == WaitInputSpaceKey) {
+		ImGui::Text("phase:WaitInputSpaceKey");
+		ImGui::Text("PUSH SAPCE GO TO STAGE SELECT");
+
+		//スペースキーでステージ選択へ
+		if (input->IsKeyTrigger(DIK_SPACE))
+		{
+			phase = StageSelect;
+		}
+	}
+	else if (phase == StageSelect) {
+
+		ImGui::Text("phase:StageSelect");
+		ImGui::Text("select stage to LEFT or RIGHT ");
+		ImGui::Text("stageNumber %d",ShareData::stageNumber);
+
+		//左右キーでステージ番号変更
+		if (input->IsKeyTrigger(DIK_LEFT)) {
+			ShareData::stageNumber--;
+		}
+		else if (input->IsKeyTrigger(DIK_RIGHT)) {
+			ShareData::stageNumber++;
+		}
+
+		if (ShareData::stageNumber < Sample1)ShareData::stageNumber = Sample1;
+		else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = tutorial1;
+
+		if (input->IsKeyTrigger(DIK_SPACE)) {
+			//シーンの切り替えを依頼
+			sceneManager->ChangeScene("GAMEPLAY");
+		}
 	}
 
+	ImGui::End();
 	//----------------------ゲーム内ループはここまで---------------------//
 
 
