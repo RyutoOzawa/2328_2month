@@ -105,6 +105,9 @@
     <ClCompile Include="MyGame.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+
+    <ClCompile Include="Goal.cpp">
+    
     <ClCompile Include="KEngineFramework.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -121,6 +124,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="SceneFactory.cpp">
+
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ShareData.cpp">
@@ -212,6 +216,7 @@
     <ClInclude Include="MyGame.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Goal.h">
     <ClInclude Include="KEngineFramework.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -231,6 +236,7 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="SceneFactory.h">
+
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ShareData.h">

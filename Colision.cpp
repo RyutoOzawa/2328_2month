@@ -7,7 +7,7 @@ Colision::Colision() {}
 Colision::~Colision() {
 }
 
-void Colision::Initialize(Player* player, MagnetBlock magnetBlock, int i) {
+void Colision::Initialize(Player* player, MagnetBlock magnetBlock, Map* map, int i) {
 
 	//this->player = player;
 
@@ -16,43 +16,51 @@ void Colision::Initialize(Player* player, MagnetBlock magnetBlock, int i) {
 	//player = new Player();
 
 
-	//ƒQ[ƒ€‚Åg‚¤‚æ‚¤‚Ì”z—ñ‚ÉŠi”[
+	//ã‚²ãƒ¼ãƒ ã§ä½¿ã†ã‚ˆã†ã®é…åˆ—ã«æ ¼ç´
 	magnetBlocks.push_back(magnetBlock);
 	magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	map_ = map;
 
 }
 
 void Colision::Update() {
 
-	//¥—ÍØ‚è‘Ö‚¦
+	//ç£åŠ›åˆ‡ã‚Šæ›¿ãˆ
 	MagnetPower();
 
-	//À•WŠÖŒWXV
+	//åº§æ¨™é–¢ä¿‚æ›´æ–°
 	InforUpdate();
 
-	//¥Î‚ÌˆÚ“®
+	//ç£çŸ³ã®ç§»å‹•
 	MagnetsUpdate();
 
-	//ƒuƒƒbƒN‚Æ‚Ì“–‚½‚è”»’è
-	MapCollision();
-
-	//¥Î‚Æ©‹@‚Ì“–‚½‚è”»’è(‰Ÿ‚µ–ß‚µˆ—)
+	//ç£çŸ³ã¨è‡ªæ©Ÿã®å½“ãŸã‚Šåˆ¤å®š(æŠ¼ã—æˆ»ã—å‡¦ç†)
 	PosCollision();
 
-	//‚­‚Á‚Â‚¢‚Ä‚éƒuƒƒbƒN‚ÌƒxƒNƒgƒ‹‚ğ“ˆê
+	//ãã£ã¤ã„ã¦ã„ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã‚’ç¢ºå®š
+	SetStickMag();
+	//ãã£ã¤ã„ã¦ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’çµ±ä¸€
 	StickMag();
 
-	//À•W‚ÌXV
+	MagFall();
+
+	//ãƒ–ãƒ­ãƒƒã‚¯ã¨ã®å½“ãŸã‚Šåˆ¤å®š
+	MapCollision();
+
+	////ãã£ã¤ã„ã¦ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’çµ±ä¸€
+	//StickMag();
+
+	//åº§æ¨™ã®æ›´æ–°
 	for (int i = 0; i < magnetBlocks.size(); i++) {
-		//ŒvZ‚µ‚½À•W‚ğŠm’è
+		//è¨ˆç®—ã—ãŸåº§æ¨™ã‚’ç¢ºå®š
 
 		setPos[i].x += bMoveVec[i].x;
 		setPos[i].y += bMoveVec[i].y;
 		setPos[i].z += bMoveVec[i].z;
 
-		//ImGui::Begin("setPos");
-		//ImGui::Text("%d = %f,%f,%f \n", i, setPos[i].x, setPos[i].y, setPos[i].z);
-		//ImGui::End();
+		////ImGui::Begin("setPos");
+		////ImGui::Text("%d = %f,%f,%f \n", i, setPos[i].x, setPos[i].y, setPos[i].z);
+		////ImGui::End();
 
 		magnetBlocks[i].SetPos(setPos[i]);
 
@@ -76,25 +84,27 @@ void Colision::UpdateDeta(Player* player, MagnetBlock magnetBlock, int i)
 
 }
 
-//”»’è
+//åˆ¤å®š
 void Colision::MapCollision()
 {
 
-	//“–‚½‚ç‚È‚¢‚æ‚¤’²®‚·‚é—p
-	float adjustPixcelSpeed = player->GetAdjustPixelSpeed();
-	//©‹@ƒTƒCƒY’²®—p
-	float adjustPlayerSize = 0.03f;
+	//å½“ãŸã‚‰ãªã„ã‚ˆã†èª¿æ•´ã™ã‚‹ç”¨
+	float adjustPixcelSpeed = 0.01;
+	//è‡ªæ©Ÿã‚µã‚¤ã‚ºèª¿æ•´ç”¨
 
-	//À•W‚ğ—pˆÓ
+	float adjustPlayerSize = 0.0;
+
+
+	//åº§æ¨™ã‚’ç”¨æ„
 	float leftplayer = player->GetPosition().x + adjustPlayerSize;
 	float downplayer = player->GetPosition().y + adjustPlayerSize;
 	float frontplayer = player->GetPosition().z + adjustPlayerSize;
 
 	float rightplayer = player->GetPosition().x + player->GetSize() - adjustPlayerSize;
-	float upplayer = player->GetPosition().y - player->GetSize() - adjustPlayerSize;
+	float upplayer = player->GetPosition().y + player->GetSize() - adjustPlayerSize;
 	float backplayer = player->GetPosition().z + player->GetSize() - adjustPlayerSize;
 
-	//“–‚½‚Á‚Ä‚¢‚é‚©
+	//å½“ãŸã£ã¦ã„ã‚‹ã‹
 	//Vector2 ColX = { 0,0 };
 	//Vector2 ColY = { 0,0 };
 	//Vector2 ColZ = { 0,0 };
@@ -102,19 +112,24 @@ void Colision::MapCollision()
 	float playerSpeed = player->GetSpeed() + adjustPixcelSpeed;
 
 	/////////////
-	//ƒvƒŒƒCƒ„[//
-	/////////////
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼//
+	///////////////
+
+	//ImGui::Begin("map");
+	//ImGui::Text("player = %f,%f,%f,%f \n", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
+	////ImGui::Text("pPos = %f \n", pSize);
+	//ImGui::End();
 
 
-	//‰E‚É‰¼‘z“I‚ÉˆÚ“®‚µ‚Ä“–‚½‚Á‚½‚ç
-	if (savemap_->mapcol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, backplayer))
+	//å³ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+	if (map_->mapcol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, backplayer))
 	{
 
 		if (player->GetMove().x > 0 && ColX.x == 0) {
-			//‚PƒsƒNƒZƒ‹æ‚É•Ç‚ª—ˆ‚é‚Ü‚ÅˆÚ“®
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
 			while (true)
 			{
-				if ((savemap_->mapcol(rightplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(rightplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, backplayer))) {
+				if ((map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, backplayer))) {
 					break;
 				}
 
@@ -124,25 +139,21 @@ void Colision::MapCollision()
 
 			}
 
-			ColX.x = 1;
+			//ColX.x = 1;
 		}
+		ColX.x = 1;
 
 	}
-	else {
-		ColX.x = 0;
-	}
 
-	//debugText_->SetPos(0,0);
-	//debugText_->Printf("RIGHT = %f",ColX.x);
 
-	//¶‚É‰¼‘z“I‚ÉˆÚ“®‚µ‚Ä“–‚½‚Á‚½‚ç
-	if (savemap_->mapcol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, backplayer))
+	//å·¦ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+	if (map_->mapcol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, backplayer))
 	{
 		if (player->GetMove().x < 0 && ColX.y == 0) {
-			//‚PƒsƒNƒZƒ‹æ‚É•Ç‚ª—ˆ‚é‚Ü‚ÅˆÚ“®
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
 			while (true)
 			{
-				if ((savemap_->mapcol(leftplayer - adjustPixcelSpeed, downplayer + player->GetSize() / 2, frontplayer) || savemap_->mapcol(leftplayer - adjustPixcelSpeed, downplayer + player->GetSize() / 2, backplayer))) {
+				if ((map_->mapcol(leftplayer - adjustPixcelSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(leftplayer - adjustPixcelSpeed, downplayer + player->GetSize() / 2, backplayer))) {
 					break;
 				}
 
@@ -151,35 +162,74 @@ void Colision::MapCollision()
 				leftplayer = player->GetPosition().x + adjustPlayerSize;
 			}
 
-			ColX.y = 1;
+			//ColX.y = 1;
 
 		}
+		ColX.y = 1;
+
+	}
+
+
+	////ä¸Šã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+	//if (map_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer))
+	//{
+
+	//	if (player->GetMove().x > 0 && ColX.x == 0) {
+	//		//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
+	//		while (true)
+	//		{
+	//			if ((map_->mapcol(leftplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, backplayer))) {
+	//				break;
+	//			}
+
+	//			player->OnMapCollisionX2();
+	//			rightplayer = player->GetPosition().x + player->GetSize() - adjustPlayerSize;
+	//			leftplayer = player->GetPosition().x + adjustPlayerSize;
+
+	//		}
+
+
+	//	}
+	//	
+
+	//}
+
+
+	//ä¸‹ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer))
+	{
+
+		player->SetFall(false);
 
 	}
 	else {
-		ColX.y = 0;
+
+		player->SetFall(true);
+
 	}
 
+	//ä¸Šã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+	if (map_->mapcol(leftplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, backplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(leftplayer, upplayer + playerSpeed, backplayer))
+	{
+		//player->SetFall(true);
+		player->SetJump(false);
 
-	//debugText_->SetPos(0, 20);
-	//debugText_->Printf("LEFT  = %f", ColX.y);
+	}
+	else {
 
-	//leftplayer = player->GetPosition().x + adjust;
-	//rightplayer = player->GetPosition().x + player->GetSize() - adjust;
+		//player->SetFall(false);
 
-	//upplayer = player->GetPosition().y - player->GetSize() - adjust;
-	//downplayer = player->GetPosition().y + adjust;
+	}
 
-
-	//z²‚É‘Î‚µ‚Ä‚Ì“–‚½‚è”»’è
-	//‰œ‚É‰¼‘z“I‚ÉˆÚ“®‚µ‚Ä“–‚½‚Á‚½‚ç
-	if (savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed))
+	//zè»¸ã«å¯¾ã—ã¦ã®å½“ãŸã‚Šåˆ¤å®š
+	//å¥¥ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+	if (map_->mapcol(leftplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed) || map_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed))
 	{
 		if (player->GetMove().z > 0 && ColZ.x == 0) {
-			//‚PƒsƒNƒZƒ‹æ‚É•Ç‚ª—ˆ‚é‚Ü‚ÅˆÚ“®
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
 			while (true)
 			{
-				if ((savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, backplayer + adjustPixcelSpeed) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer + adjustPixcelSpeed))) {
+				if ((map_->mapcol(leftplayer, downplayer + player->GetSize() / 2, backplayer + adjustPixcelSpeed) || map_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer + adjustPixcelSpeed))) {
 					break;
 				}
 
@@ -187,27 +237,22 @@ void Colision::MapCollision()
 				frontplayer = player->GetPosition().z + adjustPlayerSize;
 				backplayer = player->GetPosition().z + player->GetSize() - adjustPlayerSize;
 			}
-
-			ColZ.x = 1;
+			//ColZ.x = 1;
 
 		}
+		ColZ.x = 1;
+
 	}
-	else {
-		ColZ.x = 0;
-	}
 
 
-	//debugText_->SetPos(0, 40);
-	//debugText_->Printf("UP    = %f", ColZ.x);
-
-	//è‘O‚É‰¼‘z“I‚ÉˆÚ“®‚µ‚Ä“–‚½‚Á‚½‚ç
-	if (savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed))
+	//æ‰‹å‰ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+	if (map_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed) || map_->mapcol(rightplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed))
 	{
 		if (player->GetMove().z < 0 && ColZ.y == 0) {
-			//‚PƒsƒNƒZƒ‹æ‚É•Ç‚ª—ˆ‚é‚Ü‚ÅˆÚ“®
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
 			while (true)
 			{
-				if ((savemap_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer - adjustPixcelSpeed) || savemap_->mapcol(rightplayer, downplayer + player->GetSize() / 2, frontplayer - adjustPixcelSpeed))) {
+				if ((map_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer - adjustPixcelSpeed) || map_->mapcol(rightplayer, downplayer + player->GetSize() / 2, frontplayer - adjustPixcelSpeed))) {
 					break;
 				}
 
@@ -216,201 +261,263 @@ void Colision::MapCollision()
 				backplayer = player->GetPosition().z + player->GetSize() - adjustPlayerSize;
 			}
 
-			ColZ.y = 1;
+			//ColZ.y = 1;
 
 		}
+		ColZ.y = 1;
+
 	}
-	else {
-		ColZ.y = 0;
-	}
 
-
-	//debugText_->SetPos(0, 60);
-	//debugText_->Printf("DOWN  = %f", ColZ.y);
-
-	//if (ColX.x == 1) {
-
-	//	if (ColZ.x == 1 && ColZ.y == 1) {
-	//		ColX.x = 0;
-	//	}
-
-	//}
-
-	//if (ColX.y == 1) {
-
-	//	if (ColZ.x == 1) {
-	//		ColX.y = 0;
-	//	}
-
-	//	if (ColZ.y == 1) {
-	//		ColX.y = 0;
-	//	}
-
-	//}
 
 	player->SetColX(ColX);
 	player->SetColY(ColY);
 	player->SetColZ(ColZ);
 
-}
-
-void Colision::PosCollision()
-{
-
-	ImGui::Begin("player");
-	ImGui::Text("player = %f,%f,%f \n", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
-	//ImGui::Text("pPos = %f \n", pSize);
-	ImGui::End();
+	/////////////
+	//ãƒ–ãƒ­ãƒƒã‚¯//
+	/////////////
 
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		//ƒuƒƒbƒN À•W
 
-		bPos[i] = setPos[i];
+		//åº§æ¨™ã‚’ç”¨æ„
+		float leftmagnetBlocks = magnetBlocks[i].GetPos().x;
+		float downmagnetBlocks = magnetBlocks[i].GetPos().y;
+		float frontmagnetBlocks = magnetBlocks[i].GetPos().z;
 
-		bPosX1[i] = setPos[i].x - (bSize / 2) + bMoveVec[i].x;
-		bPosX2[i] = setPos[i].x + (bSize / 2) + bMoveVec[i].x;
+		float rightmagnetBlocks = magnetBlocks[i].GetPos().x + magnetBlocks[i].GetSize();
+		float upmagnetBlocks = magnetBlocks[i].GetPos().y + magnetBlocks[i].GetSize();
+		float backmagnetBlocks = magnetBlocks[i].GetPos().z + magnetBlocks[i].GetSize();
+
+		float magnetBlocksSpeed = 0.05f;
+
+		//å½“ãŸã‚‰ãªã„ã‚ˆã†èª¿æ•´ã™ã‚‹ç”¨
+		float adjustPixcelSpeed = 0.01;
+		//ã‚µã‚¤ã‚ºèª¿æ•´ç”¨
+		float adjustmagnetBlocksSize = 0.00;
+
+		for (int j = 1; j < 7; j++) {
+			magnetBlocks[i].SetRockMove(false, j);
+		}
+
+		//å³ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+		if (map_->mapcol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapcol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))
+		{
+
+			bMoveVec[i].x = 0;
+			magnetBlocks[i].SetRockMove(true, 4);
+
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
+			while (true)
+			{
+				if ((map_->mapcol(rightmagnetBlocks + adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapcol(rightmagnetBlocks + adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))) {
+					break;
+				}
+
+				rightmagnetBlocks += adjustPixcelSpeed - adjustmagnetBlocksSize;
+				leftmagnetBlocks += adjustPixcelSpeed + adjustmagnetBlocksSize;
+
+				bMoveVec[i].x += adjustPixcelSpeed;
+
+			}
+
+		}
+
+		//å·¦ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+		else if (map_->mapcol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapcol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))
+		{
+
+			bMoveVec[i].x = 0;
+			magnetBlocks[i].SetRockMove(true, 3);
+
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
+			while (true)
+			{
+				if ((map_->mapcol(leftmagnetBlocks - adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapcol(leftmagnetBlocks - adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))) {
+					break;
+				}
+
+
+				rightmagnetBlocks -= adjustPixcelSpeed - adjustmagnetBlocksSize;
+				leftmagnetBlocks -= adjustPixcelSpeed + adjustmagnetBlocksSize;
+
+				bMoveVec[i].x -= adjustPixcelSpeed;
+			}
+
+
+		}
 
 
 
-		bPosZ1[i] = setPos[i].z - (bSize / 2) + bMoveVec[i].z;
-		bPosZ2[i] = setPos[i].z + (bSize / 2) + bMoveVec[i].z;
+		//ä¸‹ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+		if (map_->mapcol(leftmagnetBlocks, downmagnetBlocks - bMoveVec[i].y, frontmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks - bMoveVec[i].y, backmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks - bMoveVec[i].y, frontmagnetBlocks) || map_->mapcol(leftmagnetBlocks, downmagnetBlocks - bMoveVec[i].y, backmagnetBlocks))
+		{
 
+			bMoveVec[i].y = 0;
+			magnetBlocks[i].SetRockMove(true, 2);
+
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
+			while (true)
+			{
+				if ((map_->mapcol(leftmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, frontmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, backmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, frontmagnetBlocks || map_->mapcol(leftmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, backmagnetBlocks)))) {
+					break;
+				}
+
+				downmagnetBlocks -= adjustPixcelSpeed - adjustmagnetBlocksSize;
+				upmagnetBlocks -= adjustPixcelSpeed + adjustmagnetBlocksSize;
+
+				bMoveVec[i].y -= adjustPixcelSpeed;
+
+			}
+
+		}
+
+		//è½ä¸‹
+
+		//ä¸‹ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+		if (map_->mapcol(leftmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks) || map_->mapcol(leftmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks))
+		{
+
+			bFall[i] = false;
+
+		}
+		else {
+
+			bFall[i] = true;
+			//magnetBlocks[i].SetIsMove(false);
+
+		}
+
+		//ä¸Šã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+		if (map_->mapcol(leftmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, frontmagnetBlocks) || map_->mapcol(rightmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, backmagnetBlocks) || map_->mapcol(rightmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, frontmagnetBlocks) || map_->mapcol(leftmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, backmagnetBlocks))
+		{
+			//magnetBlocks->SetFall(true);
+			//magnetBlocks->SetJump(false);
+
+		}
+		else {
+
+			//magnetBlocks->SetFall(false);
+
+		}
+
+		//zè»¸ã«å¯¾ã—ã¦ã®å½“ãŸã‚Šåˆ¤å®š
+		//å¥¥ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+		if (map_->mapcol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + bMoveVec[i].z) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + bMoveVec[i].z))
+		{
+
+			bMoveVec[i].z = 0;
+			magnetBlocks[i].SetRockMove(true, 5);
+
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
+			while (true)
+			{
+				if ((map_->mapcol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + adjustPixcelSpeed) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + adjustPixcelSpeed))) {
+					break;
+				}
+
+				frontmagnetBlocks += adjustPixcelSpeed;
+				backmagnetBlocks += adjustPixcelSpeed;
+
+				bMoveVec[i].z += adjustPixcelSpeed;
+			}
+
+		}
+
+
+		//æ‰‹å‰ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+		else if (map_->mapcol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks + bMoveVec[i].z) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks + bMoveVec[i].z))
+		{
+
+			bMoveVec[i].z = 0;
+			magnetBlocks[i].SetRockMove(true, 6);
+
+			//ï¼‘ãƒ”ã‚¯ã‚»ãƒ«å…ˆã«å£ãŒæ¥ã‚‹ã¾ã§ç§»å‹•
+			while (true)
+			{
+				if ((map_->mapcol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks - adjustPixcelSpeed) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks - adjustPixcelSpeed))) {
+					break;
+				}
+
+				frontmagnetBlocks -= adjustPixcelSpeed;
+				backmagnetBlocks -= adjustPixcelSpeed;
+
+				bMoveVec[i].z -= adjustPixcelSpeed;
+			}
+		}
+
+
+		//ImGui::Begin("moveVec");
+		//ImGui::Text("moveVec[%d] = %f,%f,%f \n", i, bMoveVec[i].x, bMoveVec[i].y, bMoveVec[i].z);
+		////ImGui::Text("pPos = %f \n", pSize);
+		//ImGui::End();
 
 	}
 
-	//©‹@‚Æ¥Î
+
+
+	////ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ç£çŸ³ãŒã£ãã£ã¤ã„ã¦ã„ã‚‹å ´åˆ
+
+	//InforUpdateMagnetPos();
+
+	////ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²(Setcontact) + ãã®ãŸã‚ã£ãŸã£ãŸæ™‚ã®å‡¦ç†
+
+	////è‡ªæ©Ÿã¨ç£çŸ³
+
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
+
+	//	int contact = GetContact(pPos, bPos[i]);
+
+	//	if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+
+	//		if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+
+
+	//			if (pState != UnMagnet) {
+
+	//				if (contact == 1) {
+	//					if (magnetBlocks[i].GetRockMove(2)) {
+	//						ColZ.y = 1;
+	//					}
+	//				}
+	//				else if (contact == 2) {
+	//					if (magnetBlocks[i].GetRockMove(1)) {
+	//						ColZ.x = 1;
+	//					}
+	//				}
+	//				else if (contact == 3) {
+	//					if (magnetBlocks[i].GetRockMove(4)) {
+	//						ColX.x = 1;
+	//					}
+	//				}
+	//				else if (contact == 4) {
+	//					if (magnetBlocks[i].GetRockMove(3)) {
+	//						ColX.y = 1;
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+
+	//	ImGui::Begin("BlockGetRockBefore");
+	//	ImGui::Text("up = %d,down = %d,left = %d,righ = %d\n", magnetBlocks[i].GetRockMove(1), magnetBlocks[i].GetRockMove(2), magnetBlocks[i].GetRockMove(3), magnetBlocks[i].GetRockMove(4));
+	//	ImGui::End();
+
+	//}
+
+	//ãã£ã¤ã„ã¦ã„ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã®å ´åˆã®å‡¦ç†
+
+	int massRockMove[7] = {};
 
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+		if (stickBlockMass[i]) {
 
-			if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+			for (int j = 1; j < 7; j++) {
 
-				XMFLOAT3 pos1 = pPos;
-				XMFLOAT3 pos2 = { setPos[i].x + bMoveVec[i].x,setPos[i].y + bMoveVec[i].y ,setPos[i].z + bMoveVec[i].z };
-
-				float pos1Size = pSize;
-				float pos2Size = bSize;
-
-				//’²®—p
-				XMFLOAT3 adjust = GetVec(pos1, pos2);
-
-				adjust = ChangeVec(adjust, 0.0001f);
-
-				int contact = GetContact(pos1, pos2);
-
-				if (pState != UnMagnet) {
-
-					//‰Ÿ‚µ–ß‚µˆ—
-					while (true)
-					{
-						if ((magnetBlocks[i].Colision(pos1, pos1Size, pos2, pos2Size))) {
-
-							//‚Ü‚¾d‚È‚Á‚Ä‚¢‚½‚ç—£‚·
-
-							//‚ ‚½‚Á‚½‚Ì‚ªx²‚©z²‚©‚Å‰Ÿ‚µ–ß‚µ‚ğ•ÏX
-							if (contact == 1 || contact == 2) {
-								pos2.y += adjust.y;
-								pos2.z += adjust.z;
-
-								//pos1.y -= adjust.y;
-								//pos1.z -= adjust.z;
-
-								bMoveVec[i].y += adjust.y;
-								bMoveVec[i].z += adjust.z;
-
-							}
-							else {
-								pos2.x += adjust.x;
-								pos2.y += adjust.y;
-
-								//pos1.x -= adjust.x;
-								//pos1.y -= adjust.y;
-
-
-								bMoveVec[i].x += adjust.x;
-								bMoveVec[i].y += adjust.y;
-
-							}
-						}
-						else {
-							break;
-						}
-
-					}
-
-					//“–‚½‚Á‚Ä‚È‚¢‚Æ‚±‚ë‚ÅƒZƒbƒg
-					//player->SetPos(pos1);
-					//setPos[i] = pos2;
-
-					//ƒvƒŒƒCƒ„[ˆÚ“®•ª‚ğ‰ÁZ
-					bMoveVec[i].x += pMoveVec.x;
-					bMoveVec[i].z += pMoveVec.z;
-
-					//‚ ‚Á‚½‚Á‚½–Ê‚ğ‹L˜^
-					if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
-						magnetBlocks[i].SetContactNum(contact, i);
-					}
-					else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
-						magnetBlocks[i].SetContactNum(contact, i);
-					}
-					else {
-						magnetBlocks[i].ReSetContactNum(contact);
-					}
-
+				if (magnetBlocks[i].GetRockMove(j)) {
+					massRockMove[j] = true;
 				}
-				else {
-
-
-					////‰Ÿ‚µ–ß‚µˆ—
-					//while (true)
-					//{
-					//	if ((magnetBlocks[i].Colision(pos1, pos1Size, pos2, pos2Size))) {
-
-					//		//‚Ü‚¾d‚È‚Á‚Ä‚¢‚½‚ç—£‚·
-
-					//		//‚ ‚½‚Á‚½‚Ì‚ªx²‚©z²‚©‚Å‰Ÿ‚µ–ß‚µ‚ğ•ÏX
-					//		if (contact == 1 || contact == 2) {
-					//			pos1.y -= adjust.y;
-					//			pos1.z -= adjust.z;
-					//		}
-					//		else {
-					//			pos1.x -= adjust.x;
-					//			pos1.y -= adjust.y;
-					//		}
-					//	}
-					//	else {
-					//		break;
-					//	}
-
-					//}
-
-					//“–‚½‚Á‚Ä‚È‚¢‚Æ‚±‚ë‚ÅƒZƒbƒg
-					//player->SetPos(pos1);
-					// 
-					//©‹@‚ª¥—Í‚È‚µ‚Ìê‡‚ß‚è‚Ü‚¹‚È‚¢‚æ‚¤‚É
-					if (contact == 1) {
-						ColZ.y = 1;
-					}
-					else if (contact == 2) {
-						ColZ.x = 1;
-					}
-					else if (contact == 3) {
-						ColX.x = 1;
-					}
-					else if (contact == 4) {
-						ColX.y = 1;
-					}
-
-					magnetBlocks[i].ReSetContactNum(contact);
-
-					//debugText_->SetPos(120, 0);
-					//debugText_->Printf("true");
-				}
-
-				//debugText_->SetPos(0, 0);
-				//debugText_->Printf("p b[%d] true", i);
 
 			}
 
@@ -418,37 +525,534 @@ void Colision::PosCollision()
 
 	}
 
-	//----------¥ÎƒuƒƒbƒN‚Æ¥ÎƒuƒƒbƒN----------
-
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		//ƒuƒƒbƒN À•W
+		for (int j = 1; j < 7; j++) {
 
+			if (massRockMove[j]) {
+				magnetBlocks[i].SetRockMove(true, j);
+			}
 
-		bPos[i] = setPos[i];
-
-
-		bPosX1[i] = setPos[i].x - (bSize / 2) + bMoveVec[i].x;
-		bPosX2[i] = setPos[i].x + (bSize / 2) + bMoveVec[i].x;
-
-
-
-		bPosZ1[i] = setPos[i].z - (bSize / 2) + bMoveVec[i].z;
-		bPosZ2[i] = setPos[i].z + (bSize / 2) + bMoveVec[i].z;
+		}
 
 	}
 
-	//‚à‚¤“–‚½‚Á‚½‚©‚Ç‚¤‚©”»’f‚·‚é‚æ‚¤‚Ì”z—ñ
 
-	//‚ ‚Á‚½‚Á‚½‚Æ‚«‚Ìî•ñ‚È‚Ç‚ğæ“¾‚·‚é
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		//x,y,zè»¸ã«ä»®æƒ³çš„ã«ç§»å‹•ã—ã¦å½“ãŸã£ãŸã‚‰
+		if (magnetBlocks[i].GetRockMove(1) || magnetBlocks[i].GetRockMove(2)) {
+			bMoveVec[i].y = 0;
+		}
+		else if (magnetBlocks[i].GetRockMove(3) || magnetBlocks[i].GetRockMove(4)) {
+			bMoveVec[i].x = 0;
+		}
+		else if (magnetBlocks[i].GetRockMove(5) || magnetBlocks[i].GetRockMove(6)) {
+			bMoveVec[i].z = 0;
+		}
+
+
+	}
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ç£çŸ³ãŒã£ãã£ã¤ã„ã¦ã„ã‚‹å ´åˆ
+
+	InforUpdateMagnetPos();
+
+	//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²(Setcontact) + ãã®ãŸã‚ã£ãŸã£ãŸæ™‚ã®å‡¦ç†
+
+	//è‡ªæ©Ÿã¨ç£çŸ³
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		int contact = GetContact(pPos, bPos[i]);
+
+		if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+
+			if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
+
+				if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+
+
+					if (pState != UnMagnet) {
+
+						if (contact == 1) {
+							//if (magnetBlocks[i].GetRockMove(2)) {
+							//	ColZ.y = 1;
+							//}
+						}
+						else if (contact == 2) {
+							//if (magnetBlocks[i].GetRockMove(1)) {
+							//	ColZ.x = 1;
+							//}
+						}
+						else if (contact == 3) {
+							if (magnetBlocks[i].GetRockMove(4)) {
+								ColX.x = 1;
+							}
+						}
+						else if (contact == 4) {
+							if (magnetBlocks[i].GetRockMove(3)) {
+								ColX.y = 1;
+							}
+						}
+						else if (contact == 5) {
+							if (magnetBlocks[i].GetRockMove(6)) {
+								ColZ.y = 1;
+							}
+						}
+						else if (contact == 6) {
+							if (magnetBlocks[i].GetRockMove(5)) {
+								ColZ.x = 1;
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		ImGui::Begin("BlockGetRock");
+		ImGui::Text("up = %d,down = %d,left = %d,righ = %d Zup = %d,Zdown = %d\n", magnetBlocks[i].GetRockMove(1), magnetBlocks[i].GetRockMove(2), magnetBlocks[i].GetRockMove(3), magnetBlocks[i].GetRockMove(4), magnetBlocks[i].GetRockMove(5), magnetBlocks[i].GetRockMove(6));
+		ImGui::End();
+
+	}
+
+	ImGui::Begin("PlayerGetRock");
+	ImGui::Text("up = %f,down = %f,left = %f,righ = %f\n", ColZ.x, ColZ.y, ColX.y, ColX.x);
+	ImGui::End();
+
+	player->SetColX(ColX);
+	player->SetColY(ColY);
+	player->SetColZ(ColZ);
+}
+
+void Colision::PosCollision()
+{
+
+	//ImGui::Begin("player");
+	//ImGui::Text("player = %f,%f,%f \n", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
+	////ImGui::Text("pPos = %f \n", pSize);
+	//ImGui::End();
+
+	InforUpdateMagnetPos();
+
+	//è‡ªæ©Ÿã¨ç£çŸ³
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+
+			if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
+
+				if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+
+					XMFLOAT3 pos1 = pPos;
+					//pos1.x = pPos.x + 0.1;
+					//pos1.z = pPos.z + 0.1;
+
+					XMFLOAT3 pos2 = { setPos[i].x + bMoveVec[i].x,setPos[i].y + bMoveVec[i].y ,setPos[i].z + bMoveVec[i].z };
+
+					float pos1Size = pSize;
+					float pos2Size = bSize;
+
+					//èª¿æ•´ç”¨
+					XMFLOAT3 adjust = GetVec(pos1, pos2);
+
+					adjust = ChangeVec(adjust, 0.0001f);
+
+					int contact = GetContact(pos1, pos2);
+
+
+					//ImGui::Begin("aa");
+					//ImGui::Text("aaaa");
+					//ImGui::End();
+
+					if (pState != UnMagnet) {
+
+						ImGui::Begin("aa");
+						ImGui::Text("aaaa");
+						ImGui::End();
+
+						//æŠ¼ã—æˆ»ã—å‡¦ç†
+						while (true)
+						{
+							if ((magnetBlocks[i].Colision(pos1, pos1Size, pos2, pos2Size))) {
+
+								//ã¾ã é‡ãªã£ã¦ã„ãŸã‚‰é›¢ã™
+
+								//ã‚ãŸã£ãŸã®ãŒxè»¸ã‹zè»¸ã‹ã§æŠ¼ã—æˆ»ã—ã‚’å¤‰æ›´
+								if (contact == 1 || contact == 2) {
+
+									break;
+									//pos2.x += adjust.x;
+									//bMoveVec[i].x += adjust.x;
+
+
+								}
+								else if (contact == 3 || contact == 4) {
+
+									pos2.x += adjust.x;
+									bMoveVec[i].x += adjust.x;
+
+								}
+								else if (contact == 5 || contact == 6) {
+
+									pos2.z += adjust.z;
+									bMoveVec[i].z += adjust.z;
+
+								}
+							}
+							else {
+								break;
+							}
+
+						}
+
+						//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç§»å‹•åˆ†ã‚’åŠ ç®—
+
+						bMoveVec[i].x += pMoveVec.x;
+						bMoveVec[i].z += pMoveVec.z;
+
+						//if (contact == 1) {
+						//	if (magnetBlocks[i].GetRockMove(contact)) {
+						//		ColZ.y = 1;
+						//	}
+						//}
+						//else if (contact == 2) {
+						//	if (magnetBlocks[i].GetRockMove(contact)) {
+						//		ColZ.x = 1;
+						//	}
+						//}
+						//else if (contact == 3) {
+						//	if (magnetBlocks[i].GetRockMove(contact)) {
+						//		ColX.x = 1;
+						//	}
+						//}
+						//else if (contact == 4) {
+						//	if (magnetBlocks[i].GetRockMove(contact)) {
+						//		ColX.y = 1;
+						//	}
+						//}
+
+						if (contact == 1) {
+							//ColY.x = 1;
+
+
+						}
+						else if (contact == 2) {
+							//ColY.y = 1;
+
+						}
+
+					}
+					else {
+
+
+						//è‡ªæ©ŸãŒç£åŠ›ãªã—ã®å ´åˆã‚ã‚Šè¾¼ã¾ã›ãªã„ã‚ˆã†ã«
+						if (contact == 1) {
+							ColY.x = 1;
+						}
+						else if (contact == 2) {
+							ColY.y = 1;
+						}
+						else if (contact == 3) {
+							ColX.x = 1;
+						}
+						else if (contact == 4) {
+							ColX.y = 1;
+						}
+						else if (contact == 5) {
+							ColZ.x = 1;
+						}
+						else if (contact == 6) {
+							ColZ.y = 1;
+						}
+
+						magnetBlocks[i].ReSetContactNum(contact);
+
+					}
+
+				}
+
+			}
+
+		}
+	}
+
+	InforUpdateMagnetPos();
+
+	//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²(Setcontact) + ãã®ãŸã‚ã£ãŸã£ãŸæ™‚ã®å‡¦ç†
+
+	//è‡ªæ©Ÿã¨ç£çŸ³
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		int contact = GetContact(pPos, bPos[i]);
+
+		if (pPosX1 - 0.01 < bPosX2[i] + 0.01 && bPosX1[i] - 0.01 < pPosX2 + 0.01) {
+
+			if (pPosY1 - 0.01 < bPosY2[i] + 0.01 && bPosY1[i] - 0.01 < pPosY2 + 0.01) {
+
+
+				if (pPosZ1 - 0.01 < bPosZ2[i] + 0.01 && bPosZ1[i] - 0.01 < pPosZ2 + 0.01) {
+
+
+					if (contact == 1) {
+
+						if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+
+								if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+
+									//ä¸Šã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+									if (pPosY1 < bPosY2[i] + 0.01&& bPosY1[i] + 0.01 < pPosY2) {
+
+
+										//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²
+										if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
+											magnetBlocks[i].SetContactNum(contact, i);
+										}
+										else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
+											magnetBlocks[i].SetContactNum(contact, i);
+										}
+										else {
+											magnetBlocks[i].ReSetContactNum(contact);
+										}
+
+									}
+								}
+							
+						}
+
+					}
+					else if (contact == 2) {
+
+
+						if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+
+							if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+
+								//ä¸Šã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+								if (pPosY1 < bPosY2[i] - 0.01 && bPosY1[i] - 0.01 < pPosY2) {
+
+
+									//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²
+									if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else {
+										magnetBlocks[i].ReSetContactNum(contact);
+									}
+
+								}
+							}
+
+						}
+
+					}
+					else if (contact == 3) {
+						//å·¦ã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+						if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+
+							if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
+
+
+								if (pPosX1 < bPosX2[i] - 0.01 && bPosX1[i] - 0.01 < pPosX2) {
+									//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²
+									if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else {
+										magnetBlocks[i].ReSetContactNum(contact);
+									}
+								}
+							}
+						}
+					}
+					else if (contact == 4) {
+
+						if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+							if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
+
+								//å³ã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+								if (pPosX1 < bPosX2[i] + 0.01 && bPosX1[i] + 0.01 < pPosX2) {
+
+									//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²
+									if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else {
+										magnetBlocks[i].ReSetContactNum(contact);
+									}
+								}
+							}
+						}
+
+					}
+					else if (contact == 5) {
+
+						if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+
+							if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
+
+							//ä¸Šã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+								if (pPosZ1 < bPosZ2[i] + 0.01 && bPosZ1[i] + 0.01 < pPosZ2) {
+
+									//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²
+									if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else {
+										magnetBlocks[i].ReSetContactNum(contact);
+									}
+								}
+							}
+
+						}
+
+					}
+					else if (contact == 6) {
+
+
+						if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+
+							////ä¸‹ã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+							if (pPosZ1 < bPosZ2[i] - 0.01 && bPosZ1[i] - 0.01 < pPosZ2) {
+
+								//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²
+								if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
+									magnetBlocks[i].SetContactNum(contact, i);
+								}
+								else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
+									magnetBlocks[i].SetContactNum(contact, i);
+								}
+								else {
+									magnetBlocks[i].ReSetContactNum(contact);
+								}
+
+							}
+						}
+					}
+
+				}
+				//magnetBlocks[i].SetRockMove(true, contact);
+
+			}
+		}
+
+		//ImGui::Begin("BlockGetRock");
+		//ImGui::Text("up = %d,down = %d,left = %d,righ = %d\n", magnetBlocks[i].GetRockMove(1), magnetBlocks[i].GetRockMove(2), magnetBlocks[i].GetRockMove(3), magnetBlocks[i].GetRockMove(4));
+		//ImGui::End();
+
+		//è‡ªæ©Ÿã‚’é€²ã‚ãªã„ã‚ˆã†ã«
+
+		//if (pPosX1 + pMoveVec.x < bPosX2[i] && bPosX1[i] + pMoveVec.x < pPosX2) {
+
+		//	if (pPosZ1 + pMoveVec.x < bPosZ2[i] && bPosZ1[i] - pMoveVec.z< pPosZ2) {
+
+
+		//		if (pState == UnMagnet) {
+
+
+		//			//è‡ªæ©ŸãŒç£åŠ›ãªã—ã®å ´åˆã‚ã‚Šè¾¼ã¾ã›ãªã„ã‚ˆã†ã«
+		//			if (contact == 1) {
+		//				ColZ.y = 1;
+		//			}
+		//			else if (contact == 2) {
+		//				ColZ.x = 1;
+		//			}
+		//			else if (contact == 3) {
+		//				ColX.x = 1;
+		//			}
+		//			else if (contact == 4) {
+		//				ColX.y = 1;
+		//			}
+
+		//		}
+		//		else {
+
+		//			//if (contact == 1) {
+		//			//	if (magnetBlocks[i].GetRockMove(2)) {
+		//			//		ColZ.y = 1;
+		//			//	}
+		//			//}
+		//			//else if (contact == 2) {
+		//			//	if (magnetBlocks[i].GetRockMove(1)) {
+		//			//		ColZ.x = 1;
+		//			//	}
+		//			//}
+		//			//else if (contact == 3) {
+		//			//	if (magnetBlocks[i].GetRockMove(4)) {
+		//			//		ColX.x = 1;
+		//			//	}
+		//			//}
+		//			//else if (contact == 4) {
+		//			//	if (magnetBlocks[i].GetRockMove(3)) {
+		//			//		ColX.y = 1;
+		//			//	}
+		//			//}
+
+		//		}
+
+		//	}
+		//}
+
+		//ImGui::Begin("PlayerGetRock");
+		//ImGui::Text("up = %f,down = %f,left = %f,righ = %f\n", ColZ.x, ColZ.y, ColX.y, ColX.x);
+		//ImGui::End();
+
+		//ImGui::Begin("contactP");
+		//ImGui::Text("contact[%d] = %d \n", i, contact);
+		//ImGui::End();
+
+	}
+
+	//player->SetColX(ColX);
+	//player->SetColY(ColY);
+	//player->SetColZ(ColZ);
+
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
+	//	ImGui::Begin("rockMove");
+	//	ImGui::Text("[%d]rockMove =up%d,down%d,left%d,right%d \n", i, magnetBlocks[i].GetRockMove(1), magnetBlocks[i].GetRockMove(2), magnetBlocks[i].GetRockMove(3), magnetBlocks[i].GetRockMove(4));
+	//	//ImGui::Text("pPos = %f \n", pSize);
+	//	ImGui::End();
+	//}
+
+
+	//----------ç£çŸ³ãƒ–ãƒ­ãƒƒã‚¯ã¨ç£çŸ³ãƒ–ãƒ­ãƒƒã‚¯----------
+
+	InforUpdateMagnetPos();
+
+	//ã‚‚ã†å½“ãŸã£ãŸã‹ã©ã†ã‹åˆ¤æ–­ã™ã‚‹ã‚ˆã†ã®é…åˆ—
+
+	//ã‚ã£ãŸã£ãŸã¨ãã®æƒ…å ±ãªã©ã‚’å–å¾—ã™ã‚‹
 
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
 		for (int j = 0; j < magnetBlocks.size(); j++) {
 
-			//“¯‚¶¥Î‚Æ‚à‚¤ˆ—‚µ‚½‘g‚İ‡‚í‚¹‚Í“–‚½‚Á‚½ˆ—‚ğ‚µ‚È‚¢‚æ‚¤‚É
+			//åŒã˜ç£çŸ³ã¨ã‚‚ã†å‡¦ç†ã—ãŸçµ„ã¿åˆã‚ã›ã¯å½“ãŸã£ãŸå‡¦ç†ã‚’ã—ãªã„ã‚ˆã†ã«
 
-			//“¯‚¶¥Î‚©
+			//åŒã˜ç£çŸ³ã‹
 
 			if (j >= i) {
 				break;
@@ -461,7 +1065,7 @@ void Colision::PosCollision()
 			float pos1Size = bSize;
 			float pos2Size = bSize;
 
-			//’²®—p
+			//èª¿æ•´ç”¨
 			XMFLOAT3 adjust = GetVec(pos1, pos2);
 
 			adjust = ChangeVec(adjust, 0.0001f);
@@ -472,152 +1076,303 @@ void Colision::PosCollision()
 
 			if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
 
-				if (bPosZ1[j] < bPosZ2[i] && bPosZ1[i] < bPosZ2[j]) {
+				if (bPosY1[j] < bPosY2[i] && bPosY1[i] < bPosY2[j]) {
 
-					//XMFLOAT3 pos1 = magnetBlocks[i].GetPos();
-					//XMFLOAT3 pos2 = magnetBlocks[j].GetPos();
+					if (bPosZ1[j] < bPosZ2[i] && bPosZ1[i] < bPosZ2[j]) {
 
-					//‰Ÿ‚µ–ß‚µˆ—
-					while (true)
-					{
-						if ((magnetBlocks[i].Colision(pos1, pos1Size, pos2, pos2Size))) {
+						//XMFLOAT3 pos1 = magnetBlocks[i].GetPos();
+						//XMFLOAT3 pos2 = magnetBlocks[j].GetPos();
 
-							//‚ ‚½‚Á‚½‚Ì‚ªx²‚©z²‚©‚Å‰Ÿ‚µ–ß‚µ‚ğ•ÏX
-							if (contact1 == 1 || contact1 == 2) {
+						//æŠ¼ã—æˆ»ã—å‡¦ç†
+						while (true)
+						{
 
-								pos1.y -= adjust.y;
-								pos1.z -= adjust.z;
+							//ImGui::Begin("aa");
+							//ImGui::Text("aaaa");
+							//ImGui::End();
 
-								pos2.y += adjust.y;
-								pos2.z += adjust.z;
+							//ã‚ãŸã£ãŸã®ãŒxè»¸ã‹zè»¸ã‹ã§æŠ¼ã—æˆ»ã—ã‚’å¤‰æ›´
+							if ((magnetBlocks[i].Colision(pos1, pos1Size, pos2, pos2Size))) {
 
-								bMoveVec[i].y -= adjust.y;
-								bMoveVec[i].z -= adjust.z;
+								//ã‚ãŸã£ãŸã®ãŒxè»¸ã‹zè»¸ã‹ã§æŠ¼ã—æˆ»ã—ã‚’å¤‰æ›´
+								if (contact1 == 1 || contact1 == 2) {
 
-								bMoveVec[j].y += adjust.y;
-								bMoveVec[j].z += adjust.z;
+
+									break;
+
+									pos1.y -= adjust.y;
+
+									bMoveVec[i].y -= adjust.y;
+
+									pos2.y += adjust.y;
+
+									bMoveVec[j].y += adjust.y;
+
+								}
+								else if (contact1 == 3 || contact1 == 4) {
+
+									//adjustãŒ+ã‹-ã‹
+									bool adjustInteger;
+
+									if (adjust.x >= 0) {
+										adjustInteger = true;
+									}
+									else {
+										adjustInteger = false;
+									}
+
+
+									pos1.x -= adjust.x;
+
+									bMoveVec[i].x -= adjust.x;
+									pos2.x += adjust.x;
+
+									bMoveVec[j].x += adjust.x;
+
+								}
+								else if (contact1 == 5 || contact1 == 6) {
+
+									pos1.z -= adjust.z;
+									bMoveVec[i].z -= adjust.z;
+
+									pos2.z += adjust.z;
+									bMoveVec[j].z += adjust.z;
+
+								}
 
 							}
 							else {
-
-								pos1.x -= adjust.x;
-								pos1.y -= adjust.y;
-
-								pos2.x += adjust.x;
-								pos2.y += adjust.y;
-
-								bMoveVec[i].x -= adjust.x;
-								bMoveVec[i].y -= adjust.y;
-
-
-								bMoveVec[j].x += adjust.x;
-								bMoveVec[j].y += adjust.y;
-
-
+								break;
 							}
 
 						}
-						else {
-							break;
-						}
 
 					}
-
-					magnetBlocks[i].SetContactNum(contact1, j);
-					magnetBlocks[j].SetContactNum(contact2, i);
-
-
-					//“–‚½‚Á‚Ä‚È‚¢‚Æ‚±‚ë‚ÅƒZƒbƒg
-					//magnetBlocks[i].SetPos(pos1);
-					//magnetBlocks[j].SetPos(pos2);
-					//setPos[i] = pos1;
-					//setPos[j] = pos2;
-
-					//debugText_->SetPos(0, 20);
-					//debugText_->Printf("b[%d] b[%d] true", i, j);
 				}
-
 			}
 
 		}
 	}
 
 
-	//©‹@‚Æ¥ÎÀ•W•ÏX‚ÅˆÚ“®§ŒÀ‚à•ÏX
+
+
+	//è‡ªæ©Ÿã¨ç£çŸ³åº§æ¨™å¤‰æ›´ã§ç§»å‹•åˆ¶é™ã‚‚å¤‰æ›´
 
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		//ƒuƒƒbƒN À•W
+		//ãƒ–ãƒ­ãƒƒã‚¯ åº§æ¨™
 
-		bPos[i] = setPos[i];
+		bPos[i].x = setPos[i].x + bMoveVec[i].x;
+		bPos[i].y = setPos[i].y + bMoveVec[i].y;
+		bPos[i].z = setPos[i].z + bMoveVec[i].z;
+
 
 		bPosX1[i] = setPos[i].x - (bSize / 2) + bMoveVec[i].x;
 		bPosX2[i] = setPos[i].x + (bSize / 2) + bMoveVec[i].x;
+
+		bPosY1[i] = setPos[i].y - (bSize / 2) + bMoveVec[i].y;
+		bPosY2[i] = setPos[i].y + (bSize / 2) + bMoveVec[i].y;
 
 		bPosZ1[i] = setPos[i].z - (bSize / 2) + bMoveVec[i].z;
 		bPosZ2[i] = setPos[i].z + (bSize / 2) + bMoveVec[i].z;
 
 	}
 
+	//InforUpdateMagnetPos()
+
+	//ã‚ã£ãŸã£ãŸé¢ã‚’è¨˜éŒ²(Setcontact)
+	// 
+	//ç£çŸ³ã¨ç£çŸ³
+
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+		for (int j = 0; j < magnetBlocks.size(); j++) {
 
-			if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
 
-				XMFLOAT3 pos1 = pPos;
-				XMFLOAT3 pos2 = { setPos[i].x + bMoveVec[i].x,setPos[i].y + bMoveVec[i].y ,setPos[i].z + bMoveVec[i].z };
+			if (j >= i) {
+				break;
+			}
 
-				int contact = GetContact(pos1, pos2);
+			int contact1 = GetContact(bPos[j], bPos[i]);
+			int contact2 = GetContact(bPos[i], bPos[j]);
 
-				if (pState != UnMagnet) {
+			if (bPosZ1[j] - 0.01 < bPosZ2[i] + 0.01 && bPosZ1[i] - 0.01 < bPosZ2[j] + 0.01) {
 
-					////‚ ‚Á‚½‚Á‚½–Ê‚ğ‹L˜^
-					//if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
-					//	magnetBlocks[i].SetContactNum(contact, i);
-					//}
-					//else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
-					//	magnetBlocks[i].SetContactNum(contact, i);
-					//}
-					//else {
-					//	magnetBlocks[i].ReSetContactNum(contact);
-					//}
+				if (bPosX1[j] - 0.01 < bPosX2[i] + 0.01 && bPosX1[i] - 0.01 < bPosX2[j] + 0.01) {
 
+					if (bPosY1[j] - 0.01 < bPosY2[i] + 0.01 && bPosY1[i] - 0.01 < bPosY2[j] + 0.01) {
+
+						if (contact1 == 1) {
+
+							//if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
+
+							//	//ä¸Šã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+							//	if (bPosZ1[j] < bPosZ2[i] + 0.01 && bPosZ1[i] + 0.01 < bPosZ2[j]) {
+
+							//		magnetBlocks[i].SetContactNum(contact1, j);
+							//		magnetBlocks[j].SetContactNum(contact2, i);
+
+							//	}
+
+							//}
+
+						}
+						else if (contact1 == 2) {
+
+
+							//if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
+
+							//	////ä¸‹ã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+							//	if (bPosZ1[j] < bPosZ2[i] - 0.01 && bPosZ1[i] - 0.01 < bPosZ2[j]) {
+
+							//		magnetBlocks[i].SetContactNum(contact1, j);
+							//		magnetBlocks[j].SetContactNum(contact2, i);
+
+
+							//	}
+							//}
+						}
+						else if (contact1 == 3) {
+							//å·¦ã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+							if (bPosZ1[j] < bPosZ2[i] && bPosZ1[i] < bPosZ2[j]) {
+
+
+								if (bPosX1[j] < bPosX2[i] - 0.01 && bPosX1[i] - 0.01 < bPosX2[j]) {
+
+									magnetBlocks[i].SetContactNum(contact1, j);
+									magnetBlocks[j].SetContactNum(contact2, i);
+
+								}
+
+							}
+						}
+						else if (contact1 == 4) {
+
+							if (bPosZ1[j] < bPosZ2[i] && bPosZ1[i] < bPosZ2[j]) {
+
+								//å³ã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+								if (bPosX1[j] < bPosX2[i] + 0.01 && bPosX1[i] + 0.01 < bPosX2[j]) {
+
+									magnetBlocks[i].SetContactNum(contact1, j);
+									magnetBlocks[j].SetContactNum(contact2, i);
+
+								}
+
+							}
+
+						}
+						else if (contact1 == 5) {
+
+							if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
+
+								//ä¸Šã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+								if (bPosZ1[j] < bPosZ2[i] + 0.01 && bPosZ1[i] + 0.01 < bPosZ2[j]) {
+
+									magnetBlocks[i].SetContactNum(contact1, j);
+									magnetBlocks[j].SetContactNum(contact2, i);
+
+								}
+
+							}
+
+						}
+						else if (contact1 == 6) {
+
+
+							if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
+
+								////ä¸‹ã«0.1ç§»å‹•ã—ã¦ã‚ã£ãŸã£ã¦ã„ãŸã‚‰
+
+								if (bPosZ1[j] < bPosZ2[i] - 0.01 && bPosZ1[i] - 0.01 < bPosZ2[j]) {
+
+									magnetBlocks[i].SetContactNum(contact1, j);
+									magnetBlocks[j].SetContactNum(contact2, i);
+
+
+								}
+							}
+						}
+
+					}
 				}
-				else {
+			}
+
+		}
+	}
+
+	//è‡ªæ©Ÿã‚’é€²ã‚ãªã„ã‚ˆã†ã«
+	InforUpdateMagnetPos();
 
 
-					ImGui::Begin("contact");
-					ImGui::Text("contact[%d] = %d \n", i, contact);
-					ImGui::End();
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		int contact = GetContact(pPos, bPos[i]);
 
 
-					//©‹@‚ª¥—Í‚È‚µ‚Ìê‡‚ß‚è‚Ü‚¹‚È‚¢‚æ‚¤‚É
-					if (contact == 1) {
-						ColZ.y = 1;
+		if (pPosX1 + pMoveVec.x < bPosX2[i] && bPosX1[i] - pMoveVec.x < pPosX2) {
+
+			if (pPosZ1 + pMoveVec.z < bPosZ2[i] && bPosZ1[i] - pMoveVec.z < pPosZ2) {
+
+				if (pPosY1 + pMoveVec.y < bPosY2[i] && bPosY1[i] - pMoveVec.y < pPosY2) {
+
+
+					if (pState == UnMagnet) {
+
+
+						//è‡ªæ©ŸãŒç£åŠ›ãªã—ã®å ´åˆã‚ã‚Šè¾¼ã¾ã›ãªã„ã‚ˆã†ã«
+						if (contact == 1) {
+							ColY.y = 1;
+						}
+						else if (contact == 2) {
+							ColY.x = 1;
+						}
+						else if (contact == 3) {
+							ColX.x = 1;
+						}
+						else if (contact == 4) {
+							ColX.y = 1;
+						}
+						else if (contact == 5) {
+							ColZ.y = 1;
+						}
+						else if (contact == 6) {
+							ColZ.x = 1;
+						}
+
 					}
-					else if (contact == 2) {
-						ColZ.x = 1;
-					}
-					else if (contact == 3) {
-						ColX.x = 1;
-					}
-					else if (contact == 4) {
-						ColX.y = 1;
-					}
+					else {
 
-					//magnetBlocks[i].ReSetContactNum(contact);
+						if (contact == 1) {
+							ColY.y = 1;
+						}
+						else if (contact == 2) {
+							ColY.x = 1;
+
+							ColX.x = 1;
+						}
+
+					}
 				}
 
 			}
 
 		}
-
 	}
 
 	player->SetColX(ColX);
 	player->SetColY(ColY);
 	player->SetColZ(ColZ);
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
+	//	ImGui::Begin("contact");
+	//	ImGui::Text("[%d]contact =up%d,down%d,left%d,right%d \n", i, magnetBlocks[i].GetContactNum(1), magnetBlocks[i].GetContactNum(2), magnetBlocks[i].GetContactNum(3), magnetBlocks[i].GetContactNum(4));
+	//	//ImGui::Text("pPos = %f \n", pSize);
+	//	ImGui::End();
+	//}
 
 }
 
@@ -633,13 +1388,13 @@ void Colision::MagnetsUpdate() {
 void Colision::MagToMagUpdate()
 {
 
-	//”z—ñ‚ÌÅ‘å”-1‰ñfor•¶‚ğ‰ñ‚·
+	//é…åˆ—ã®æœ€å¤§æ•°-1å›foræ–‡ã‚’å›ã™
 	for (int i = 0; i < magnetBlocks.size() - 1; i++) {
 
-		//iŒÂ–Ú‚Ì¥Î‚É‘Î‚µ‚ÄAi+1 ~ ”z—ñ––”ö‚Ü‚Å‚ÌƒuƒƒbƒN‚Æ¥Î‚Ì”»’è‚ğs‚¤
+		//iå€‹ç›®ã®ç£çŸ³ã«å¯¾ã—ã¦ã€i+1 ~ é…åˆ—æœ«å°¾ã¾ã§ã®ãƒ–ãƒ­ãƒƒã‚¯ã¨ç£çŸ³ã®åˆ¤å®šã‚’è¡Œã†
 		for (int j = i + 1; j < magnetBlocks.size(); j++) {
 
-			// ˆø‚«Šñ‚¹ˆ—‚ª‚Ç‚¿‚ç‚àON‚Ìê‡ˆø‚«Šñ‚¹‚é‚æ‚¤‚É
+			// å¼•ãå¯„ã›å‡¦ç†ãŒã©ã¡ã‚‰ã‚‚ONã®å ´åˆå¼•ãå¯„ã›ã‚‹ã‚ˆã†ã«
 			bool isMagMove = magnetBlocks[i].GetIsMagMove(j);
 
 			if (isMagMove) {
@@ -650,39 +1405,41 @@ void Colision::MagToMagUpdate()
 			if (isMagMove) {
 
 				bool isSame = false;
-				//“¯‹É‚©‘Î‹É‚©
+				//åŒæ¥µã‹å¯¾æ¥µã‹
 				if (magnetBlocks[i].GetIsNorth() == magnetBlocks[j].GetIsNorth()) {
 					isSame = true;
 				}
 
-				//ƒuƒƒbƒN“¯m‚ÌƒxƒNƒgƒ‹ì¬
+				//ãƒ–ãƒ­ãƒƒã‚¯åŒå£«ã®ãƒ™ã‚¯ãƒˆãƒ«ä½œæˆ
 				XMFLOAT3 vecMagToMag;
 				vecMagToMag.x = (magnetBlocks[i].GetPos().x) - (magnetBlocks[j].GetPos().x);
 				vecMagToMag.y = (magnetBlocks[i].GetPos().y) - (magnetBlocks[j].GetPos().y);
 				vecMagToMag.z = (magnetBlocks[i].GetPos().z) - (magnetBlocks[j].GetPos().z);
 
-				//ƒxƒNƒgƒ‹‚Ì’·‚³æ“¾
+				//ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•å–å¾—
 				float vecLen = lengthVec(vecMagToMag);
 
 				float moveSpd = 0.025;
 
-				//‹——£‚Å¥—Í‚Ì‹­‚³‚ğ•Ï‰»‚³‚¹‚é
+				//è·é›¢ã§ç£åŠ›ã®å¼·ã•ã‚’å¤‰åŒ–ã•ã›ã‚‹
 				if (2.0f > vecLen) {
 					moveSpd = ((2.0f / 1000) - (vecLen / 1000)) / 0.01;
 				}
 
+				//ImGui::Begin(" vecblockToblock");
+				//ImGui::Text("[%d] = (%f,%f,%f) \n", i, vecMagToMag.x, vecMagToMag.y, vecMagToMag.z);
+				//ImGui::End();
 
-
-				//iŒÂ–Ú‚Ì¥Î‚ÆjŒÂ–Ú‚Ì¥—Í‚É‚æ‚é‹““®
+				//iå€‹ç›®ã®ç£çŸ³ã¨jå€‹ç›®ã®ç£åŠ›ã«ã‚ˆã‚‹æŒ™å‹•
 				if (isSame) {
 					if (vecLen <= 2.0f) {
 
 
 
-						//ƒxƒNƒgƒ‹‚ğ³‹K‰»+¥Î‚Ì‘¬‚³‚É’¼‚·
+						//ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–+ç£çŸ³ã®é€Ÿã•ã«ç›´ã™
 						vecMagToMag = ChangeVec(vecMagToMag, moveSpd);
 						//vecMagToMag *= moveSpd;
-						//‚»‚ê‚¼‚ê‚ÌƒuƒƒbƒN‚É‰ÁZ
+						//ãã‚Œãã‚Œã®ãƒ–ãƒ­ãƒƒã‚¯ã«åŠ ç®—
 						XMFLOAT3 pos1, pos2;
 						pos1 = magnetBlocks[i].GetPos();
 						pos2 = magnetBlocks[j].GetPos();
@@ -709,10 +1466,10 @@ void Colision::MagToMagUpdate()
 				}
 				else {
 					if (vecLen <= 2.0f) {
-						//ƒxƒNƒgƒ‹‚ğ³‹K‰»+¥Î‚Ì‘¬‚³‚É’¼‚·
+						//ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–+ç£çŸ³ã®é€Ÿã•ã«ç›´ã™
 						vecMagToMag = ChangeVec(vecMagToMag, moveSpd);
 						//vecMagToMag *= moveSpd;
-						//‚»‚ê‚¼‚ê‚ÌƒuƒƒbƒN‚É‰ÁZ
+						//ãã‚Œãã‚Œã®ãƒ–ãƒ­ãƒƒã‚¯ã«åŠ ç®—
 						XMFLOAT3 pos1, pos2;
 						pos1 = magnetBlocks[i].GetPos();
 						pos2 = magnetBlocks[j].GetPos();
@@ -755,7 +1512,7 @@ void Colision::MagToPlayerUpdate()
 
 			XMFLOAT3 pos = { setPos[i].x + bMoveVec[i].x,setPos[i].y + bMoveVec[i].y,setPos[i].z + bMoveVec[i].z };
 
-			//©‹@‚Ìó‘Ô‚ª¥Î‚È‚çˆø‚«Šñ‚¹“™‚Ìˆ—‚ğs‚¤
+			//è‡ªæ©Ÿã®çŠ¶æ…‹ãŒç£çŸ³ãªã‚‰å¼•ãå¯„ã›ç­‰ã®å‡¦ç†ã‚’è¡Œã†
 			if (pState != UnMagnet) {
 				bool isPlayerNorth = false;
 				if (pState == NorthPole) {
@@ -773,24 +1530,24 @@ void Colision::MagToPlayerUpdate()
 					isPull = true;
 				}
 
-				//©‹@À•W‚ğQÆ‚µA©‹@‚Æ¥Î‚Ì‹——£‚ğŒvZ
+				//è‡ªæ©Ÿåº§æ¨™ã‚’å‚ç…§ã—ã€è‡ªæ©Ÿã¨ç£çŸ³ã®è·é›¢ã‚’è¨ˆç®—
 				XMFLOAT3 vecPlayerToblock;
 				vecPlayerToblock.x = pPos.x - pos.x;
 				vecPlayerToblock.y = pPos.y - pos.y;
 				vecPlayerToblock.z = pPos.z - pos.z;
 
-				//ƒxƒNƒgƒ‹‚Ì’·‚³‚ÍˆÚ“®ŠJn‹——£ˆÈ‰º‚È‚ç©‹@A¥Î‚Ì¥—Í‚ğg‚Á‚Äˆø‚«Šñ‚¹“™‚Ìˆ—
+				//ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•ã¯ç§»å‹•é–‹å§‹è·é›¢ä»¥ä¸‹ãªã‚‰è‡ªæ©Ÿã€ç£çŸ³ã®ç£åŠ›ã‚’ä½¿ã£ã¦å¼•ãå¯„ã›ç­‰ã®å‡¦ç†
 				float vecLength = lengthVec(vecPlayerToblock);
 
 				float moveSpd = 0.025;
 
 
-				ImGui::Begin(" vecPlayerToblock");
-				ImGui::Text("[%d] = (%f,%f,%f) \n", i, vecPlayerToblock.x, vecPlayerToblock.y, vecPlayerToblock.z);
-				ImGui::End();
+				//ImGui::Begin(" vecPlayerToblock");
+				//ImGui::Text("[%d] = (%f,%f,%f) \n", i, vecPlayerToblock.x, vecPlayerToblock.y, vecPlayerToblock.z);
+				//ImGui::End();
 
 
-				//‹——£‚Å¥—Í‚Ì‹­‚³‚ğ•Ï‰»‚³‚¹‚é
+				//è·é›¢ã§ç£åŠ›ã®å¼·ã•ã‚’å¤‰åŒ–ã•ã›ã‚‹
 				if (2.0f > vecLength) {
 					moveSpd = ((2.0f / 1000) - (vecLength / 1000)) / 0.01;
 				}
@@ -808,9 +1565,12 @@ void Colision::MagToPlayerUpdate()
 
 						bMoveVec[i].x += moveVec.x;
 						bMoveVec[i].y += moveVec.y;
+
+						//if (magnetBlocks[i].GetRockMove(2) == false) {
+
 						bMoveVec[i].z += moveVec.z;
 
-
+						//}
 					}
 				}
 				else {
@@ -824,9 +1584,16 @@ void Colision::MagToPlayerUpdate()
 						//setPos[i].y -= moveVec.y;
 						//setPos[i].z -= moveVec.z;
 
+						//if (magnetBlocks[i].GetRockMove(3) == false || magnetBlocks[i].GetRockMove(4) == false) {
 						bMoveVec[i].x -= moveVec.x;
+						//}
+
 						bMoveVec[i].y -= moveVec.y;
+
+						//if (magnetBlocks[i].GetRockMove(1) == false || magnetBlocks[i].GetRockMove(2) == false) {
 						bMoveVec[i].z -= moveVec.z;
+						//}
+
 					}
 				}
 			}
@@ -840,9 +1607,9 @@ void Colision::MagToPlayerUpdate()
 
 void Colision::MagnetPower()
 {
-	//¥—Í‚ÌON,OFF
+	//ç£åŠ›ã®ON,OFF
 
-	//4–Ê’²‚×‚Ä‚ ‚Á‚½‚Á‚Ä‚¢‚é•ûŒü‚Ì¥Î‚Æ‚Í”½‰‚µ‚È‚¢‚æ‚¤‚É
+	//4é¢èª¿ã¹ã¦ã‚ã£ãŸã£ã¦ã„ã‚‹æ–¹å‘ã®ç£çŸ³ã¨ã¯åå¿œã—ãªã„ã‚ˆã†ã«
 
 
 	float bSize = 2; // (2 * 0.99)
@@ -851,15 +1618,22 @@ void Colision::MagnetPower()
 
 	int isPower[20] = {};
 
-	//”z—ñ‚ÌÅ‘å”-1‰ñfor•¶‚ğ‰ñ‚·
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		ImGui::Begin("conatct");
+		ImGui::Text("Mag[%d] = (Up = %d ,Down = %d,left = %d,right = %d,ZUp = %d,ZDown = %d) \n", i, magnetBlocks[i].GetContactNum(1), magnetBlocks[i].GetContactNum(2), magnetBlocks[i].GetContactNum(3), magnetBlocks[i].GetContactNum(4), magnetBlocks[i].GetContactNum(5), magnetBlocks[i].GetContactNum(6));
+		ImGui::End();
+	}
+
+	//é…åˆ—ã®æœ€å¤§æ•°-1å›foræ–‡ã‚’å›ã™
 	for (int i = 0; i < magnetBlocks.size() - 1; i++) {
 
-		//iŒÂ–Ú‚Ì¥Î‚É‘Î‚µ‚ÄAi+1 ~ ”z—ñ––”ö‚Ü‚Å‚ÌƒuƒƒbƒN‚Æ¥Î‚Ì”»’è‚ğs‚¤
+		//iå€‹ç›®ã®ç£çŸ³ã«å¯¾ã—ã¦ã€i+1 ~ é…åˆ—æœ«å°¾ã¾ã§ã®ãƒ–ãƒ­ãƒƒã‚¯ã¨ç£çŸ³ã®åˆ¤å®šã‚’è¡Œã†
 		for (int j = i + 1; j < magnetBlocks.size(); j++) {
 
-			for (int k = 1; k < 5; k++) {
+			for (int k = 1; k < 7; k++) {
 
-				////©‹@‚Æ¥Î
+				////è‡ªæ©Ÿã¨ç£çŸ³
 
 				if (magnetBlocks[i].GetContactNum(k) == i) {
 
@@ -867,7 +1641,7 @@ void Colision::MagnetPower()
 								debugText_->Printf("qqqqqqqqqqqq ");*/
 
 					if (k == 1) {
-						if (magnetBlocks[i].GetPos().z + (bSize / 2) + bMoveVec[i].z <= player->GetPosition().z + bMoveVec[j].z) {
+						if (magnetBlocks[i].GetPos().y - (bSize / 2) + bMoveVec[i].y <= pPos.y + bMoveVec[j].y) {
 							magnetBlocks[i].SetIsMove(false);
 
 						}
@@ -877,7 +1651,7 @@ void Colision::MagnetPower()
 					}
 
 					if (k == 2) {
-						if (magnetBlocks[i].GetPos().z - (bSize / 2) + bMoveVec[i].z > player->GetPosition().z + bMoveVec[j].z) {
+						if (magnetBlocks[i].GetPos().y + (bSize / 2) + bMoveVec[i].y > pPos.y + bMoveVec[j].y) {
 							magnetBlocks[i].SetIsMove(false);
 						}
 						else {
@@ -887,7 +1661,7 @@ void Colision::MagnetPower()
 
 
 					if (k == 3) {
-						if (magnetBlocks[i].GetPos().x - (bSize / 2) + bMoveVec[i].x >= player->GetPosition().x + bMoveVec[j].x) {
+						if (magnetBlocks[i].GetPos().x - (bSize / 2) + bMoveVec[i].x >= pPos.x + bMoveVec[j].x) {
 							magnetBlocks[i].SetIsMove(false);
 
 						}
@@ -898,7 +1672,7 @@ void Colision::MagnetPower()
 
 
 					if (k == 4) {
-						if (magnetBlocks[i].GetPos().x + (bSize / 2) + bMoveVec[i].x < player->GetPosition().x + bMoveVec[j].x) {
+						if (magnetBlocks[i].GetPos().x + (bSize / 2) + bMoveVec[i].x < pPos.x + bMoveVec[j].x) {
 							magnetBlocks[i].SetIsMove(false);
 						}
 						else {
@@ -906,12 +1680,32 @@ void Colision::MagnetPower()
 						}
 					}
 
+					if (k == 5) {
+						if (magnetBlocks[i].GetPos().z + (bSize / 2) + bMoveVec[i].z <= pPos.z + bMoveVec[j].z) {
+							magnetBlocks[i].SetIsMove(false);
+
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
+
+					if (k == 6) {
+						if (magnetBlocks[i].GetPos().z - (bSize / 2) + bMoveVec[i].z > pPos.z + bMoveVec[j].z) {
+							magnetBlocks[i].SetIsMove(false);
+						}
+						else {
+							magnetBlocks[i].SetIsMove(true);
+						}
+					}
+
+
 				}
 				else {
 					magnetBlocks[i].SetIsMove(true);
 				}
 
-				//¥Î“¯m
+				//ç£çŸ³åŒå£«
 
 				if (magnetBlocks[i].GetContactNum(k) == 100) {
 					continue;
@@ -925,28 +1719,28 @@ void Colision::MagnetPower()
 					if (magnetBlocks[i].GetContactNum(k) != j) {
 
 						if (k == 1) {
-							if (setPos[i].z + (bSize / 2) + bMoveVec[i].z < setPos[j].z + bMoveVec[j].z) {
-								magnetBlocks[i].SetIsMagMove(j, false);
-								isPower[i] = 1;
-							}
-							else {
-								if (isPower[i] == 0) {
-									magnetBlocks[i].SetIsMagMove(j, true);
-								}
-							}
+							//if (setPos[i].y + (bSize / 2) + bMoveVec[i].y < setPos[j].y + bMoveVec[j].y) {
+							//	magnetBlocks[i].SetIsMagMove(j, false);
+							//	isPower[i] = 1;
+							//}
+							//else {
+							//	if (isPower[i] == 0) {
+							//		magnetBlocks[i].SetIsMagMove(j, true);
+							//	}
+							//}
 						}
 
 						else if (k == 2) {
-							if (setPos[i].z - (bSize / 2) + bMoveVec[i].z > setPos[j].z + bMoveVec[j].z) {
-								magnetBlocks[i].SetIsMagMove(j, false);
-								isPower[i] = 1;
+							//if (setPos[i].y - (bSize / 2) + bMoveVec[i].y > setPos[j].y + bMoveVec[j].y) {
+							//	magnetBlocks[i].SetIsMagMove(j, false);
+							//	isPower[i] = 1;
 
-							}
-							else {
-								if (isPower[i] == 0) {
-									magnetBlocks[i].SetIsMagMove(j, true);
-								}
-							}
+							//}
+							//else {
+							//	if (isPower[i] == 0) {
+							//		magnetBlocks[i].SetIsMagMove(j, true);
+							//	}
+							//}
 						}
 
 
@@ -977,7 +1771,30 @@ void Colision::MagnetPower()
 								}
 							}
 						}
+						else if (k == 5) {
+							if (setPos[i].z + (bSize / 2) + bMoveVec[i].z < setPos[j].z + bMoveVec[j].z) {
+								magnetBlocks[i].SetIsMagMove(j, false);
+								isPower[i] = 1;
+							}
+							else {
+								if (isPower[i] == 0) {
+									magnetBlocks[i].SetIsMagMove(j, true);
+								}
+							}
+						}
 
+						else if (k == 6) {
+							if (setPos[i].z - (bSize / 2) + bMoveVec[i].z > setPos[j].z + bMoveVec[j].z) {
+								magnetBlocks[i].SetIsMagMove(j, false);
+								isPower[i] = 1;
+
+							}
+							else {
+								if (isPower[i] == 0) {
+									magnetBlocks[i].SetIsMagMove(j, true);
+								}
+							}
+						}
 
 
 					}
@@ -1008,38 +1825,19 @@ void Colision::MagnetPower()
 		}
 	}
 
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
+
+	//	ImGui::Begin("MagPower");
+	//	ImGui::Text("MagPower[%d] = (0 = %d ,1 = %d,2 = %d,3 = %d) \n", i, magnetBlocks[i].GetIsMagMove(0), magnetBlocks[i].GetIsMagMove(1), magnetBlocks[i].GetIsMagMove(2), magnetBlocks[i].GetIsMagMove(3));
+	//	ImGui::End();
+	//}
 
 }
 
 void Colision::InforUpdate()
 {
 
-	//nƒuƒƒbƒN À•W
-
-	for (int i = 0; i < magnetBlocks.size(); i++) {
-
-		//ƒuƒƒbƒN À•W
-
-		bPos[i] = magnetBlocks[i].GetPos();
-
-		bPosX1[i] = bPos[i].x - (bSize / 2);
-		bPosX2[i] = bPos[i].x + (bSize / 2);
-
-		bPosZ1[i] = bPos[i].z - (bSize / 2);
-		bPosZ2[i] = bPos[i].z + (bSize / 2);
-
-		setPos[i] = magnetBlocks[i].GetPos();
-
-		for (int j = 0; j < 5; j++) {
-			magnetBlocks[i].ReSetContactNum(j);
-		}
-
-
-		bMoveVec[i] = { 0,0,0 };
-
-	}
-
-	//--------©‹@----------
+	//--------è‡ªæ©Ÿ----------
 
 	pPos = player->GetPosition();
 
@@ -1049,35 +1847,173 @@ void Colision::InforUpdate()
 	pPosX1 = pPos.x - (pSize / 2);
 	pPosX2 = pPos.x + (pSize / 2);
 
+	pPosY1 = pPos.y - (pSize / 2);
+	pPosY2 = pPos.y + (pSize / 2);
+
 	pPosZ1 = pPos.z - (pSize / 2);
 	pPosZ2 = pPos.z + (pSize / 2);
 
 	pMoveVec = player->GetMove();
+
+
+	//å½“ãŸã£ã¦ã„ã‚‹ã‹
+	ColX = { 0,0 };
+	ColY = { 0,0 };
+	ColZ = { 0,0 };
+
+	//nãƒ–ãƒ­ãƒƒã‚¯ åº§æ¨™
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		//ãƒ–ãƒ­ãƒƒã‚¯ åº§æ¨™
+
+		bPos[i] = magnetBlocks[i].GetPos();
+
+		bPosX1[i] = bPos[i].x - (bSize / 2);
+		bPosX2[i] = bPos[i].x + (bSize / 2);
+
+		bPosY1[i] = bPos[i].y - (bSize / 2);
+		bPosY2[i] = bPos[i].y + (bSize / 2);
+
+		bPosZ1[i] = bPos[i].z - (bSize / 2);
+		bPosZ2[i] = bPos[i].z + (bSize / 2);
+
+		setPos[i] = bPos[i];
+
+		for (int j = 0; j < 7; j++) {
+			magnetBlocks[i].ReSetContactNum(j);
+			//magnetBlocks[i].SetRockMove(false, j);
+		}
+
+
+		bMoveVec[i] = { 0,0,0 };
+
+	}
+
 }
 
 void Colision::StickMag()
 {
 
+	XMFLOAT3 massMoveVec = {};
 
-	//bool stickBlockMass[20];
+	int massRockMove[5] = {};
 
-	//‚­‚Á‚Â‚¢‚Ä‚¢‚éƒuƒƒbƒN‚ğtrue‚É
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		if (stickBlockMass[i]) {
+
+			massMoveVec.x += bMoveVec[i].x;
+			massMoveVec.y += bMoveVec[i].y;
+			massMoveVec.z += bMoveVec[i].z;
+
+			//for (int j = 1; j < 5; j++) {
+
+			//	if (magnetBlocks[i].GetRockMove(j)) {
+			//		massRockMove[j] = true;
+			//	}
+
+			//}
+
+		}
+
+	}
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		if (stickBlockMass[i]) {
+
+			bMoveVec[i] = massMoveVec;
+
+		}
+
+		//for (int j = 1; j < 5; j++) {
+
+		//	if (massRockMove[j]) {
+		//		magnetBlocks[i].SetRockMove(true, j);
+		//	}
+
+		//}
+
+	}
+
+
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
+
+	//	ImGui::Begin("BlockGetRockAfter");
+	//	ImGui::Text("up = %d,down = %d,left = %d,righ = %d\n", magnetBlocks[i].GetRockMove(1), magnetBlocks[i].GetRockMove(2), magnetBlocks[i].GetRockMove(3), magnetBlocks[i].GetRockMove(4));
+	//	ImGui::End();
+	//}
+
+	//debugText_->SetPos(0, 200);
+	//debugText_->Printf("adsddadad");
+
+	////ãã£ã¤ã„ãŸã‚‰ãã®ãƒ–ãƒ­ãƒƒã‚¯ã‹ã‚‰é›¢ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹å‡¦ç†
+
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
+
+	//	//ã»ã‹ã®ç£çŸ³ã«ãã£ã¤ã„ã¦ã„ã‚‹ã¨ã
+	//	if (magnetBlocks[i].GetIsStick() == true) {
+
+	//		XMFLOAT3 setPos = magnetBlocks[i].GetPos();
+	//		contact = magnetBlocks[i].GetIsStickContact();
+
+	//		int stickBlockNum = magnetBlocks[i].GetIsStickBlockNum();
+	//		XMFLOAT3 stickPos = magnetBlocks[stickBlockNum].GetPos();
+
+	//		int blockSize = 2;
+
+	//		//å½“ãŸã£ãŸæ™‚ã®å‡¦ç†
+	//		if (contact == 1) {
+	//			setPos.z = (stickPos.z - blockSize);
+	//			setPos.x = stickPos.x;
+	//		}
+	//		else if (contact == 2) {
+	//			setPos.z = (stickPos.z + blockSize);
+	//			setPos.x = stickPos.x;
+	//		}
+	//		else if (contact == 3) {
+	//			setPos.x = (stickPos.x + blockSize);
+	//			setPos.z = stickPos.z;
+	//		}
+	//		else if (contact == 4) {
+	//			setPos.x = (stickPos.x - blockSize);
+	//			setPos.z = stickPos.z;
+	//		}
+
+	//		////è¨ˆç®—ã—ãŸåº§æ¨™ã‚’ã‚»ãƒƒãƒˆ
+	//		magnetBlocks[i].SetPos(setPos);
+
+	//	}
+	//	else {
+
+	//	}
+
+	//}
+
+}
+
+void Colision::SetStickMag()
+{
+
+
+	//ãã£ã¤ã„ã¦ã„ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã‚’trueã«
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
 
 		//stickBlockMass[i] = false;
 
-		for (int k = 1; k < 5; k++) {
+		for (int k = 1; k < 7; k++) {
 
-			//‚à‚µ‚­‚Á‚Â‚¢‚Ä‚¢‚é‚È‚ç
+			//ã‚‚ã—ãã£ã¤ã„ã¦ã„ã‚‹ãªã‚‰
 			if (magnetBlocks[i].GetContactNum(k) != 100 && magnetBlocks[i].GetContactNum(k) != i) {
 
 				if (k == 1 || k == 2) {
 
 
-					float diff = (setPos[i].x + bMoveVec[i].x) - (setPos[magnetBlocks[i].GetContactNum(k)].x + bMoveVec[magnetBlocks[i].GetContactNum(k)].x);
+					float diff = (setPos[i].y + bMoveVec[i].y) - (setPos[magnetBlocks[i].GetContactNum(k)].y + bMoveVec[magnetBlocks[i].GetContactNum(k)].y);
 
-					//Š®‘S‚É‚­‚Á‚Â‚¢‚½‚ç‚­‚Á‚Â‚¢‚½‚ğtrue‚É
+					//å®Œå…¨ã«ãã£ã¤ã„ãŸã‚‰ãã£ã¤ã„ãŸã‚’trueã«
 					if (diff < 0.01f && diff > -0.01f) {
 
 						stickBlockMass[i] = true;
@@ -1098,10 +2034,27 @@ void Colision::StickMag()
 
 						stickBlockMass[magnetBlocks[i].GetContactNum(k)] = true;
 
+
 					}
 
 				}
 
+
+				if (k == 5 || k == 6) {
+
+
+					float diff = (setPos[i].x + bMoveVec[i].x) - (setPos[magnetBlocks[i].GetContactNum(k)].x + bMoveVec[magnetBlocks[i].GetContactNum(k)].x);
+
+					//å®Œå…¨ã«ãã£ã¤ã„ãŸã‚‰ãã£ã¤ã„ãŸã‚’trueã«
+					if (diff < 0.01f && diff > -0.01f) {
+
+						stickBlockMass[i] = true;
+
+						stickBlockMass[magnetBlocks[i].GetContactNum(k)] = true;
+
+					}
+
+				}
 
 				//stickBlockMass[i] = true;
 
@@ -1111,96 +2064,61 @@ void Colision::StickMag()
 		}
 	}
 
-	XMFLOAT3 massMoveVec = {};
-
+	//è½ä¸‹ä¸­ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’falseã«
 	for (int i = 0; i < magnetBlocks.size(); i++) {
-
-		if (stickBlockMass[i]) {
-
-			massMoveVec.x += bMoveVec[i].x;
-			massMoveVec.y += bMoveVec[i].y;
-			massMoveVec.z += bMoveVec[i].z;
-
-
-		}
-
-	}
-
-	for (int i = 0; i < magnetBlocks.size(); i++) {
-
-		if (stickBlockMass[i]) {
-
-			bMoveVec[i] = massMoveVec;
-
-		}
-
-	}
-
-	for (int i = 0; i < magnetBlocks.size(); i++) {
-
-		for (int j = 0; j < magnetBlocks.size(); j++) {
-
-			//debugText_->SetPos((200 * j), 140 + (20 * i));
-			//debugText_->Printf("%d", magnetBlocks[j].GetIsMagMove(i));
-
+		if (bFall[i]) {
+			stickBlockMass[i] = false;
 		}
 	}
-
-	//debugText_->SetPos(0, 200);
-	//debugText_->Printf("adsddadad");
-
-	////‚­‚Á‚Â‚¢‚½‚ç‚»‚ÌƒuƒƒbƒN‚©‚ç—£‚ê‚È‚¢‚æ‚¤‚É‚·‚éˆ—
-
-	//for (int i = 0; i < magnetBlocks.size(); i++) {
-
-	//	//‚Ù‚©‚Ì¥Î‚É‚­‚Á‚Â‚¢‚Ä‚¢‚é‚Æ‚«
-	//	if (magnetBlocks[i].GetIsStick() == true) {
-
-	//		XMFLOAT3 setPos = magnetBlocks[i].GetPos();
-	//		contact = magnetBlocks[i].GetIsStickContact();
-
-	//		int stickBlockNum = magnetBlocks[i].GetIsStickBlockNum();
-	//		XMFLOAT3 stickPos = magnetBlocks[stickBlockNum].GetPos();
-
-	//		int blockSize = 2;
-
-	//		//“–‚½‚Á‚½‚Ìˆ—
-	//		if (contact == 1) {
-	//			setPos.z = (stickPos.z - blockSize);
-	//			setPos.x = stickPos.x;
-	//		}
-	//		else if (contact == 2) {
-	//			setPos.z = (stickPos.z + blockSize);
-	//			setPos.x = stickPos.x;
-	//		}
-	//		else if (contact == 3) {
-	//			setPos.x = (stickPos.x + blockSize);
-	//			setPos.z = stickPos.z;
-	//		}
-	//		else if (contact == 4) {
-	//			setPos.x = (stickPos.x - blockSize);
-	//			setPos.z = stickPos.z;
-	//		}
-
-	//		////ŒvZ‚µ‚½À•W‚ğƒZƒbƒg
-	//		magnetBlocks[i].SetPos(setPos);
-
-	//	}
-	//	else {
-
-	//	}
-
-	//}
 
 }
 
+void Colision::InforUpdateMagnetPos()
+{
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		//ãƒ–ãƒ­ãƒƒã‚¯ åº§æ¨™
+
+
+		bPos[i] = setPos[i];
+
+
+		bPosX1[i] = setPos[i].x - (bSize / 2) + bMoveVec[i].x;
+		bPosX2[i] = setPos[i].x + (bSize / 2) + bMoveVec[i].x;
+
+		bPosZ1[i] = setPos[i].z - (bSize / 2) + bMoveVec[i].z;
+		bPosZ2[i] = setPos[i].z + (bSize / 2) + bMoveVec[i].z;
+
+		bPosY1[i] = setPos[i].y - (bSize / 2) + bMoveVec[i].y;
+		bPosY2[i] = setPos[i].y + (bSize / 2) + bMoveVec[i].y;
+
+	}
+}
+
+void Colision::MagFall()
+{
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		if (bFall[i] == true /*&& bColY.y == false*/) {
+			bMoveVec[i].y -= 0.025;
+		}
+
+	}
+
+}
+
+//void Colision::MagnetBlocksFall()
+//{
+//}
+
 int Colision::GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos)
 {
-	//0‚È‚µ 1ã@2‰º@3¶@4‰E
+	//0ãªã— 1ä¸Šã€€2ä¸‹ã€€3å·¦ã€€4å³ 5å¥¥ 6æ‰‹å‰
 	int contact = 0;
 
-	//X² Z²”»’f—p
+	//Xè»¸ Yè»¸ Zè»¸åˆ¤æ–­ç”¨
 	float contactNumX = 0;
+	float contactNumY = 0;
 	float contactNumZ = 0;
 
 	if (mainPos.x > subPos.x) {
@@ -1222,13 +2140,49 @@ int Colision::GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos)
 	if (contactNumX < contactNumZ) {
 
 		if (mainPos.z > subPos.z) {
-			contact = 1;
+			contact = 5;
 		}
 		else {
-			contact = 2;
+			contact = 6;
 		}
 
 	}
+
+	if (mainPos.y > subPos.y) {
+		contactNumY = mainPos.y - subPos.y/* + 0.05*/;
+	}
+	else {
+		contactNumY = subPos.y - mainPos.y/* + 0.05*/;
+	}
+
+	if (contactNumX < contactNumZ) {
+
+		if (contactNumZ < contactNumY) {
+
+			if (mainPos.y > subPos.y) {
+				contact = 1;
+			}
+			else {
+				contact = 2;
+			}
+
+		}
+
+	}
+	else {
+
+		if (contactNumX< contactNumY) {
+
+			if (mainPos.y > subPos.y) {
+				contact = 1;
+			}
+			else {
+				contact = 2;
+			}
+
+		}
+	}
+
 
 	return contact;
 }
@@ -1240,7 +2194,7 @@ XMFLOAT3 Colision::GetVec(XMFLOAT3 pos1, XMFLOAT3 pos2)
 
 XMFLOAT3 Colision::ChangeVec(XMFLOAT3 changeVec, float size)
 {
-	//³‹K‰»
+	//æ­£è¦åŒ–
 
 	XMFLOAT3 vec = changeVec;
 
@@ -1250,7 +2204,7 @@ XMFLOAT3 Colision::ChangeVec(XMFLOAT3 changeVec, float size)
 	vec.y *= l;
 	vec.z *= l;
 
-	//size‚ğ‚©‚¯‚é
+	//sizeã‚’ã‹ã‘ã‚‹
 
 	vec.x *= size;
 	vec.y *= size;

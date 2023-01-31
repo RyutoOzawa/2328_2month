@@ -24,7 +24,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Player* player, MagnetBlock magnetBlock, int i);
+	void Initialize(Player* player, MagnetBlock magnetBlock, Map *map,int i);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -58,6 +58,15 @@ public:
 	//くっついたブロックの移動ベクトルを統一させる
 	void StickMag();
 
+	//くっついたブロックは何か
+	void SetStickMag();
+
+	//移動ベクトルを足したMagnetBlocksに更新(変わるのはbPos関係のみ)
+	void InforUpdateMagnetPos();
+
+	//磁石落下
+	void MagFall();
+
 	//mainPos のどの面にsubPosにあったっか
 	int GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos);
 
@@ -79,7 +88,7 @@ public: // メンバ変数
 
 	Player* player = nullptr;
 
-	Map* savemap_ = new Map;
+	Map* map_ = new Map;
 
 	//std::vector<MagnetData> magnetDatas;
 
@@ -116,6 +125,9 @@ public: // メンバ変数
 	float bPosZ1[blockSizeMax] = {};
 	float bPosZ2[blockSizeMax] = {};
 
+	float bPosY1[blockSizeMax] = {};
+	float bPosY2[blockSizeMax] = {};
+
 	//ブロックの当たり判定の大きさ
 	float bSize = 0.99f; // (2 * 0.99)
 
@@ -129,6 +141,7 @@ public: // メンバ変数
 
 	//XMFLOAT3 moveVec2 = { };
 
+	bool bFall[blockSizeMax];
 
 	//--------自機----------
 
@@ -138,6 +151,9 @@ public: // メンバ変数
 
 	float pPosX1;
 	float pPosX2;
+
+	float pPosY1;
+	float pPosY2;
 
 	float pPosZ1;
 	float pPosZ2;
