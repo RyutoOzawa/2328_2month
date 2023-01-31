@@ -33,12 +33,26 @@ struct FormatChunk {
 	WAVEFORMATEX fmt;	//波形フォーマット
 };
 
-class AudioManager
+class AudioManager final
 {
+private:
+	AudioManager();
+	~AudioManager();
+
+
 public:
+
+	//コピーコンストラクタ無効
+	AudioManager(const AudioManager& obj) = delete;
+	//代入演算子を無効
+	AudioManager& operator=(const AudioManager& obj) = delete;
+
+	//インスタンスアクセス専用関数
+	static AudioManager* GetInstance();
+
 	static Microsoft::WRL::ComPtr<IXAudio2> xAudio2_;
 	static IXAudio2MasteringVoice* masterVoice_;
-	~AudioManager();
+
 
 	// 初期化
 	static void StaticInitialize();

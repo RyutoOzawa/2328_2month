@@ -1,7 +1,27 @@
 #include "ImguiManager.h"
+#include"WindowsAPI.h"
+#include"DirectX.h"
 
-void ImguiManager::Initialize(WindowsAPI* winApp, ReDirectX* directX_)
+ImguiManager::ImguiManager()
 {
+}
+
+ImguiManager::~ImguiManager()
+{
+}
+
+ImguiManager* ImguiManager::GetInstance()
+{
+	static ImguiManager instance;
+	return &instance;
+}
+
+void ImguiManager::Initialize()
+{
+	//winAppとDirectXのインスタンス取得
+	WindowsAPI* winApp = WindowsAPI::GetInstance();
+	ReDirectX* directX_ = ReDirectX::GetInstance();
+
 	HRESULT result;
 
 	assert(directX_);

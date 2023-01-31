@@ -115,6 +115,20 @@ void ReDirectX::EndDraw() {
 	assert(SUCCEEDED(result));
 }
 
+ReDirectX* ReDirectX::GetInstance()
+{
+	static ReDirectX instance;
+	return &instance;
+}
+
+ReDirectX::ReDirectX()
+{
+}
+
+ReDirectX::~ReDirectX()
+{
+}
+
 void ReDirectX::InitializeDevice() {
 #ifdef _DEBUG
 	//デバッグレイヤーをオンに

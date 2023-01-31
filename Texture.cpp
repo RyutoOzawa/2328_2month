@@ -12,6 +12,20 @@ std::array<ComPtr<ID3D12Resource>, Texture::spriteSRVCount >Texture::texBuffuers
 D3D12_RESOURCE_DESC Texture::textureResourceDesc{};
 ID3D12Device* Texture::dev = nullptr;
 
+Texture::Texture()
+{
+}
+
+Texture::~Texture()
+{
+}
+
+Texture* Texture::GetInstance()
+{
+	static Texture instance;
+	return &instance;
+}
+
 uint32_t Texture::LoadTexture(const wchar_t* fileName)
 {
 	DirectX::TexMetadata metadata{};

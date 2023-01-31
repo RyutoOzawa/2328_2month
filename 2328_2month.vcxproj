@@ -146,12 +146,16 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Colision.cpp" />
     <ClCompile Include="DirectX.cpp" />
-    <ClCompile Include="Goal.cpp" />
+    <ClCompile Include="GameBaseScene.cpp" />
+    <ClCompile Include="GamePlayScene.cpp" />
+    <ClCompile Include="GameSceneManager.cpp" />
+    <ClCompile Include="GameTitleScene.cpp" />
     <ClCompile Include="Gridline.cpp" />
     <ClCompile Include="DrawInfo.cpp" />
     <ClCompile Include="GpPipeline.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="KEngineFramework.cpp" />
     <ClCompile Include="MagnetBlock.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -162,6 +166,7 @@
     <ClCompile Include="MyGame.cpp" />
     <ClCompile Include="Object3d.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
@@ -174,16 +179,22 @@
     <ClCompile Include="WindowsAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractSceneFactory.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colision.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="GameBaseScene.h" />
+    <ClInclude Include="GamePlayScene.h" />
+    <ClInclude Include="GameSceneManager.h" />
+    <ClInclude Include="GameTitleScene.h" />
     <ClInclude Include="Gridline.h" />
     <ClInclude Include="DrawInfo.h" />
     <ClInclude Include="GpPipeline.h" />
     <ClInclude Include="ImguiManager.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="KEngineFramework.h" />
     <ClInclude Include="MagnetBlock.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Material.h" />
@@ -193,6 +204,7 @@
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="Object3d.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteManager.h" />

@@ -129,7 +129,7 @@ public: // メンバ変数
 	float bPosY2[blockSizeMax] = {};
 
 	//ブロックの当たり判定の大きさ
-	float bSize = 0.99; // (2 * 0.99)
+	float bSize = 0.99f; // (2 * 0.99)
 
 
 	//XMFLOAT3 setPos[blockSizeMax] = {};

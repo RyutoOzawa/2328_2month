@@ -12,6 +12,13 @@ WindowsAPI::~WindowsAPI()
 {
 }
 
+WindowsAPI* WindowsAPI::GetInstance()
+{
+	static WindowsAPI inctance;
+
+	return &inctance;
+}
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)

@@ -4,11 +4,26 @@
 using namespace Microsoft::WRL;
 #include"ImguiManager.h"
 
-void Input::Initialize(WindowsAPI* windowsApi)
+Input::Input()
+{
+}
+
+Input::~Input()
+{
+}
+
+Input* Input::GetInstance()
+{
+	static Input instance;
+	return &instance;
+}
+
+void Input::Initialize()
 {
 	HRESULT result_;
-	//借りてきたWinAppのインスタンスを記録
-	this->windowsApi = windowsApi;
+	//WinAppのインスタンスを取得
+	WindowsAPI* windowsApi = nullptr;
+	windowsApi = WindowsAPI::GetInstance();
 
 	//DirectInputのインスタンス生成
 	result_ = DirectInput8Create(
@@ -41,22 +56,6 @@ void Input::Update()
 	//パッドの接続確認
 	oldPadState = padState;
 	DWORD flag = XInputGetState(0, &padState);
-
-
-	ImGui::Begin("padInput");
-
-	ImGui::Text("leftTrigger : %d", padState.Gamepad.bLeftTrigger);
-	ImGui::Text("rightTrigger : %d", padState.Gamepad.bRightTrigger);
-	ImGui::Text("lStickX : %d", padState.Gamepad.sThumbLX);
-	ImGui::Text("lstickY : %d", padState.Gamepad.sThumbLY);
-	ImGui::Text("rStickX : %d", padState.Gamepad.sThumbRX);
-	ImGui::Text("rStickY : %d", padState.Gamepad.sThumbRY);
-	if (IsDownRStickLeft()) ImGui::Text("stick down left!");
-	if (IsDownRStickRight()) ImGui::Text("stick down right!");
-	if (IsDownRStickUp()) ImGui::Text("stick down up!");
-	if (IsDownRStickDown()) ImGui::Text("stick down down!");
-
-	ImGui::End();
 
 
 }

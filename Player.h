@@ -26,7 +26,7 @@ public:
 
 	void GoalCol();
 
-	//“–‚½‚è”»’è—p 2‚Íƒ}ƒCƒiƒX
+	//å½“ãŸã‚Šåˆ¤å®šç”¨ 2ã¯ãƒã‚¤ãƒŠã‚¹
 	void OnMapCollision();
 	void OnMapCollisionX();
 	void OnMapCollisionY();
@@ -35,7 +35,7 @@ public:
 	void OnMapCollisionY2();
 	void OnMapCollisionZ2();
 
-	//ƒQƒbƒ^[‚Ü‚Æ‚ß
+	//ã‚²ãƒƒã‚¿ãƒ¼ã¾ã¨ã‚
 	DirectX::XMFLOAT3 GetTranslation()const { return obj.position; }
 	DirectX::XMFLOAT3 GetPosition()const { return pos; }
 	DirectX::XMFLOAT3 GetMove()const { return move; }
@@ -46,12 +46,16 @@ public:
 
 	bool GetIsGoal() {return goal->isGoal;}
 
-	//ƒZƒbƒ^[
+	//ã‚»ãƒƒã‚¿ãƒ¼
 	void SetColX(DirectX::XMFLOAT2 colX_) { colX = colX_; }
 	void SetColY(DirectX::XMFLOAT2 colY_) { colY = colY_; }
 	void SetColZ(DirectX::XMFLOAT2 colZ_) { colZ = colZ_; }
+
 	void SetFall(bool isfall) { fall = isfall; }
 	void SetJump(bool isJump) { this->isJump = isJump; }
+
+=======
+	void SetPosition(DirectX::XMFLOAT3 pos_) { pos = pos_; }
 
 public:
 
@@ -63,20 +67,24 @@ public:
 	float playerSpd = 0.05f;
 	float adjustPixelSpeed = 0.001f;
 
+
 	float size = 0.98;
+=======
+	float size = 1;
+
 
 
 	DirectX::XMFLOAT2 colX{};
 	DirectX::XMFLOAT2 colY{};
 	DirectX::XMFLOAT2 colZ{};
 
-	//ƒvƒ‰ƒCƒx[ƒgƒƒ“ƒoŠÖ”
+	//ãƒ—ãƒ©ã‚¤ãƒ™ãƒ¼ãƒˆãƒ¡ãƒ³ãƒé–¢æ•°
 private:
 	void Move();
 	void ChangeState();
 
 
-	//ƒvƒ‰ƒCƒx[ƒgƒƒ“ƒo•Ï”
+	//ãƒ—ãƒ©ã‚¤ãƒ™ãƒ¼ãƒˆãƒ¡ãƒ³ãƒå¤‰æ•°
 private:
 
 	Input* input = nullptr;
@@ -85,8 +93,6 @@ private:
 	uint32_t blueTexture = 0;
 	uint32_t redTexture = 0;
 	uint32_t playerTexture = 0;
-
-	int state;
 
 	Map* map = nullptr;
 
@@ -99,6 +105,8 @@ private:
 	float jumpBeforePosY;
 
 	Goal *goal;
+
+	int state =UnMagnet;
 };
 
 

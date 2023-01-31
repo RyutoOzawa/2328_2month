@@ -1,74 +1,28 @@
 #pragma once
-#include"WindowsAPI.h"
-#include"DirectX.h"
-#include"Input.h"
-#include"Texture.h"
-#include"SpriteManager.h"
-#include"Sprite.h"
-#include"Object3d.h"
-#include"Camera.h"
-#include"ImguiManager.h"
-#include"AudioManager.h"
-#include"Player.h"
-#include"Map.h"
-#include"MagnetBlock.h"
-#include"Colision.h"
-#include"Goal.h"
+#include"KEngineFramework.h"
+#include"GamePlayScene.h"
+#include"GameTitleScene.h"
 
-class MyGame
+
+class MyGame : public KEngineFramework
 {
-public://ƒƒ“ƒoŠÖ”
-	//‰Šú‰»
-	void Initialize();
+public://ãƒ¡ãƒ³ãƒé–¢æ•°
 
-	//I—¹
-	void Finalize();
+	MyGame();
 
-	//–ˆƒtƒŒ[ƒ€XV
-	void Update();
+	//åˆæœŸåŒ–
+	void Initialize() override;
 
-	//•`‰æ
-	void Draw();
+	//çµ‚äº†
+	void Finalize()override;
 
-	//I—¹ƒtƒ‰ƒOƒ`ƒFƒbƒN
-	bool IsEndReqest() { return endRequest; }
+	//æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ›´æ–°
+	void Update()override;
 
-public://ƒƒ“ƒoŠÖ”
+	//æç”»
+	void Draw()override;
 
-	//ƒVƒXƒeƒ€Šî”Õ‚Ì•Ï”‚Ü‚Æ‚ß
-
-	WindowsAPI* windowsAPI;
-	ReDirectX* directX;
-	Input* input;
-	SpriteManager* spriteManager;
-	ImguiManager* imguiManager;
-	bool endRequest = false;
-
-	//////////////////////////////////////////////
-
-	//ƒQ[ƒ€“à‚Åg—p‚·‚é•Ï”‚Ü‚Æ‚ß
-	uint32_t magnetTextureN = 0;
-	uint32_t magnetTextureS = 0;
-	uint32_t groundTexture = 0;
-	uint32_t playerTexture = 0;
-	uint32_t goalTexture = 0;
-	uint32_t clearTexture = 0;
-
-	Object3d blockObj[10][10][10];
-
-	Player* player;
-
-	std::vector<MagnetBlock> magnetBlocks;
-	std::vector<MagnetData> magnetDatas;
-
-	Colision* colision;
-
-	Camera camera;
-
-	Map* map_;
-
-	Goal* goal;
-	Sprite goalSprite;
+public://ãƒ¡ãƒ³ãƒé–¢æ•°
 
 };
 

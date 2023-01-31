@@ -8,15 +8,16 @@
 #include <unordered_map>
 #include <wrl.h>
 
-//ƒuƒƒbƒN‚ÌƒTƒCƒY •ÏX•s‰Â
+//ãƒ–ãƒ­ãƒƒã‚¯ã®ã‚µã‚¤ã‚º å¤‰æ›´ä¸å¯
 const float blockSize = 10.0f;
-//ƒuƒƒbƒN‚ÌƒTƒCƒY •ÏX‰Â
+//ãƒ–ãƒ­ãƒƒã‚¯ã®ã‚µã‚¤ã‚º å¤‰æ›´å¯
 const float blockScale = 0.1f;
 
-//xyz‚ÌƒuƒƒbƒN‚Ì”
-const int blockX = 10;
+//xyzã®ãƒ–ãƒ­ãƒƒã‚¯ã®æ•°
+
+const int blockX = 20;
 const int blockY = 5;
-const int blockZ = 10;
+const int blockZ = 20;
 
 enum mapdate
 {
@@ -38,14 +39,14 @@ public:
 
 	void Update(int stage);
 
-	////ƒXƒe[ƒW‚Ìƒ}ƒbƒv‚ğƒZƒbƒg‚·‚é
+	////ã‚¹ãƒ†ãƒ¼ã‚¸ã®ãƒãƒƒãƒ—ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	//void SetMap(int stage);
 
-	////‘¼‚ÌêŠ‚ÅƒXƒe[ƒWî•ñ‚ğæ“¾‚·‚é
+	////ä»–ã®å ´æ‰€ã§ã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 	//int GetMap(int x,int y, int z);
 
 	void Loding(char const* _FileName);
-	//‚Ç‚Ìƒ}ƒbƒv‚ğ“Ç‚İ‚Ş‚©‚ğŠÇ—
+	//ã©ã®ãƒãƒƒãƒ—ã‚’èª­ã¿è¾¼ã‚€ã‹ã‚’ç®¡ç†
 	void LodingSave(int stage);
 
 
