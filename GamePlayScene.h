@@ -13,49 +13,55 @@
 class GamePlayScene:public GameBaseScene
 {
 public:
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void Initialize()override;
 
-	//I—¹
+	//çµ‚äº†
 	void Finalize()override;
 
-	//XV
+	//æ›´æ–°
 	void Update()override;
 
-	//•`‰æ
+	//æç”»
 	void Draw()override;
 
 	void SetStage(int stageNumber);
 
 
-public://ƒƒ“ƒo•Ï”
+public://ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-	ImguiManager* imguiManager = nullptr;	//imgui—p
+	ImguiManager* imguiManager = nullptr;	//imguiç”¨
 	Input* input = nullptr;
 
-		//ƒQ[ƒ€“à‚Åg—p‚·‚é•Ï”‚Ü‚Æ‚ß
-	uint32_t magnetTextureN = 0;	//N‹É‚ÌƒeƒNƒXƒ`ƒƒ
-	uint32_t magnetTextureS = 0;	//S‹É‚ÌƒeƒNƒXƒ`ƒƒ
-	uint32_t groundTexture = 0;		//’n–Ê‚ÌƒeƒNƒXƒ`ƒƒ
-	uint32_t playerTexture = 0;		//ƒvƒŒƒCƒ„[‚ÌƒeƒNƒXƒ`ƒƒ
+		//ã‚²ãƒ¼ãƒ å†…ã§ä½¿ç”¨ã™ã‚‹å¤‰æ•°ã¾ã¨ã‚
+	uint32_t magnetTextureN = 0;	//Næ¥µã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	uint32_t magnetTextureS = 0;	//Sæ¥µã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	uint32_t groundTexture = 0;		//åœ°é¢ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	uint32_t playerTexture = 0;		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	uint32_t clearTexture = 0;		//ã‚¯ãƒªã‚¢ç”»é¢
+	uint32_t goalTexture = 0;		//ã‚´ãƒ¼ãƒ«ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
-	uint32_t backGroundTexture = 0;	//”wŒi‰æ‘œ(Œ»İ‚Íƒ_ƒ~[
+	uint32_t backGroundTexture = 0;	//èƒŒæ™¯ç”»åƒ(ç¾åœ¨ã¯ãƒ€ãƒŸãƒ¼
 	Sprite* backGroundSprite = nullptr;
 
-	Object3d blockObj[blockY][blockX][blockZ];	//ƒuƒƒbƒN(ƒ}ƒbƒv‚ÌƒIƒuƒWƒFƒNƒg)
+	Object3d blockObj[blockY][blockX][blockZ];	//ãƒ–ãƒ­ãƒƒã‚¯(ãƒãƒƒãƒ—ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ)
 
-	Player* player = nullptr;		//ƒvƒŒƒCƒ„[
+	Player* player = nullptr;		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
 
-	std::vector<MagnetBlock> magnetBlocks;	//¥ÎƒIƒuƒWƒFƒNƒg
-	std::vector<MagnetData> magnetDatas;	//¥Îƒf[ƒ^Ši”[—p
+	std::vector<MagnetBlock> magnetBlocks;	//ç£çŸ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+	std::vector<MagnetData> magnetDatas;	//ç£çŸ³ãƒ‡ãƒ¼ã‚¿æ ¼ç´ç”¨
 
-	Colision* colision = nullptr;			//“–‚½‚è”»’èŠÇ—ƒNƒ‰ƒX
+	Colision* colision = nullptr;			//å½“ãŸã‚Šåˆ¤å®šç®¡ç†ã‚¯ãƒ©ã‚¹
 
-	Camera camera{};						//ƒJƒƒ‰
+	Camera camera{};						//ã‚«ãƒ¡ãƒ©
 
-	Map* map_ = nullptr;					//ƒ}ƒbƒvî•ñ
+	Map* map_ = nullptr;					//ãƒãƒƒãƒ—æƒ…å ±
+
+	Goal* goal;
+	Sprite goalSprite;
 
 	std::string stageStr;
+
 
 };
 

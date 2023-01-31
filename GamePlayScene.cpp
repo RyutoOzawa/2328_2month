@@ -22,7 +22,8 @@ void GamePlayScene::Initialize()
 	groundTexture = Texture::LoadTexture(L"Resources/ground.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
 	backGroundTexture = Texture::LoadTexture(L"Resources/dummyPlayGame.png");
-	
+	clearTexture = Texture::LoadTexture(L"Resources/clear.png");
+
 	backGroundSprite = new Sprite();
 	backGroundSprite->Initialize(backGroundTexture);
 
@@ -65,7 +66,7 @@ void GamePlayScene::Initialize()
 
 	//プレイヤー初期化
 	player = new Player();
-	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input);
+	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input, map_, goal);
 	for (int i = 0; i < blockY; i++)
 	{
 		for (int j = 0; j < blockZ; j++)
@@ -81,6 +82,11 @@ void GamePlayScene::Initialize()
 	}
 
 	player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+
+	goal = new Goal;
+	goal->Initialize(input, goalTexture, XMFLOAT3(9, 4, 9));
+	goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	goal->obj.Update();
 
 	//磁石データ初期化
 	MagnetData nBlockPos{ XMFLOAT3(3,2,2),true };
@@ -106,7 +112,7 @@ void GamePlayScene::Initialize()
 	//当たり判定初期化
 	colision = new Colision();
 	for (int i = 0; i < magnetDatas.size(); i++) {
-		colision->Initialize(player, magnetBlocks[i], i);
+		colision->Initialize(player, magnetBlocks[i], map_,i);
 	}
 
 }
@@ -130,9 +136,7 @@ void GamePlayScene::Finalize()
 void GamePlayScene::Update()
 {
 
-
 	//----------------------ゲーム内ループはここから---------------------//
-
 
 
 	//磁力計算
@@ -153,6 +157,10 @@ void GamePlayScene::Update()
 
 	player->Update();
 
+	//goal->isGoal = player->GetIsGoal();
+
+	goal->Update();
+
 	//カメラ座標は自機に追従
 	camera.target.x = player->GetPosition().x;
 	camera.target.y = player->GetPosition().y;
@@ -163,12 +171,6 @@ void GamePlayScene::Update()
 
 	camera.UpdateMatrix();
 
-	ImGui::Begin("sceneChangeTest");
-	if (ImGui::Button("go title")) {
-		sceneManager->ChangeScene("TITLE");
-	}
-
-	ImGui::End();
 
 
 	//----------------------ゲーム内ループはここまで---------------------//
@@ -209,10 +211,15 @@ void GamePlayScene::Draw()
 		}
 	}
 
+	goal->Draw();
 
 	//-------前景スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
+
+	if (goal->isGoal) {
+		goalSprite.Draw();
+	}
 
 }
 

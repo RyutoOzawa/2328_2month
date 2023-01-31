@@ -114,29 +114,29 @@ void Player::GoalCol()
 	float pPosZ2 = pos.z + (size / 2);
 
 
-	float gPosX1 = goal->GetPos().x - (size / 2);
-	float gPosX2 = goal->GetPos().x + (size / 2);
+	//float gPosX1 = goal->GetPos().x - (size / 2);
+	//float gPosX2 = goal->GetPos().x + (size / 2);
 
-	float gPosY1 = goal->GetPos().y - (size / 2);
-	float gPosY2 = goal->GetPos().y + (size / 2);
+	//float gPosY1 = goal->GetPos().y - (size / 2);
+	//float gPosY2 = goal->GetPos().y + (size / 2);
 
-	float gPosZ1 = goal->GetPos().z - (size / 2);
-	float gPosZ2 = goal->GetPos().z + (size / 2);
+	//float gPosZ1 = goal->GetPos().z - (size / 2);
+	//float gPosZ2 = goal->GetPos().z + (size / 2);
 
 
 
-	if (pPosX1 < gPosX2 && gPosX1 < pPosX2) {
+	//if (pPosX1 < gPosX2 && gPosX1 < pPosX2) {
 
-		if (pPosY1 < gPosY2 && gPosY1 < pPosY2) {
+	//	if (pPosY1 < gPosY2 && gPosY1 < pPosY2) {
 
-			if (pPosZ1 < gPosZ2 && gPosZ1 < pPosZ2) {
+	//		if (pPosZ1 < gPosZ2 && gPosZ1 < pPosZ2) {
 
-				//あったったらあったった時の処理
-				goal->InGoal();
+	//			//あったったらあったった時の処理
+	//			goal->InGoal();
 
-			}
-		}
-	}
+	//		}
+	//	}
+	//}
 
 }
 

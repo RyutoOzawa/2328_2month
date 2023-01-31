@@ -150,6 +150,7 @@
     <ClCompile Include="GamePlayScene.cpp" />
     <ClCompile Include="GameSceneManager.cpp" />
     <ClCompile Include="GameTitleScene.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="Gridline.cpp" />
     <ClCompile Include="DrawInfo.cpp" />
     <ClCompile Include="GpPipeline.cpp" />

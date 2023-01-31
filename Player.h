@@ -54,7 +54,6 @@ public:
 	void SetFall(bool isfall) { fall = isfall; }
 	void SetJump(bool isJump) { this->isJump = isJump; }
 
-=======
 	void SetPosition(DirectX::XMFLOAT3 pos_) { pos = pos_; }
 
 public:
@@ -69,10 +68,6 @@ public:
 
 
 	float size = 0.98;
-=======
-	float size = 1;
-
-
 
 	DirectX::XMFLOAT2 colX{};
 	DirectX::XMFLOAT2 colY{};
