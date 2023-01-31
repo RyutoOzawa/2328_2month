@@ -1,7 +1,6 @@
 #include "MyGame.h"
 using namespace DirectX;
-
-
+#include"SceneFactory.h"
 
 MyGame::MyGame()
 {
@@ -11,6 +10,12 @@ void MyGame::Initialize()
 {
 	//基底クラスの初期化処理
 	KEngineFramework::Initialize();
+
+	//シーンファクトリーの生成とマネージャへセット
+	sceneFactory = new SceneFactory();
+	GameSceneManager::GetInstance()->SetSceneFactory(sceneFactory);
+	//シーンマネージャに最初のシーンをセット
+	GameSceneManager::GetInstance()->ChangeScene("TITLE");
 }
 
 void MyGame::Finalize()

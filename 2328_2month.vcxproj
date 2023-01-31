@@ -166,6 +166,7 @@
     <ClCompile Include="MyGame.cpp" />
     <ClCompile Include="Object3d.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="WindowsAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractSceneFactory.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colision.h" />
@@ -201,6 +203,7 @@
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="Object3d.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteManager.h" />

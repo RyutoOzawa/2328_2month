@@ -2,7 +2,6 @@
 #include"Texture.h"
 #include"DirectX.h"
 #include"SpriteManager.h"
-#include"GameTitleScene.h"
 #include"GameSceneManager.h"
 
 using namespace DirectX;
@@ -144,8 +143,7 @@ void GamePlayScene::Update()
 
 	ImGui::Begin("sceneChangeTest");
 	if (ImGui::Button("go title")) {
-		GameBaseScene* newScene = new GameTitleScene();
-		sceneManager->SetNextScene(newScene);
+		sceneManager->ChangeScene("TITLE");
 	}
 
 	ImGui::End();
