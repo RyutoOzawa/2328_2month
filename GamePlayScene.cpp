@@ -23,7 +23,7 @@ void GamePlayScene::Initialize()
 	backGroundTexture = Texture::LoadTexture(L"Resources/dummyPlayGame.png");
 	
 	backGroundSprite = new Sprite();
-	backGroundSprite->Initialize( backGroundTexture);
+	backGroundSprite->Initialize(backGroundTexture);
 
 	//カメラ初期化
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
@@ -34,7 +34,7 @@ void GamePlayScene::Initialize()
 
 	//マップ読み込み
 	map_ = new Map;
-	map_->Loding("map/map1.csv");
+	map_->Loding("map/map3.csv");
 
 	//マップの座標の初期化
 	for (int i = 0; i < blockY; i++)
@@ -51,6 +51,10 @@ void GamePlayScene::Initialize()
 				blockObj[i][j][k].position.z = j * blockSize * blockScale;
 				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
 				blockObj[i][j][k].Update();
+
+				if (map_->map[i][j][k] == 2) {
+
+				}
 			}
 		}
 	}
@@ -58,6 +62,20 @@ void GamePlayScene::Initialize()
 	//プレイヤー初期化
 	player = new Player();
 	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input);
+	for (int i = 0; i < blockY; i++)
+	{
+		for (int j = 0; j < blockZ; j++)
+		{
+			for (int k = 0; k < blockX; k++)
+			{
+				if (map_->map[i][j][k] == 4)
+				{
+					player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
+				}
+			}
+		}
+	}
+
 	player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
 	//磁石データ初期化

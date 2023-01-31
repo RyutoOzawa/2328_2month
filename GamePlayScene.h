@@ -38,7 +38,7 @@ public://メンバ変数
 	uint32_t backGroundTexture = 0;	//背景画像(現在はダミー
 	Sprite* backGroundSprite = nullptr;
 
-	Object3d blockObj[10][10][10];	//ブロック(マップのオブジェクト)
+	Object3d blockObj[blockY][blockX][blockZ];	//ブロック(マップのオブジェクト)
 
 	Player* player = nullptr;		//プレイヤー
 

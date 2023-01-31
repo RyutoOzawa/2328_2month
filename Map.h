@@ -14,9 +14,9 @@ const float blockSize = 10.0f;
 const float blockScale = 0.1f;
 
 //xyz‚ÌƒuƒƒbƒN‚Ì”
-const int blockX = 10;
-const int blockY = 2;
-const int blockZ = 10;
+const int blockX = 20;
+const int blockY = 5;
+const int blockZ = 20;
 
 enum mapdate
 {
