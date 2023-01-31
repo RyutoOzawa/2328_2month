@@ -40,6 +40,7 @@ public:
 	void SetColX(DirectX::XMFLOAT2 colX_) { colX = colX_; }
 	void SetColY(DirectX::XMFLOAT2 colY_) { colY = colY_; }
 	void SetColZ(DirectX::XMFLOAT2 colZ_) { colZ = colZ_; }
+	void SetPosition(DirectX::XMFLOAT3 pos_) { pos = pos_; }
 public:
 
 	Object3d obj;
