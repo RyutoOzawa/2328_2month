@@ -1,5 +1,4 @@
 #include "GameTitleScene.h"
-#include "GamePlayScene.h"
 #include"Texture.h"
 #include"DirectX.h"
 #include"SpriteManager.h"
@@ -46,10 +45,8 @@ void GameTitleScene::Update()
 	//スペースキーでメインゲームへ
 	if (input->IsKeyTrigger(DIK_SPACE))
 	{
-		//ゲームシーン生成
-		GameBaseScene* newScene = new GamePlayScene();
 		//シーンの切り替えを依頼
-		sceneManager->SetNextScene(newScene);
+		sceneManager->ChangeScene("GAMEPLAY");
 	}
 
 	//----------------------ゲーム内ループはここまで---------------------//

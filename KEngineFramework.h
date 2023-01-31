@@ -10,6 +10,7 @@
 #include"ImguiManager.h"
 #include"AudioManager.h"
 #include"GameSceneManager.h"
+#include"SceneFactory.h"
 
 class KEngineFramework
 {
@@ -43,5 +44,7 @@ public:
 
 protected:
 	GameSceneManager* sceneManager = nullptr;
+	//シーンファクトリー
+	AbstractSceneFactory* sceneFactory = nullptr;
 };
 

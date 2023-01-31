@@ -44,7 +44,7 @@ void KEngineFramework::Initialize()
 
 void KEngineFramework::Finalize()
 {
-
+	delete sceneFactory;
 	imguiManager->Finalize();
 
 	windowsAPI->Finalize();

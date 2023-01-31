@@ -1,11 +1,9 @@
 #include "GameSceneManager.h"
-#include"GameTitleScene.h"
+#include<cassert>
 
 GameSceneManager::GameSceneManager()
 {
-	//最初はタイトルシーン
-	GameBaseScene* firstScene = new GameTitleScene();
-	SetNextScene(firstScene);
+
 }
 
 GameSceneManager::~GameSceneManager()
@@ -50,4 +48,13 @@ void GameSceneManager::Update()
 void GameSceneManager::Draw()
 {
 	activeScene->Draw();
+}
+
+void GameSceneManager::ChangeScene(const std::string& sceneName)
+{
+	//nullチェック
+	assert(sceneFactory);
+	assert(nextScene == nullptr);
+	//次シーンの生成
+	nextScene = sceneFactory->CreateScene(sceneName);
 }
