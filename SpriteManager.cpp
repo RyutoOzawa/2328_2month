@@ -54,6 +54,7 @@ void SpriteManager::beginDraw()
 void SpriteManager::SetTextureCommand(uint32_t index) {
 	//SRVヒープの先頭ハンドル取得
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = Texture::descHeap->GetGPUDescriptorHandleForHeapStart();
+
 	UINT incrementSize = directX->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	srvGpuHandle.ptr += incrementSize * index;
 	//SRVのハンドルをルートパラメータ1番に設定

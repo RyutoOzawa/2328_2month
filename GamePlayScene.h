@@ -7,7 +7,7 @@
 #include"ImguiManager.h"
 #include"Input.h"
 #include"Sprite.h"
-
+#include"Goal.h"
 
 
 class GamePlayScene:public GameBaseScene
@@ -44,7 +44,7 @@ public://メンバ変数
 	uint32_t backGroundTexture = 0;	//背景画像(現在はダミー
 	Sprite* backGroundSprite = nullptr;
 
-	Object3d blockObj[blockY][blockX][blockZ];	//ブロック(マップのオブジェクト)
+	Object3d blockObj[20][20][20];	//ブロック(マップのオブジェクト)
 
 	Player* player = nullptr;		//プレイヤー
 
@@ -60,8 +60,9 @@ public://メンバ変数
 	Goal* goal;
 	Sprite goalSprite;
 
+	//ステージファイル名
 	std::string stageStr;
-
-
+	//ステージ大きさ
+	Vector3 stageSize = {};
 };
 

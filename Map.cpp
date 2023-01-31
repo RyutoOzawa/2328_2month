@@ -15,6 +15,16 @@ bool Map::mapcol(int x, int y, int z)
 	return Map::map[mapy][mapz][mapx] == BLOCK;
 }
 
+void Map::SetSize(Vector3 stageSize)
+{
+
+	blockX = (int)stageSize.x;
+	blockY = (int)stageSize.y;
+	blockZ = (int)stageSize.z;
+
+
+}
+
 void Map::Initialize() {
 }
 
@@ -24,7 +34,7 @@ void Map::Loding(char const* _FileName)
 
 	fopen_s(&fp, _FileName, "r");
 
-	//�z��p�̕ϐ�
+	//csvからマップ情報を書き写す
 	int i, j, k;
 	i = 0; j = 0; k = 0;
 	//���
@@ -39,12 +49,16 @@ void Map::Loding(char const* _FileName)
 			k = 0;
 			j++;
 		}
-		else
+		else if (i < blockY - 1)
 		{
 			k = 0;
 			j = 0;
 			i++;
 		}
+		else {
+			break;
+		}
+
 	}
 
 
