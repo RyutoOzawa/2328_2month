@@ -12,5 +12,7 @@ class ShareData
 {
 public:
 	static int stageNumber;
+
 };
+
 

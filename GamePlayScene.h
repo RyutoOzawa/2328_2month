@@ -61,7 +61,5 @@ public://メンバ変数
 	Sprite goalSprite;
 
 	std::string stageStr;
-
-
 };
 
