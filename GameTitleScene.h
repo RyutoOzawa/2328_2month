@@ -9,6 +9,12 @@
 #include"Input.h"
 #include"Sprite.h"
 
+enum TitlePhaseIndex {
+	WaitInputSpaceKey,//スペースキーの入力待ち
+	StageSelect,
+
+};
+
 class GameTitleScene :public GameBaseScene
 {
 public:
@@ -34,6 +40,8 @@ public://メンバ変数
 
 	uint32_t titleTexture = 0;	//背景画像(現在はダミー
 	Sprite* titleSprite = nullptr;
+
+	int phase = 0;
 
 };
 
