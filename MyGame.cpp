@@ -8,31 +8,31 @@ MyGame::MyGame()
 
 void MyGame::Initialize()
 {
-	//Šî’êƒNƒ‰ƒX‚Ì‰Šú‰»ˆ—
+	//åŸºåº•ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–å‡¦ç†
 	KEngineFramework::Initialize();
 
-	//ƒV[ƒ“ƒtƒ@ƒNƒgƒŠ[‚Ì¶¬‚Æƒ}ƒl[ƒWƒƒ‚ÖƒZƒbƒg
+	//ã‚·ãƒ¼ãƒ³ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã®ç”Ÿæˆã¨ãƒžãƒãƒ¼ã‚¸ãƒ£ã¸ã‚»ãƒƒãƒˆ
 	sceneFactory = new SceneFactory();
 	GameSceneManager::GetInstance()->SetSceneFactory(sceneFactory);
-	//ƒV[ƒ“ƒ}ƒl[ƒWƒƒ‚ÉÅ‰‚ÌƒV[ƒ“‚ðƒZƒbƒg
+	//ã‚·ãƒ¼ãƒ³ãƒžãƒãƒ¼ã‚¸ãƒ£ã«æœ€åˆã®ã‚·ãƒ¼ãƒ³ã‚’ã‚»ãƒƒãƒˆ
 	GameSceneManager::GetInstance()->ChangeScene("TITLE");
 }
 
 void MyGame::Finalize()
 {
-	// Šî’êƒNƒ‰ƒX‚ÌI—¹ˆ—
+	// åŸºåº•ã‚¯ãƒ©ã‚¹ã®çµ‚äº†å‡¦ç†
 	KEngineFramework::Finalize();
 }
 
 void MyGame::Update()
 {
-	//imguiŠJŽnˆ—
+	//imguié–‹å§‹å‡¦ç†
 	imguiManager->Begin();
 
-	//Šî’êƒNƒ‰ƒX‚ÌXVˆ—
+	//åŸºåº•ã‚¯ãƒ©ã‚¹ã®æ›´æ–°å‡¦ç†
 	KEngineFramework::Update();
 
-	//imguiI—¹
+	//imguiçµ‚äº†
 	imguiManager->End();
 
 
@@ -42,7 +42,7 @@ void MyGame::Draw()
 {
 	directX->BeginDraw();
 
-	//ƒV[ƒ“•`‰æˆ—
+	//ã‚·ãƒ¼ãƒ³æç”»å‡¦ç†
 	sceneManager->Draw();
 
 	imguiManager->Draw();
