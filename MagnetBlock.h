@@ -87,11 +87,12 @@ private:
 	//磁石との
 	bool isMagMove[20] = {};
 
-	float size = 1;
+	float size = 0.98;
 
-	int contactNum[5] = {};
+	//　Y上下 X左右 Z奥手前
+	int contactNum[7] = {};
 
 	//進めない方向
-	int rockMove[5] = {};
+	int rockMove[7] = {};
 
 };

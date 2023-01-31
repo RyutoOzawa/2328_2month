@@ -3,7 +3,7 @@
 #include"ImguiManager.h"
 using namespace DirectX;
 
-void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32_t& texB, Input* input, Map* map)
+void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32_t& texB, Input* input, Map* map, Goal* goal)
 {
 	//引数からメンバへ
 	whiteTexture = texW;
@@ -20,7 +20,7 @@ void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32
 	obj.scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
 
 	this->map = map;
-
+	this->goal = goal;
 }
 
 void Player::Update()
@@ -47,10 +47,11 @@ void Player::Update()
 		playerTexture = blueTexture;
 	}
 
+	//ゴール判定
+	GoalCol();
+
 	//行列更新
 	obj.Update();
-
-
 
 }
 
@@ -64,7 +65,7 @@ void Player::Fall()
 {
 
 
-	if (fall && isJump == false) {
+	if (fall && isJump == false && colY.y == 0) {
 
 		pos.y -= playerSpd;
 		move.y = -playerSpd;
@@ -96,6 +97,45 @@ void Player::Jump()
 	}
 	else {
 		jumpBeforePosY = pos.y;
+	}
+
+}
+
+void Player::GoalCol()
+{
+
+	float pPosX1 = pos.x - (size / 2);
+	float pPosX2 = pos.x + (size / 2);
+
+	float pPosY1 = pos.y - (size / 2);
+	float pPosY2 = pos.y + (size / 2);
+
+	float pPosZ1 = pos.z - (size / 2);
+	float pPosZ2 = pos.z + (size / 2);
+
+
+	float gPosX1 = goal->GetPos().x - (size / 2);
+	float gPosX2 = goal->GetPos().x + (size / 2);
+
+	float gPosY1 = goal->GetPos().y - (size / 2);
+	float gPosY2 = goal->GetPos().y + (size / 2);
+
+	float gPosZ1 = goal->GetPos().z - (size / 2);
+	float gPosZ2 = goal->GetPos().z + (size / 2);
+
+
+
+	if (pPosX1 < gPosX2 && gPosX1 < pPosX2) {
+
+		if (pPosY1 < gPosY2 && gPosY1 < pPosY2) {
+
+			if (pPosZ1 < gPosZ2 && gPosZ1 < pPosZ2) {
+
+				//あったったらあったった時の処理
+				goal->InGoal();
+
+			}
+		}
 	}
 
 }

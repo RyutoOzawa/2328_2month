@@ -64,6 +64,9 @@ public:
 	//移動ベクトルを足したMagnetBlocksに更新(変わるのはbPos関係のみ)
 	void InforUpdateMagnetPos();
 
+	//磁石落下
+	void MagFall();
+
 	//mainPos のどの面にsubPosにあったっか
 	int GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos);
 
@@ -138,6 +141,7 @@ public: // メンバ変数
 
 	//XMFLOAT3 moveVec2 = { };
 
+	bool bFall[blockSizeMax];
 
 	//--------自機----------
 
@@ -147,6 +151,9 @@ public: // メンバ変数
 
 	float pPosX1;
 	float pPosX2;
+
+	float pPosY1;
+	float pPosY2;
 
 	float pPosZ1;
 	float pPosZ2;

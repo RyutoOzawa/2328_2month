@@ -146,6 +146,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Colision.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="Gridline.cpp" />
     <ClCompile Include="DrawInfo.cpp" />
     <ClCompile Include="GpPipeline.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colision.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="Gridline.h" />
     <ClInclude Include="DrawInfo.h" />
     <ClInclude Include="GpPipeline.h" />

@@ -2,6 +2,7 @@
 #include"Object3d.h"
 #include"Input.h"
 #include "Map.h"
+#include "Goal.h"
 
 enum stateIndex {
 	UnMagnet,
@@ -13,7 +14,7 @@ class Player
 {
 public:
 	void Initialize(const uint32_t& texW, const uint32_t& texR,
-		const uint32_t& texB, Input* input, Map* map);
+		const uint32_t& texB, Input* input, Map* map, Goal* goal);
 
 	void Update();
 
@@ -22,6 +23,8 @@ public:
 	void Fall();
 
 	void Jump();
+
+	void GoalCol();
 
 	//当たり判定用 2はマイナス
 	void OnMapCollision();
@@ -41,6 +44,8 @@ public:
 	float GetAdjustPixelSpeed()const { return adjustPixelSpeed; }
 	int GetState()const { return state; }
 
+	bool GetIsGoal() {return goal->isGoal;}
+
 	//セッター
 	void SetColX(DirectX::XMFLOAT2 colX_) { colX = colX_; }
 	void SetColY(DirectX::XMFLOAT2 colY_) { colY = colY_; }
@@ -58,7 +63,7 @@ public:
 	float playerSpd = 0.05f;
 	float adjustPixelSpeed = 0.001f;
 
-	int size = 1;
+	float size = 0.98;
 
 
 	DirectX::XMFLOAT2 colX{};
@@ -93,6 +98,7 @@ private:
 
 	float jumpBeforePosY;
 
+	Goal *goal;
 };
 
 

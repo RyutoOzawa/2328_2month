@@ -13,6 +13,7 @@
 #include"Map.h"
 #include"MagnetBlock.h"
 #include"Colision.h"
+#include"Goal.h"
 
 class MyGame
 {
@@ -50,6 +51,8 @@ public://ƒƒ“ƒoŠÖ”
 	uint32_t magnetTextureS = 0;
 	uint32_t groundTexture = 0;
 	uint32_t playerTexture = 0;
+	uint32_t goalTexture = 0;
+	uint32_t clearTexture = 0;
 
 	Object3d blockObj[10][10][10];
 
@@ -63,6 +66,9 @@ public://ƒƒ“ƒoŠÖ”
 	Camera camera;
 
 	Map* map_;
+
+	Goal* goal;
+	Sprite goalSprite;
 
 };
 

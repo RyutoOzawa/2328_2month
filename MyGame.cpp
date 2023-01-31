@@ -51,6 +51,13 @@ void MyGame::Initialize()
 	magnetTextureS = Texture::LoadTexture(L"Resources/blue1x1.png");
 	groundTexture = Texture::LoadTexture(L"Resources/ground.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
+	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
+	clearTexture = Texture::LoadTexture(L"Resources/clear.png");
+
+	goalSprite.Initialize(spriteManager,clearTexture);
+	goalSprite.SetPos(XMFLOAT2(400, 200));
+	//goalSprite.SetSize(XMFLOAT2(100, 100));
+	goalSprite.Update();
 
 	//カメラ初期化
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
@@ -90,9 +97,14 @@ void MyGame::Initialize()
 		}
 	}
 
+	goal = new Goal;
+	goal->Initialize(input,goalTexture,XMFLOAT3(9,4,9));
+	goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	goal->obj.Update();
+
 	//プレイヤー初期化
 	player = new Player();
-	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input,map_);
+	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input,map_,goal);
 	player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	//player->obj.position = XMFLOAT3(0,1,0);
 
@@ -100,13 +112,13 @@ void MyGame::Initialize()
 	//磁石データ初期化
 	//MagnetData nBlockPos{ XMFLOAT3(3,2,0.9),true };
 	//MagnetData sBlockPos{ XMFLOAT3(6,2,0.9), false };
-	MagnetData n2BlockPos{ XMFLOAT3(3, 2, 5), true };
+	//MagnetData n2BlockPos{ XMFLOAT3(3, 2, 5), true };
 	MagnetData s2BlockPos{ XMFLOAT3(6, 2, 5), false };
 
 	//磁石データを配列に差し込む
 	//magnetDatas.push_back(nBlockPos);
 	//magnetDatas.push_back(sBlockPos);
-	magnetDatas.push_back(n2BlockPos);
+	//magnetDatas.push_back(n2BlockPos);
 	magnetDatas.push_back(s2BlockPos);
 
 	//磁石の初期化と生成
@@ -178,6 +190,10 @@ void MyGame::Update()
 
 	player->Update();
 
+	goal->isGoal = player->GetIsGoal();
+
+	goal->Update();
+
 	//カメラ座標は自機に追従
 	camera.target.x = player->GetPosition().x;
 	camera.target.y = player->GetPosition().y;
@@ -230,10 +246,14 @@ void MyGame::Draw()
 		}
 	}
 
+	goal->Draw();
 
 	//-------前景スプライト描画処理-------//
 	spriteManager->beginDraw();
 
+	if (goal->isGoal) {
+		goalSprite.Draw();
+	}
 
 	//デバッグ描画
 	imguiManager->Draw();
