@@ -247,28 +247,3 @@ void GamePlayScene::SetStage(int stageNumber)
 	}
 
 }
-
-void GamePlayScene::SetStage(int stageNumber)
-{
-	switch (stageNumber)
-	{
-	case Sample1:
-		stageStr = "map/map1.csv";
-		break;
-	case Sample2:
-		stageStr = "map/map2.csv";
-		break;
-	case Sample3:
-		stageStr = "map/map3.csv";
-		break;
-	case Sample4:
-		stageStr = "map/map4.csv";
-		break;
-	case tutorial1:
-		stageStr = "map/Tuto1.csv";
-		break;
-	default:
-		break;
-	}
-
-}
