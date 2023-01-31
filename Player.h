@@ -99,7 +99,7 @@ private:
 
 	float jumpBeforePosY;
 
-	Goal *goal;
+	Goal *goal = nullptr;
 
 	int state =UnMagnet;
 };

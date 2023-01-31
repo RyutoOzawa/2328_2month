@@ -7,6 +7,7 @@
 #include <d3dx12.h>
 #include <unordered_map>
 #include <wrl.h>
+#include "Vector3.h"
 
 //ブロックのサイズ 変更不可
 const float blockSize = 10.0f;
@@ -15,9 +16,9 @@ const float blockScale = 0.1f;
 
 //xyzのブロックの数
 
-const int blockX = 20;
-const int blockY = 5;
-const int blockZ = 20;
+//const int blockX = 20;
+//const int blockY = 5;
+//const int blockZ = 20;
 
 enum mapdate
 {
@@ -54,8 +55,22 @@ public:
 
 	int dist(int x, int y, int z);
 
+	void SetSize(Vector3 stageSize);
+
 public:
 
-	int map[blockY][blockZ][blockX];
-	int savemap[blockY][blockZ][blockX];
+	//static const int blockX = 20;
+	//static const int blockY = 5;
+	//static const int blockZ = 20;
+
+	//int map[blockY][blockZ][blockX];
+	//int savemap[blockY][blockZ][blockX];
+
+	int blockX = 20;
+	int blockY = 5;
+	int blockZ = 20;
+
+	int map[20][20][20];
+	int savemap[20][20][20];
+
 };
