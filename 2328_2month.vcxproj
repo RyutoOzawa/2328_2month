@@ -167,6 +167,7 @@
     <ClCompile Include="Object3d.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
+    <ClCompile Include="ShareData.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colision.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="GameBaseScene.h" />
     <ClInclude Include="GamePlayScene.h" />
     <ClInclude Include="GameSceneManager.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="Object3d.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneFactory.h" />
+    <ClInclude Include="ShareData.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteManager.h" />

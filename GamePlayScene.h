@@ -8,6 +8,8 @@
 #include"Input.h"
 #include"Sprite.h"
 
+
+
 class GamePlayScene:public GameBaseScene
 {
 public:
@@ -22,6 +24,8 @@ public:
 
 	//描画
 	void Draw()override;
+
+	void SetStage(int stageNumber);
 
 
 public://メンバ変数
@@ -51,7 +55,7 @@ public://メンバ変数
 
 	Map* map_ = nullptr;					//マップ情報
 
-
+	std::string stageStr;
 
 };
 
