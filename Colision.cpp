@@ -612,17 +612,17 @@ void Colision::MapCollision()
 		}
 	}
 
-	for (int i = 0; i < magnetBlocks.size(); i++) {
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		ImGui::Begin("BlockGetRock");
-		ImGui::Text("up = %d,down = %d,left = %d,righ = %d Zup = %d,Zdown = %d\n", magnetBlocks[i].GetRockMove(1), magnetBlocks[i].GetRockMove(2), magnetBlocks[i].GetRockMove(3), magnetBlocks[i].GetRockMove(4), magnetBlocks[i].GetRockMove(5), magnetBlocks[i].GetRockMove(6));
-		ImGui::End();
+	//	ImGui::Begin("BlockGetRock");
+	//	ImGui::Text("up = %d,down = %d,left = %d,righ = %d Zup = %d,Zdown = %d\n", magnetBlocks[i].GetRockMove(1), magnetBlocks[i].GetRockMove(2), magnetBlocks[i].GetRockMove(3), magnetBlocks[i].GetRockMove(4), magnetBlocks[i].GetRockMove(5), magnetBlocks[i].GetRockMove(6));
+	//	ImGui::End();
 
-	}
+	//}
 
-	ImGui::Begin("PlayerGetRock");
-	ImGui::Text("up = %f,down = %f,left = %f,righ = %f\n", ColZ.x, ColZ.y, ColX.y, ColX.x);
-	ImGui::End();
+	//ImGui::Begin("PlayerGetRock");
+	//ImGui::Text("up = %f,down = %f,left = %f,righ = %f\n", ColZ.x, ColZ.y, ColX.y, ColX.x);
+	//ImGui::End();
 
 	player->SetColX(ColX);
 	player->SetColY(ColY);
@@ -672,9 +672,9 @@ void Colision::PosCollision()
 
 					if (pState != UnMagnet) {
 
-						ImGui::Begin("aa");
-						ImGui::Text("aaaa");
-						ImGui::End();
+						//ImGui::Begin("aa");
+						//ImGui::Text("aaaa");
+						//ImGui::End();
 
 						//押し戻し処理
 						while (true)
@@ -1620,9 +1620,9 @@ void Colision::MagnetPower()
 
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		ImGui::Begin("conatct");
-		ImGui::Text("Mag[%d] = (Up = %d ,Down = %d,left = %d,right = %d,ZUp = %d,ZDown = %d) \n", i, magnetBlocks[i].GetContactNum(1), magnetBlocks[i].GetContactNum(2), magnetBlocks[i].GetContactNum(3), magnetBlocks[i].GetContactNum(4), magnetBlocks[i].GetContactNum(5), magnetBlocks[i].GetContactNum(6));
-		ImGui::End();
+		//ImGui::Begin("conatct");
+		//ImGui::Text("Mag[%d] = (Up = %d ,Down = %d,left = %d,right = %d,ZUp = %d,ZDown = %d) \n", i, magnetBlocks[i].GetContactNum(1), magnetBlocks[i].GetContactNum(2), magnetBlocks[i].GetContactNum(3), magnetBlocks[i].GetContactNum(4), magnetBlocks[i].GetContactNum(5), magnetBlocks[i].GetContactNum(6));
+		//ImGui::End();
 	}
 
 	//配列の最大数-1回for文を回す

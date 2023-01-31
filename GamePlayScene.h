@@ -34,6 +34,8 @@ public://メンバ変数
 	uint32_t magnetTextureS = 0;	//S極のテクスチャ
 	uint32_t groundTexture = 0;		//地面のテクスチャ
 	uint32_t playerTexture = 0;		//プレイヤーのテクスチャ
+	uint32_t clearTexture = 0;		//クリア画面
+	uint32_t goalTexture = 0;		//ゴールのテクスチャ
 
 	uint32_t backGroundTexture = 0;	//背景画像(現在はダミー
 	Sprite* backGroundSprite = nullptr;
@@ -51,7 +53,8 @@ public://メンバ変数
 
 	Map* map_ = nullptr;					//マップ情報
 
-
+	Goal* goal;
+	Sprite goalSprite;
 
 };
 
