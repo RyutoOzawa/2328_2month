@@ -275,7 +275,7 @@ void GamePlayScene::SetStage(int stageNumber)
 		break;
 	case Sample2:
 		stageStr = "map/map2.csv";
-		stageSize = { 10,2,10 };
+		stageSize = { 10,3,10 };
 		break;
 	case Sample3:
 		stageStr = "map/map3.csv";
