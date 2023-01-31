@@ -62,6 +62,7 @@ public://メンバ変数
 
 	//ステージファイル名
 	std::string stageStr;
+
 	//ステージ大きさ
 	Vector3 stageSize = {};
 };

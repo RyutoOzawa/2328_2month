@@ -9,7 +9,7 @@
     <FxCompile Include="Resources\shaders\SpriteVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
-  
+
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
