@@ -21,8 +21,8 @@ void GameTitleScene::Initialize()
 	titleSprite = new Sprite();
 	titleSprite->Initialize(titleTexture);
 
-	//フェーズをスペースキー押し待ち状態に
-	phase = WaitInputSpaceKey;
+	//フェーズを共通データから持ってくる
+	phase = ShareData::titlePhase;
 }
 
 void GameTitleScene::Finalize()
