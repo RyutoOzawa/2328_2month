@@ -101,6 +101,18 @@ void GamePlayScene::Update()
 			if (selectMenuNumber == Reset) {
 				StageInitialize(ShareData::stageNumber);
 			}
+			else if (selectMenuNumber == StageSelect_MENU) {
+
+				//共通データのフェーズをステージ選択に変更し、タイトルシーンへ戻る
+				ShareData::titlePhase = TitlePhaseIndex::StageSelect;
+				sceneManager->ChangeScene("TITLE");
+			}
+			else if (selectMenuNumber == Title) {
+
+				//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
+				ShareData::titlePhase = TitlePhaseIndex::WaitInputSpaceKey;
+				sceneManager->ChangeScene("TITLE");
+			}
 
 		}
 
