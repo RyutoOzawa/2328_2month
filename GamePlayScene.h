@@ -84,6 +84,7 @@ public://メンバ変数
 	//メニューを開いているかどうか
 	bool isMenu = false;
 	int selectMenuNumber = 0;
+	int clearMenuNumber = 0;
 
 };
 

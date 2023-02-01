@@ -77,92 +77,122 @@ void GamePlayScene::Update()
 
 	//----------------------ゲーム内ループはここから---------------------//
 
-	if (isMenu) {
-		//スタートボタンでメニューを閉じる
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
-			isMenu = false;
+	if (goal->isGoal) {
+		//スティック左右でメニューを選ぶ
+		if (input->IsTriggerLStickRight()) {
+			clearMenuNumber++;
 		}
-
-		//スティック上下でメニューを選ぶ
-		if (input->IsTriggerLStickDown()) {
-			selectMenuNumber++;
+		else if (input->IsTriggerLStickLeft()) {
+			clearMenuNumber--;
 		}
-		else if (input->IsTriggerLStickUp()) {
-			selectMenuNumber--;
-		}
-
 
 		//最大値、最小値を超えないように
-		if (selectMenuNumber > MenuIndex::Title)selectMenuNumber = Title;
-		else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
+		if (clearMenuNumber >1)clearMenuNumber = 1;
+		else if (clearMenuNumber < 0)clearMenuNumber = 0;
 
+		//Aボタンで決定
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
-
-			if (selectMenuNumber == Reset) {
-				StageInitialize(ShareData::stageNumber);
-			}
-			else if (selectMenuNumber == StageSelect_MENU) {
-
-				//共通データのフェーズをステージ選択に変更し、タイトルシーンへ戻る
+			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
+			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::tutorial1) {
+					ShareData::stageNumber++;
+					StageInitialize(ShareData::stageNumber);
+			}//それ以外(ステージ選択ボタンが押されたか、ステージが一番最後)だったらステージ選択に戻る
+			else {
+				//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 				ShareData::titlePhase = TitlePhaseIndex::StageSelect;
 				sceneManager->ChangeScene("TITLE");
 			}
-			else if (selectMenuNumber == Title) {
-
-				//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
-				ShareData::titlePhase = TitlePhaseIndex::WaitInputSpaceKey;
-				sceneManager->ChangeScene("TITLE");
-			}
 
 		}
-
-		ImGui::Begin("menu");
-		ImGui::Text("menuNumber %d", selectMenuNumber);
-		ImGui::End();
 
 	}
 	else {
+		if (isMenu) {
+			//スタートボタンでメニューを閉じる
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
+				isMenu = false;
+			}
 
-		//スタートボタンでメニューへ
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
-			isMenu = true;
-			//選択は初期はリセット
-			selectMenuNumber = Reset;
+			//スティック上下でメニューを選ぶ
+			if (input->IsTriggerLStickDown()) {
+				selectMenuNumber++;
+			}
+			else if (input->IsTriggerLStickUp()) {
+				selectMenuNumber--;
+			}
+
+			//最大値、最小値を超えないように
+			if (selectMenuNumber > MenuIndex::Title)selectMenuNumber = Title;
+			else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
+
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
+
+				if (selectMenuNumber == Reset) {
+					StageInitialize(ShareData::stageNumber);
+				}
+				else if (selectMenuNumber == StageSelect_MENU) {
+
+					//共通データのフェーズをステージ選択に変更し、タイトルシーンへ戻る
+					ShareData::titlePhase = TitlePhaseIndex::StageSelect;
+					sceneManager->ChangeScene("TITLE");
+				}
+				else if (selectMenuNumber == Title) {
+
+					//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
+					ShareData::titlePhase = TitlePhaseIndex::WaitInputSpaceKey;
+					sceneManager->ChangeScene("TITLE");
+				}
+
+			}
+
+			ImGui::Begin("menu");
+			ImGui::Text("menuNumber %d", selectMenuNumber);
+			ImGui::End();
+
 		}
+		else {
+
+			//スタートボタンでメニューへ
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
+				isMenu = true;
+				//選択は初期はリセット
+				selectMenuNumber = Reset;
+			}
 
 
-		//磁力計算
-		for (int i = 0; i < magnetDatas.size(); i++) {
-			colision->UpdateDeta(player, magnetBlocks[i], i);
+			//磁力計算
+			for (int i = 0; i < magnetDatas.size(); i++) {
+				colision->UpdateDeta(player, magnetBlocks[i], i);
+			}
+
+			colision->Update();
+
+			//座標の更新
+			for (int i = 0; i < magnetBlocks.size(); i++) {
+
+				magnetBlocks[i] = colision->magnetBlocks[i];
+
+				magnetBlocks[i].Update();
+
+			}
+
+			player->Update();
+
+			goal->isGoal = player->GetIsGoal();
+
+			goal->Update();
+
+			//カメラ座標は自機に追従
+			camera.target.x = player->GetPosition().x;
+			camera.target.y = player->GetPosition().y;
+			camera.target.z = player->GetPosition().z;
+			camera.eye = camera.target;
+			camera.eye.y += 20.0f;
+			camera.eye.z -= 2.5f;
+
+			camera.UpdateMatrix();
+
 		}
-
-		colision->Update();
-
-		//座標の更新
-		for (int i = 0; i < magnetBlocks.size(); i++) {
-
-			magnetBlocks[i] = colision->magnetBlocks[i];
-
-			magnetBlocks[i].Update();
-
-		}
-
-		player->Update();
-
-		goal->isGoal = player->GetIsGoal();
-
-		goal->Update();
-
-		//カメラ座標は自機に追従
-		camera.target.x = player->GetPosition().x;
-		camera.target.y = player->GetPosition().y;
-		camera.target.z = player->GetPosition().z;
-		camera.eye = camera.target;
-		camera.eye.y += 20.0f;
-		camera.eye.z -= 2.5f;
-
-		camera.UpdateMatrix();
-
 	}
 
 	//----------------------ゲーム内ループはここまで---------------------//
