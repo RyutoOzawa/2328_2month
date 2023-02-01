@@ -40,12 +40,14 @@ void Colision::Update() {
 	//くっついているブロックを確定
 	SetStickMag();
 	//くっついてるブロックのベクトルを統一
-	StickMag();
+	//StickMag();
 
-	MagFall();
+	//MagFall();
 
 	//ブロックとの当たり判定
 	MapCollision();
+
+	MagFall();
 
 	////くっついてるブロックのベクトルを統一
 	//StickMag();
@@ -194,8 +196,9 @@ void Colision::MapCollision()
 
 	//}
 
-
 	//下に仮想的に移動して当たったら
+
+
 	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer))
 	{
 
@@ -207,6 +210,46 @@ void Colision::MapCollision()
 		player->SetFall(true);
 
 	}
+
+
+	//自機を溝に落ちないように
+
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer + 1) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer + 1)) {
+
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColZ.x = 1;
+		}
+	}
+
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer - 1) || map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer - 1)) {
+
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColZ.y = 1;
+		}
+	}
+
+	if (map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer)) {
+
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColX.x = 1;
+		}
+	}
+
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer)) {
+
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColX.y = 1;
+		}
+	}
+
 
 	//上に仮想的に移動して当たったら
 	if (map_->mapcol(leftplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, backplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(leftplayer, upplayer + playerSpeed, backplayer))
@@ -374,8 +417,34 @@ void Colision::MapCollision()
 
 		//落下
 
+		////奥に仮想的に移動して当たったら
+		//if (map_->mapcol(leftmagnetBlocks, downmagnetBlocks - magnetBlocks[i].GetSize() / 2, frontmagnetBlocks)) {
+
+
+		//	if (map_->mapcol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + bMoveVec[i].z) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + bMoveVec[i].z))
+		//	{
+
+		//		bMoveVec[i].z = 0;
+		//		magnetBlocks[i].SetRockMove(true, 5);
+
+		//		//１ピクセル先に壁が来るまで移動
+		//		while (true)
+		//		{
+		//			if ((map_->mapcol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + adjustPixcelSpeed) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + adjustPixcelSpeed))) {
+		//				break;
+		//			}
+
+		//			frontmagnetBlocks += adjustPixcelSpeed;
+		//			backmagnetBlocks += adjustPixcelSpeed;
+
+		//			bMoveVec[i].z += adjustPixcelSpeed;
+		//		}
+
+		//	}
+		//}
+
 		//下に仮想的に移動して当たったら
-		if (map_->mapcol(leftmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks) || map_->mapcol(rightmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks) || map_->mapcol(leftmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks))
+		if (map_->mapcol(leftmagnetBlocks + 0.1, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks + 0.1) || map_->mapcol(rightmagnetBlocks - 0.1, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks - 0.1) || map_->mapcol(rightmagnetBlocks - 0.1, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks + 0.1) || map_->mapcol(leftmagnetBlocks + 0.1, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks - 0.1))
 		{
 
 			bFall[i] = false;
@@ -713,7 +782,7 @@ void Colision::PosCollision()
 								}
 							}
 							else {
-								magnetBlocks[i].SetRockMove(true,contact);
+								magnetBlocks[i].SetRockMove(true, contact);
 								break;
 							}
 
@@ -812,27 +881,27 @@ void Colision::PosCollision()
 
 						if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
 
-								if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+							if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
 
-									//上に0.1移動してあったっていたら
+								//上に0.1移動してあったっていたら
 
-									if (pPosY1 < bPosY2[i] + 0.01&& bPosY1[i] + 0.01 < pPosY2) {
+								if (pPosY1 < bPosY2[i] + 0.01 && bPosY1[i] + 0.01 < pPosY2) {
 
 
-										//あったった面を記録
-										if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
-											magnetBlocks[i].SetContactNum(contact, i);
-										}
-										else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
-											magnetBlocks[i].SetContactNum(contact, i);
-										}
-										else {
-											magnetBlocks[i].ReSetContactNum(contact);
-										}
-
+									//あったった面を記録
+									if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
+										magnetBlocks[i].SetContactNum(contact, i);
 									}
+									else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else {
+										magnetBlocks[i].ReSetContactNum(contact);
+									}
+
 								}
-							
+							}
+
 						}
 
 					}
@@ -917,7 +986,7 @@ void Colision::PosCollision()
 
 							if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
 
-							//上に0.1移動してあったっていたら
+								//上に0.1移動してあったっていたら
 
 								if (pPosZ1 < bPosZ2[i] + 0.01 && bPosZ1[i] + 0.01 < pPosZ2) {
 
@@ -1141,7 +1210,8 @@ void Colision::PosCollision()
 									if (magnetBlocks[j].GetRockMove(3) == false && adjustInteger == false) {
 										pos2.x += adjust.x;
 										bMoveVec[j].x += adjust.x;
-									}else if (magnetBlocks[j].GetRockMove(4) == false && adjustInteger == true) {
+									}
+									else if (magnetBlocks[j].GetRockMove(4) == false && adjustInteger == true) {
 										pos2.x += adjust.x;
 										bMoveVec[j].x += adjust.x;
 									}
@@ -1160,8 +1230,8 @@ void Colision::PosCollision()
 
 							}
 							else {
-								magnetBlocks[i].SetRockMove(true,contact1);
-								magnetBlocks[j].SetRockMove(true,contact2);
+								magnetBlocks[i].SetRockMove(true, contact1);
+								magnetBlocks[j].SetRockMove(true, contact2);
 
 								break;
 							}
@@ -1445,6 +1515,7 @@ void Colision::MagToMagUpdate()
 				//距離で磁力の強さを変化させる
 				if (2.0f > vecLen) {
 					moveSpd = ((2.0f / 1000) - (vecLen / 1000)) / 0.01;
+
 				}
 
 				//ImGui::Begin(" vecblockToblock");
@@ -1585,7 +1656,7 @@ void Colision::MagToPlayerUpdate()
 						//setPos[i].z += moveVec.z;
 
 						bMoveVec[i].x += moveVec.x;
-						bMoveVec[i].y += moveVec.y;
+						//bMoveVec[i].y += moveVec.y;
 
 						//if (magnetBlocks[i].GetRockMove(2) == false) {
 
@@ -1609,7 +1680,7 @@ void Colision::MagToPlayerUpdate()
 						bMoveVec[i].x -= moveVec.x;
 						//}
 
-						bMoveVec[i].y -= moveVec.y;
+						//bMoveVec[i].y -= moveVec.y;
 
 						//if (magnetBlocks[i].GetRockMove(1) == false || magnetBlocks[i].GetRockMove(2) == false) {
 						bMoveVec[i].z -= moveVec.z;
@@ -1925,7 +1996,7 @@ void Colision::StickMag()
 		if (stickBlockMass[i]) {
 
 			massMoveVec.x += bMoveVec[i].x;
-			massMoveVec.y += bMoveVec[i].y;
+			//massMoveVec.y += bMoveVec[i].y;
 			massMoveVec.z += bMoveVec[i].z;
 
 			//for (int j = 1; j < 5; j++) {
@@ -2192,7 +2263,7 @@ int Colision::GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos)
 	}
 	else {
 
-		if (contactNumX< contactNumY) {
+		if (contactNumX < contactNumY) {
 
 			if (mainPos.y > subPos.y) {
 				contact = 1;

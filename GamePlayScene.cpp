@@ -39,6 +39,10 @@ void GamePlayScene::Initialize()
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
 
+	//XMFLOAT3 eye(25, 5, 6);	//視点座標
+	//XMFLOAT3 target(6, 2, 6);	//注視点座標
+	//XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
+
 	camera.Initialize(eye, target, up);
 
 	//マップ読み込み
@@ -74,12 +78,12 @@ void GamePlayScene::Initialize()
 				blockObj[i][j][k].Update();
 
 				if (map_->map[i][j][k] == 2) {
-					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
+					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale),true };
 					magnetDatas.push_back(nBlockPos);
 				}
 
 				if (map_->map[i][j][k] == 3) {
-					MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale), false };
+					MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale), false };
 					magnetDatas.push_back(sBlockPos);
 				}
 
