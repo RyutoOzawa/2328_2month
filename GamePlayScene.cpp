@@ -11,12 +11,12 @@ void GamePlayScene::Initialize()
 {
 
 
-	//--------------ƒQ[ƒ€“à•Ï”‰Šú‰»--------------//
+	//--------------ã‚²ãƒ¼ãƒ å†…å¤‰æ•°åˆæœŸåŒ–--------------//
 
-	//input‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+	//inputã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 	input = Input::GetInstance();
 
-	//ƒeƒNƒXƒ`ƒƒƒf[ƒ^‰Šú‰»
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ‡ãƒ¼ã‚¿åˆæœŸåŒ–
 	magnetTextureN = Texture::LoadTexture(L"Resources/red1x1.png");
 	magnetTextureS = Texture::LoadTexture(L"Resources/blue1x1.png");
 	groundTexture = Texture::LoadTexture(L"Resources/ground.png");
@@ -31,7 +31,7 @@ void GamePlayScene::Initialize()
 
 	menuSprite = new Sprite();
 	menuSprite->Initialize(menuTexture);
-	//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğƒXƒvƒ‰ƒCƒg‚Ì’†S‚É
+	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä¸­å¿ƒã«
 	menuSprite->SetAnchorPoint(XMFLOAT2(0.5f, 0.5f));
 	menuSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2));
 	menuSprite->Update();
@@ -42,24 +42,30 @@ void GamePlayScene::Initialize()
 	goalSprite.Update();
 
 
-	//ƒJƒƒ‰‰Šú‰»
-	XMFLOAT3 eye(5, 25, 6);	//‹“_À•W
-	XMFLOAT3 target(5, 0, 6);	//’‹“_À•W
-	XMFLOAT3 up(0, 1, 0);		//ã•ûŒüƒxƒNƒgƒ‹
+	//ã‚«ãƒ¡ãƒ©åˆæœŸåŒ–
+	XMFLOAT3 eye(5, 25, 6);	//è¦–ç‚¹åº§æ¨™
+	XMFLOAT3 target(5, 0, 6);	//æ³¨è¦–ç‚¹åº§æ¨™
+	XMFLOAT3 up(0, 1, 0);		//ä¸Šæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
 
 	camera.Initialize(eye, target, up);
 
-	//ƒ}ƒbƒv“Ç‚İ‚İ
+	//ãƒãƒƒãƒ—èª­ã¿è¾¼ã¿
 	map_ = new Map;
 
-	//ƒXƒe[ƒW‘I‘ğ‚É•ÏX‚³‚ê‚½•¶š—ñ‚Å“Ç‚İ‚Ş
+	//ã‚¹ãƒ†ãƒ¼ã‚¸é¸æŠæ™‚ã«å¤‰æ›´ã•ã‚ŒãŸæ–‡å­—åˆ—ã§èª­ã¿è¾¼ã‚€
 	SetStage(ShareData::stageNumber);
 
 	map_->SetSize(stageSize);
 	map_->Loding(stageStr.c_str());
 
+	//ã‚´ãƒ¼ãƒ«ã®åˆæœŸåŒ–
+	goal = new Goal;
 
-	//ƒ}ƒbƒv‚ÌÀ•W‚Ì‰Šú‰»
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åˆæœŸåŒ–
+	player = new Player();
+	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input, map_, goal);
+
+	//ãƒãƒƒãƒ—ã®åº§æ¨™ã®åˆæœŸåŒ–
 	for (int i = 0; i < map_->blockY; i++)
 	{
 		for (int j = 0; j < map_->blockZ; j++)
@@ -75,70 +81,9 @@ void GamePlayScene::Initialize()
 				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
 				blockObj[i][j][k].Update();
 
-			}
-		}
-	}
-
-	goal = new Goal;
-
-	for (int i = 0; i < map_->blockY; i++)
-	{
-		for (int j = 0; j < map_->blockZ; j++)
-		{
-			for (int k = 0; k < map_->blockX; k++)
-			{
-				if (map_->map[i][j][k] == 5)
-				{
-					goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
-				}
-			}
-		}
-	}
-
-	goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	goal->obj.Update();
-
-	//ƒvƒŒƒCƒ„[‰Šú‰»
-	player = new Player();
-	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input, map_, goal);
-	for (int i = 0; i < map_->blockY; i++)
-	{
-		for (int j = 0; j < map_->blockZ; j++)
-		{
-			for (int k = 0; k < map_->blockX; k++)
-			{
-				if (map_->map[i][j][k] == 4)
-				{
-					player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
-				}
-			}
-		}
-	}
-
-	player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
-
-	////¥Îƒf[ƒ^‰Šú‰»
-	//MagnetData nBlockPos{ XMFLOAT3(3,2,2),true };
-	//MagnetData sBlockPos{ XMFLOAT3(6,2,2), false };
-	//MagnetData n2BlockPos{ XMFLOAT3(3, 2, 5), true };
-	//MagnetData s2BlockPos{ XMFLOAT3(6, 2, 5), false };
-
-	////¥Îƒf[ƒ^‚ğ”z—ñ‚É·‚µ‚Ş
-	//magnetDatas.push_back(nBlockPos);
-	//magnetDatas.push_back(sBlockPos);
-	//magnetDatas.push_back(n2BlockPos);
-	//magnetDatas.push_back(s2BlockPos);
-
-	for (int i = 0; i < map_->blockY; i++)
-	{
-		for (int j = 0; j < map_->blockZ; j++)
-		{
-			for (int k = 0; k < map_->blockX; k++)
-			{
-
 				if (map_->map[i][j][k] == 2) {
 					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
-					//magnetDatas.push_back(nBlockPos);
+					magnetDatas.push_back(nBlockPos)
 				}
 
 				if (map_->map[i][j][k] == 3) {
@@ -146,33 +91,44 @@ void GamePlayScene::Initialize()
 					magnetDatas.push_back(sBlockPos);
 				}
 
+				if (map_->map[i][j][k] == 4)
+				{
+					player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
+					player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+}
+				if (map_->map[i][j][k] == 5)
+				{
+					goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
+					goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+					goal->obj.Update();
+				}
 			}
 		}
 	}
 
-	//¥Î‚Ì‰Šú‰»‚Æ¶¬
+	//ç£çŸ³ã®åˆæœŸåŒ–ã¨ç”Ÿæˆ
 	for (int i = 0; i < magnetDatas.size(); i++) {
 		MagnetBlock newBlock{};
 		newBlock.Initialize(magnetDatas[i]);
-		//ƒQ[ƒ€‚Åg‚¤‚æ‚¤‚Ì”z—ñ‚ÉŠi”[
+		//ã‚²ãƒ¼ãƒ ã§ä½¿ã†ã‚ˆã†ã®é…åˆ—ã«æ ¼ç´
 		magnetBlocks.push_back(newBlock);
 		magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	}
 
-	//“–‚½‚è”»’è‰Šú‰»
+	//å½“ãŸã‚Šåˆ¤å®šåˆæœŸåŒ–
 	colision = new Colision();
 	for (int i = 0; i < magnetDatas.size(); i++) {
 		colision->Initialize(player, magnetBlocks[i], map_, i);
 	}
 
 
-	//ƒƒjƒ…[‚ÍŠJ‚©‚ê‚Ä‚¢‚È‚¢ó‘Ô
+	//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã¯é–‹ã‹ã‚Œã¦ã„ãªã„çŠ¶æ…‹
 	isMenu = false;
 }
 
 void GamePlayScene::Finalize()
 {
-	//ƒQ[ƒ€ƒ‹[ƒv‚Åg—p‚µ‚½•¨‚ğ‰ğ•úŒãAŠî”ÕƒVƒXƒeƒ€‚ÌŒãˆ—‚Æ‰ğ•ú‚ğs‚¤
+	//ã‚²ãƒ¼ãƒ ãƒ«ãƒ¼ãƒ—ã§ä½¿ç”¨ã—ãŸç‰©ã‚’è§£æ”¾å¾Œã€åŸºç›¤ã‚·ã‚¹ãƒ†ãƒ ã®å¾Œå‡¦ç†ã¨è§£æ”¾ã‚’è¡Œã†
 
 	//delete sprite;
 	//delete skyDome;
@@ -180,7 +136,7 @@ void GamePlayScene::Finalize()
 	delete player;
 
 	delete backGroundSprite;
-	//-------------‚±‚±‚Ü‚Å‚Éƒ‹[ƒv“à‚Åg—p‚µ‚½‚à‚Ì‚ÌŒãˆ—------------//
+	//-------------ã“ã“ã¾ã§ã«ãƒ«ãƒ¼ãƒ—å†…ã§ä½¿ç”¨ã—ãŸã‚‚ã®ã®å¾Œå‡¦ç†------------//
 
 
 
@@ -189,15 +145,15 @@ void GamePlayScene::Finalize()
 void GamePlayScene::Update()
 {
 
-	//----------------------ƒQ[ƒ€“àƒ‹[ƒv‚Í‚±‚±‚©‚ç---------------------//
+	//----------------------ã‚²ãƒ¼ãƒ å†…ãƒ«ãƒ¼ãƒ—ã¯ã“ã“ã‹ã‚‰---------------------//
 
 	if (isMenu) {
-		//ƒXƒ^[ƒgƒ{ƒ^ƒ“‚Åƒƒjƒ…[‚ğ•Â‚¶‚é
+		//ã‚¹ã‚¿ãƒ¼ãƒˆãƒœã‚¿ãƒ³ã§ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‰ã˜ã‚‹
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
 			isMenu = false;
 		}
 
-		//ƒXƒeƒBƒbƒNã‰º‚Åƒƒjƒ…[‚ğ‘I‚Ô
+		//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ä¸Šä¸‹ã§ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é¸ã¶
 		if (input->IsTriggerLStickDown()) {
 			selectMenuNumber++;
 		}
@@ -205,7 +161,7 @@ void GamePlayScene::Update()
 			selectMenuNumber--;
 		}
 
-		//Å‘å’lAÅ¬’l‚ğ’´‚¦‚È‚¢‚æ‚¤‚É
+		//æœ€å¤§å€¤ã€æœ€å°å€¤ã‚’è¶…ãˆãªã„ã‚ˆã†ã«
 		if (selectMenuNumber > MenuIndex::Title)selectMenuNumber = Title;
 		else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
 
@@ -216,22 +172,22 @@ void GamePlayScene::Update()
 	}
 	else {
 
-		//ƒXƒ^[ƒgƒ{ƒ^ƒ“‚Åƒƒjƒ…[‚Ö
+		//ã‚¹ã‚¿ãƒ¼ãƒˆãƒœã‚¿ãƒ³ã§ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã¸
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
 			isMenu = true;
-			//‘I‘ğ‚Í‰Šú‚ÍƒŠƒZƒbƒg
+			//é¸æŠã¯åˆæœŸã¯ãƒªã‚»ãƒƒãƒˆ
 			selectMenuNumber = Reset;
 		}
 
 
-		//¥—ÍŒvZ
+		//ç£åŠ›è¨ˆç®—
 		for (int i = 0; i < magnetDatas.size(); i++) {
 			colision->UpdateDeta(player, magnetBlocks[i], i);
 		}
 
 		colision->Update();
 
-		//À•W‚ÌXV
+		//åº§æ¨™ã®æ›´æ–°
 		for (int i = 0; i < magnetBlocks.size(); i++) {
 
 			magnetBlocks[i] = colision->magnetBlocks[i];
@@ -246,7 +202,7 @@ void GamePlayScene::Update()
 
 		goal->Update();
 
-		//ƒJƒƒ‰À•W‚Í©‹@‚É’Ç]
+		//ã‚«ãƒ¡ãƒ©åº§æ¨™ã¯è‡ªæ©Ÿã«è¿½å¾“
 		camera.target.x = player->GetPosition().x;
 		camera.target.y = player->GetPosition().y;
 		camera.target.z = player->GetPosition().z;
@@ -258,30 +214,30 @@ void GamePlayScene::Update()
 
 	}
 
-	//----------------------ƒQ[ƒ€“àƒ‹[ƒv‚Í‚±‚±‚Ü‚Å---------------------//
+	//----------------------ã‚²ãƒ¼ãƒ å†…ãƒ«ãƒ¼ãƒ—ã¯ã“ã“ã¾ã§---------------------//
 
 
 }
 
 void GamePlayScene::Draw()
 {
-	//-------”wŒiƒXƒvƒ‰ƒCƒg•`‰æˆ—-------//
+	//-------èƒŒæ™¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæç”»å‡¦ç†-------//
 	SpriteManager::GetInstance()->beginDraw();
 
 	backGroundSprite->Draw();
 
-	//-------3DƒIƒuƒWƒFƒNƒg•`‰æˆ—-------//
+	//-------3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»å‡¦ç†-------//
 	Object3d::BeginDraw(camera);
 
-	//©‹@•`‰æ
+	//è‡ªæ©Ÿæç”»
 	player->Draw();
 
-	//¥Î•`‰æ
+	//ç£çŸ³æç”»
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 		magnetBlocks[i].Draw(magnetTextureN, magnetTextureS);
 	}
 
-	//ƒ}ƒbƒv‚Ì•`‰æ
+	//ãƒãƒƒãƒ—ã®æç”»
 	for (int i = 0; i < map_->blockY; i++)
 	{
 		for (int j = 0; j < map_->blockZ; j++)
@@ -298,7 +254,7 @@ void GamePlayScene::Draw()
 
 	goal->Draw();
 
-	//-------‘OŒiƒXƒvƒ‰ƒCƒg•`‰æˆ—-------//
+	//-------å‰æ™¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæç”»å‡¦ç†-------//
 	SpriteManager::GetInstance()->beginDraw();
 
 
