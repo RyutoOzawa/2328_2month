@@ -1,6 +1,6 @@
 #include "Colision.h"
 #include <cassert>
-//#include"ImguiManager.h"
+#include"ImguiManager.h"
 
 Colision::Colision() {}
 
@@ -196,73 +196,6 @@ void Colision::MapCollision()
 
 	//}
 
-	//下に仮想的に移動して当たったら
-
-
-	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer))
-	{
-
-		player->SetFall(false);
-
-	}
-	else {
-
-		player->SetFall(true);
-
-	}
-
-
-	//自機を溝に落ちないように
-
-	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer + 1) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer + 1)) {
-
-	}
-	else {
-		if (player->GetFall() == false) {
-			ColZ.x = 1;
-		}
-	}
-
-	if (map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer - 1) || map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer - 1)) {
-
-	}
-	else {
-		if (player->GetFall() == false) {
-			ColZ.y = 1;
-		}
-	}
-
-	if (map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer)) {
-
-	}
-	else {
-		if (player->GetFall() == false) {
-			ColX.x = 1;
-		}
-	}
-
-	if (map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer)) {
-
-	}
-	else {
-		if (player->GetFall() == false) {
-			ColX.y = 1;
-		}
-	}
-
-
-	//上に仮想的に移動して当たったら
-	if (map_->mapcol(leftplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, backplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(leftplayer, upplayer + playerSpeed, backplayer))
-	{
-		//player->SetFall(true);
-		player->SetJump(false);
-
-	}
-	else {
-
-		//player->SetFall(false);
-
-	}
 
 	//z軸に対しての当たり判定
 	//奥に仮想的に移動して当たったら
@@ -311,10 +244,287 @@ void Colision::MapCollision()
 
 	}
 
+	//自機落下関係
+
+	//下に仮想的に移動して当たったら
+
+
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer) || map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer) || map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer))
+	{
+
+		player->SetFall(false);
+
+	}
+	else {
+
+		player->SetFall(true);
+
+	}
+
+
+	//上に仮想的に移動して当たったら
+	if (map_->mapcol(leftplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, backplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(leftplayer, upplayer + playerSpeed, backplayer))
+	{
+		//player->SetFall(true);
+		player->SetJump(false);
+
+	}
+	else {
+
+		//player->SetFall(false);
+
+	}
+
+
+	//自機を溝に落ちないように
+
+	//上
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer + 1 + playerSpeed) && map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer + 1 + playerSpeed)) {
+
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColZ.x = 1;
+		}
+
+	}
+
+	//下
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer - 1 - playerSpeed) && map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer - 1 - playerSpeed)) {
+
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColZ.y = 1;
+		}
+	}
+
+	//右
+	if (map_->mapcol(rightplayer + playerSpeed, downplayer - playerSpeed, backplayer) && map_->mapcol(rightplayer + playerSpeed, downplayer - playerSpeed, frontplayer)) {
+
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColX.x = 1;
+		}
+	}
+
+	//左
+	if (map_->mapcol(leftplayer - playerSpeed, downplayer - playerSpeed, backplayer) && map_->mapcol(leftplayer - playerSpeed, downplayer - playerSpeed, frontplayer)) {
+
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColX.y = 1;
+		}
+	}
+
+	//プレイヤーの下にブロックがあったら進めるように
+
+	InforUpdateMagnetPos();
+
+	//当たり判定調整用
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		float adjust = 0.2;
+
+		bool leftUp = false;
+		bool rightUp = false;
+		bool leftDown = false;
+		bool rightDown = false;
+
+		//プレイヤーの下辺よりブロックの上辺が下だった場合,ブロックの上にいるとする
+		if (pPosY1 > bPosY2[i] - adjust) {
+
+
+			////左上
+			//if (pPosX1 > bPosX1[i] && pPosX1 < bPosX2[i] ) {
+
+			//	if (pPosZ2 > bPosZ1[i] && pPosZ2 < bPosZ2[i]) {
+
+			//		ColZ.x = 1;
+			//		ColX.y = 1;
+
+			//	}
+
+			//}
+			////右上
+			//if (pPosX2 > bPosX1[i]   && pPosX2 < bPosX2[i]  ) {
+
+			//	if (pPosZ2 > bPosZ1[i]   && pPosZ2 < bPosZ2[i]  ) {
+
+			//		ColX.x = 1;
+			//		ColZ.x = 1;
+
+			//	}
+
+			//}
+			////左下
+			//if (pPosX1 > bPosX1[i]   && pPosX1 < bPosX2[i]  ) {
+
+			//	if (pPosZ1 > bPosZ1[i]  && pPosZ1 < bPosZ2[i] ) {
+
+			//		ColZ.y = 1;
+			//		ColX.y = 1;
+
+			//	}
+
+			//}
+			////右下
+			//if (pPosX2 > bPosX1[i]  && pPosX2 < bPosX2[i] ) {
+
+			//	if (pPosZ1 > bPosZ1[i]  && pPosZ1 < bPosZ2[i]  ) {
+
+			//		ColZ.y = 1;
+			//		ColX.x = 1;
+
+			//	}
+
+			//}
+
+			//左上の点がブロック状にあるか
+			if (pPosX1 > bPosX1[i] - adjust && pPosX1 < bPosX2[i] + adjust) {
+
+				if (pPosZ2 > bPosZ1[i] - adjust && pPosZ2 < bPosZ2[i] + adjust) {
+
+					leftUp = true;
+
+				}
+
+			}
+
+			//右上の点がブロック状にあるか
+			if (pPosX2 > bPosX1[i] - adjust && pPosX2 < bPosX2[i] + adjust) {
+
+				if (pPosZ2 > bPosZ1[i] - adjust && pPosZ2 < bPosZ2[i] + adjust) {
+
+					rightUp = true;
+
+				}
+
+			}
+
+			//左下の点がブロック状にあるか
+			if (pPosX1 > bPosX1[i] - adjust && pPosX1 < bPosX2[i] + adjust) {
+
+				if (pPosZ1 > bPosZ1[i] - adjust && pPosZ1 < bPosZ2[i] + adjust) {
+
+					leftDown = true;
+
+				}
+
+			}
+
+			//右下の点がブロック状にあるか
+			if (pPosX2 > bPosX1[i] - adjust && pPosX2 < bPosX2[i] + adjust) {
+
+				if (pPosZ1 > bPosZ1[i] - adjust && pPosZ1 < bPosZ2[i] + adjust) {
+
+					rightDown = true;
+
+				}
+
+			}
+
+			//左上と右上の点がブロック上にあったら上に進める
+
+			if (leftUp && rightUp) {
+				ColZ.x = 0;
+				//ImGui::Begin("up");
+				//ImGui::Text("true");
+				//ImGui::End();
+			}
+
+			//左下と右下の点がブロック上にあったら下に進める
+
+			if (leftDown && rightDown) {
+				ColZ.y = 0;
+				//ImGui::Begin("rdown");
+				//ImGui::Text("true");
+				//ImGui::End();
+			}
+
+			//左上と左下の点がブロック上にあったら左に進める
+			if (leftUp && leftDown) {
+				ColX.y = 0;
+				//ImGui::Begin("left");
+				//ImGui::Text("true");
+				//ImGui::End();
+			}
+
+			//右上と右下の点がブロック上にあったら左に進める
+
+			if (rightUp && rightDown) {
+				ColX.x = 0;
+				//ImGui::Begin("right");
+				//ImGui::Text("true");
+				//ImGui::End();
+			}
+
+			//ジャンプするか
+			bool isJump = false;
+
+			//当たったら
+
+			int adjust2 = 0.3;
+
+			if (pPosX1 + adjust2 < bPosX2[i] - adjust2 && bPosX1[i] + adjust2 < pPosX2 - adjust2) {
+
+				if (pPosZ1 + adjust2 < bPosZ2[i] - adjust2 && bPosZ1[i] + adjust2 < pPosZ2 - adjust2) {
+
+					isJump = true;
+
+				}
+			}
+
+			if (isJump) {
+
+				//もし自機と同じ面だったらジャンプさせる
+				if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 1) {
+					isJump = true;
+				}
+				else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 0) {
+					isJump = true;
+				}
+				else {
+					isJump = false;
+				}
+
+
+				if (isJump && pPosY1 < bPosY2[i] + (bSize / 2)) {
+
+					player->SetJump(true);
+					ImGui::Begin("right");
+					ImGui::Text("true");
+					ImGui::End();
+
+				}
+
+			}
+
+		}
+
+		//ImGui::Begin("bY");
+		//ImGui::Text("bPos[%d] = %f,%f \n", i, bPosY1[i], bPosY2[i]);
+		//ImGui::End();
+
+	}
+
+	ImGui::Begin("PY");
+	ImGui::Text("pPos = %f,%f \n", pPosY1, pPosY2);
+	ImGui::End();
+
+	ImGui::Begin("COL");
+	ImGui::Text("X.x = %f,X.y = %f,Z.x = %f,Z.y = %f \n", ColX.x, ColX.y, ColZ.x, ColZ.y);
+	ImGui::End();
+
 
 	player->SetColX(ColX);
 	player->SetColY(ColY);
 	player->SetColZ(ColZ);
+
+
 
 	/////////////
 	//ブロック//
@@ -524,49 +734,56 @@ void Colision::MapCollision()
 	}
 
 
-
-	////プレイヤーと磁石がっくっついている場合
-
-	//InforUpdateMagnetPos();
-
-	////あったった面を記録(Setcontact) + そのたあったった時の処理
-
-	////自機と磁石
-
-	//for (int i = 0; i < magnetBlocks.size(); i++) {
-
-	//	int contact = GetContact(pPos, bPos[i]);
-
-	//	if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
-
-	//		if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+	//プレイヤーの下にブロックがあったら進めるように
 
 
-	//			if (pState != UnMagnet) {
 
-	//				if (contact == 1) {
-	//					if (magnetBlocks[i].GetRockMove(2)) {
-	//						ColZ.y = 1;
-	//					}
-	//				}
-	//				else if (contact == 2) {
-	//					if (magnetBlocks[i].GetRockMove(1)) {
-	//						ColZ.x = 1;
-	//					}
-	//				}
-	//				else if (contact == 3) {
-	//					if (magnetBlocks[i].GetRockMove(4)) {
-	//						ColX.x = 1;
-	//					}
-	//				}
-	//				else if (contact == 4) {
-	//					if (magnetBlocks[i].GetRockMove(3)) {
-	//						ColX.y = 1;
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
+	//プレイヤーと磁石がっくっついている場合
+
+	InforUpdateMagnetPos();
+
+	//あったった面を記録(Setcontact) + そのたあったった時の処理
+
+	//自機と磁石
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		int contact = GetContact(pPos, bPos[i]);
+
+		if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
+
+			if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
+
+				if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
+
+
+					if (pState != UnMagnet) {
+
+						if (contact == 1) {
+							if (magnetBlocks[i].GetRockMove(2)) {
+								ColZ.y = 1;
+							}
+						}
+						else if (contact == 2) {
+							if (magnetBlocks[i].GetRockMove(1)) {
+								ColZ.x = 1;
+							}
+						}
+						else if (contact == 3) {
+							if (magnetBlocks[i].GetRockMove(4)) {
+								ColX.x = 1;
+							}
+						}
+						else if (contact == 4) {
+							if (magnetBlocks[i].GetRockMove(3)) {
+								ColX.y = 1;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	//	ImGui::Begin("BlockGetRockBefore");
 	//	ImGui::Text("up = %d,down = %d,left = %d,righ = %d\n", magnetBlocks[i].GetRockMove(1), magnetBlocks[i].GetRockMove(2), magnetBlocks[i].GetRockMove(3), magnetBlocks[i].GetRockMove(4));
@@ -576,59 +793,59 @@ void Colision::MapCollision()
 
 	//くっついているブロックの場合の処理
 
-	int massRockMove[7] = {};
+	//int massRockMove[7] = {};
 
-	for (int i = 0; i < magnetBlocks.size(); i++) {
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		if (stickBlockMass[i]) {
+	//	if (stickBlockMass[i]) {
 
-			for (int j = 1; j < 7; j++) {
+	//		for (int j = 1; j < 7; j++) {
 
-				if (magnetBlocks[i].GetRockMove(j)) {
-					massRockMove[j] = true;
-				}
+	//			if (magnetBlocks[i].GetRockMove(j)) {
+	//				massRockMove[j] = true;
+	//			}
 
-			}
+	//		}
 
-		}
+	//	}
 
-	}
+	//}
 
-	for (int i = 0; i < magnetBlocks.size(); i++) {
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		for (int j = 1; j < 7; j++) {
+	//	for (int j = 1; j < 7; j++) {
 
-			if (massRockMove[j]) {
-				magnetBlocks[i].SetRockMove(true, j);
-			}
+	//		if (massRockMove[j]) {
+	//			magnetBlocks[i].SetRockMove(true, j);
+	//		}
 
-		}
+	//	}
 
-	}
-
-
-	for (int i = 0; i < magnetBlocks.size(); i++) {
-
-		//x,y,z軸に仮想的に移動して当たったら
-		if (magnetBlocks[i].GetRockMove(1) || magnetBlocks[i].GetRockMove(2)) {
-			bMoveVec[i].y = 0;
-		}
-		else if (magnetBlocks[i].GetRockMove(3) && bMoveVec[i].x < 0) {
-			bMoveVec[i].x = 0;
-		}
-		else if (magnetBlocks[i].GetRockMove(4) && bMoveVec[i].x > 0) {
-			bMoveVec[i].x = 0;
-		}
-		else if (magnetBlocks[i].GetRockMove(5) && bMoveVec[i].z > 0) {
-			bMoveVec[i].z = 0;
-		}
-		else if (magnetBlocks[i].GetRockMove(6) && bMoveVec[i].z < 0) {
-			bMoveVec[i].z = 0;
-		}
+	//}
 
 
+	//for (int i = 0; i < magnetBlocks.size(); i++) {
 
-	}
+	//	//x,y,z軸に仮想的に移動して当たったら
+	//	if (magnetBlocks[i].GetRockMove(1) || magnetBlocks[i].GetRockMove(2)) {
+	//		bMoveVec[i].y = 0;
+	//	}
+	//	else if (magnetBlocks[i].GetRockMove(3) && bMoveVec[i].x < 0) {
+	//		bMoveVec[i].x = 0;
+	//	}
+	//	else if (magnetBlocks[i].GetRockMove(4) && bMoveVec[i].x > 0) {
+	//		bMoveVec[i].x = 0;
+	//	}
+	//	else if (magnetBlocks[i].GetRockMove(5) && bMoveVec[i].z > 0) {
+	//		bMoveVec[i].z = 0;
+	//	}
+	//	else if (magnetBlocks[i].GetRockMove(6) && bMoveVec[i].z < 0) {
+	//		bMoveVec[i].z = 0;
+	//	}
+
+
+
+	//}
 
 	//プレイヤーと磁石がっくっついている場合
 
@@ -721,7 +938,7 @@ void Colision::PosCollision()
 
 		if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
 
-			if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
+			if (pPosY1 < bPosY2[i] - 0.025 && bPosY1[i] < pPosY2) {
 
 				if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
 
@@ -1011,25 +1228,27 @@ void Colision::PosCollision()
 
 						if (pPosX1 < bPosX2[i] && bPosX1[i] < pPosX2) {
 
-							////下に0.1移動してあったっていたら
+							if (pPosY1 < bPosY2[i] && bPosY1[i] < pPosY2) {
 
-							if (pPosZ1 < bPosZ2[i] - 0.01 && bPosZ1[i] - 0.01 < pPosZ2) {
+								////下に0.1移動してあったっていたら
 
-								//あったった面を記録
-								if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
-									magnetBlocks[i].SetContactNum(contact, i);
-								}
-								else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
-									magnetBlocks[i].SetContactNum(contact, i);
-								}
-								else {
-									magnetBlocks[i].ReSetContactNum(contact);
-								}
+								if (pPosZ1 < bPosZ2[i] - 0.01 && bPosZ1[i] - 0.01 < pPosZ2) {
 
+									//あったった面を記録
+									if (pState == NorthPole && magnetBlocks[i].GetIsNorth() == 0) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else if (pState == SouthPole && magnetBlocks[i].GetIsNorth() == 1) {
+										magnetBlocks[i].SetContactNum(contact, i);
+									}
+									else {
+										magnetBlocks[i].ReSetContactNum(contact);
+									}
+
+								}
 							}
 						}
 					}
-
 				}
 				//magnetBlocks[i].SetRockMove(true, contact);
 
@@ -1230,8 +1449,9 @@ void Colision::PosCollision()
 
 							}
 							else {
-								magnetBlocks[i].SetRockMove(true, contact1);
-								magnetBlocks[j].SetRockMove(true, contact2);
+
+								//magnetBlocks[i].SetRockMove(true, contact1);
+								//magnetBlocks[j].SetRockMove(true, contact2);
 
 								break;
 							}
@@ -1404,12 +1624,13 @@ void Colision::PosCollision()
 
 		int contact = GetContact(pPos, bPos[i]);
 
+		float playerSpeed = player->GetSpeed();
 
-		if (pPosX1 + pMoveVec.x < bPosX2[i] && bPosX1[i] - pMoveVec.x < pPosX2) {
+		if (pPosX1 + pMoveVec.x < bPosX2[i] && bPosX1[i] < pPosX2 + pMoveVec.x) {
 
-			if (pPosZ1 + pMoveVec.z < bPosZ2[i] && bPosZ1[i] - pMoveVec.z < pPosZ2) {
+			if (pPosZ1 + pMoveVec.z < bPosZ2[i] && bPosZ1[i] < pPosZ2 + pMoveVec.z) {
 
-				if (pPosY1 + pMoveVec.y < bPosY2[i] && bPosY1[i] - pMoveVec.y < pPosY2) {
+				if (pPosY1 + pMoveVec.y < bPosY2[i] && bPosY1[i] < pPosY2+ pMoveVec.y) {
 
 
 					if (pState == UnMagnet) {
@@ -1438,7 +1659,7 @@ void Colision::PosCollision()
 					}
 					else {
 
-						if (contact == 1) {
+					if (contact == 1) {
 							ColY.y = 1;
 						}
 						else if (contact == 2) {
