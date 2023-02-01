@@ -52,78 +52,8 @@ void GamePlayScene::Initialize()
 	//マップ読み込み
 	map_ = new Map;
 
-	//ステージ選択時に変更された文字列で読み込む
-	SetStage(ShareData::stageNumber);
-
-	map_->SetSize(stageSize);
-	map_->Loding(stageStr.c_str());
-
-	//ゴールの初期化
-	goal = new Goal;
-
-	//プレイヤー初期化
-	player = new Player();
-	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input, map_, goal);
-
-	//マップの座標の初期化
-	for (int i = 0; i < map_->blockY; i++)
-	{
-		for (int j = 0; j < map_->blockZ; j++)
-		{
-			for (int k = 0; k < map_->blockX; k++)
-			{
-				blockObj[i][j][k].Initialize();
-				blockObj[i][j][k].model = Model::CreateModel();
-				blockObj[i][j][k].model->textureIndex = groundTexture;
-				blockObj[i][j][k].position.x = k * blockSize * blockScale;
-				blockObj[i][j][k].position.y = i * blockSize * blockScale;
-				blockObj[i][j][k].position.z = j * blockSize * blockScale;
-				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
-				blockObj[i][j][k].Update();
-
-				if (map_->map[i][j][k] == 2) {
-					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
-					magnetDatas.push_back(nBlockPos);
-				}
-
-				if (map_->map[i][j][k] == 3) {
-					MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale), false };
-					magnetDatas.push_back(sBlockPos);
-				}
-
-				if (map_->map[i][j][k] == 4)
-				{
-					player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
-					player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
-				}
-				if (map_->map[i][j][k] == 5)
-				{
-					goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
-					goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
-					goal->obj.Update();
-				}
-			}
-		}
-	}
-
-	//磁石の初期化と生成
-	for (int i = 0; i < magnetDatas.size(); i++) {
-		MagnetBlock newBlock{};
-		newBlock.Initialize(magnetDatas[i]);
-		//ゲームで使うようの配列に格納
-		magnetBlocks.push_back(newBlock);
-		magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	}
-
-	//当たり判定初期化
-	colision = new Colision();
-	for (int i = 0; i < magnetDatas.size(); i++) {
-		colision->Initialize(player, magnetBlocks[i], map_, i);
-	}
-
-
-	//メニューは開かれていない状態
-	isMenu = false;
+	//ステージのリセット
+	StageInitialize(ShareData::stageNumber);
 }
 
 void GamePlayScene::Finalize()
@@ -161,9 +91,18 @@ void GamePlayScene::Update()
 			selectMenuNumber--;
 		}
 
+
 		//最大値、最小値を超えないように
 		if (selectMenuNumber > MenuIndex::Title)selectMenuNumber = Title;
 		else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
+
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
+
+			if (selectMenuNumber == Reset) {
+				StageInitialize(ShareData::stageNumber);
+			}
+
+		}
 
 		ImGui::Begin("menu");
 		ImGui::Text("menuNumber %d", selectMenuNumber);
@@ -298,8 +237,84 @@ void GamePlayScene::SetStage(int stageNumber)
 
 }
 
-void GamePlayScene::StageInitialize()
+void GamePlayScene::StageInitialize(int stageNumber)
 {
+	//ステージ選択時に変更された文字列で読み込む
+	SetStage(stageNumber);
+
+	map_->SetSize(stageSize);
+	map_->Loding(stageStr.c_str());
+
+	//ゴールの初期化
+	goal = new Goal;
+
+	//プレイヤー初期化
+	player = new Player();
+	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input, map_, goal);
+
+	//磁石関係初期化
+	magnetDatas.clear();
+	magnetBlocks.clear();
+
+	//マップの座標の初期化
+	for (int i = 0; i < map_->blockY; i++)
+	{
+		for (int j = 0; j < map_->blockZ; j++)
+		{
+			for (int k = 0; k < map_->blockX; k++)
+			{
+				blockObj[i][j][k].Initialize();
+				blockObj[i][j][k].model = Model::CreateModel();
+				blockObj[i][j][k].model->textureIndex = groundTexture;
+				blockObj[i][j][k].position.x = k * blockSize * blockScale;
+				blockObj[i][j][k].position.y = i * blockSize * blockScale;
+				blockObj[i][j][k].position.z = j * blockSize * blockScale;
+				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
+				blockObj[i][j][k].Update();
+
+				if (map_->map[i][j][k] == 2) {
+					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
+					magnetDatas.push_back(nBlockPos);
+				}
+
+				if (map_->map[i][j][k] == 3) {
+					MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale), false };
+					magnetDatas.push_back(sBlockPos);
+				}
+
+				if (map_->map[i][j][k] == 4)
+				{
+					player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
+					player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+				}
+				if (map_->map[i][j][k] == 5)
+				{
+					goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
+					goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+					goal->obj.Update();
+				}
+			}
+		}
+	}
+
+	//磁石の初期化と生成
+	for (int i = 0; i < magnetDatas.size(); i++) {
+		MagnetBlock newBlock{};
+		newBlock.Initialize(magnetDatas[i]);
+		//ゲームで使うようの配列に格納
+		magnetBlocks.push_back(newBlock);
+		magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	}
+
+	//当たり判定初期化
+	colision = new Colision();
+	for (int i = 0; i < magnetDatas.size(); i++) {
+		colision->Initialize(player, magnetBlocks[i], map_, i);
+	}
+
+
+	//メニューは開かれていない状態
+	isMenu = false;
 }
 
 void GamePlayScene::GoTitle()
