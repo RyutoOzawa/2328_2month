@@ -24,9 +24,17 @@ void GamePlayScene::Initialize()
 	backGroundTexture = Texture::LoadTexture(L"Resources/dummyPlayGame.png");
 	clearTexture = Texture::LoadTexture(L"Resources/clear.png");
 	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
+	menuTexture = Texture::LoadTexture(L"Resources/dummyIngameMenu.png");
 
 	backGroundSprite = new Sprite();
 	backGroundSprite->Initialize(backGroundTexture);
+
+	menuSprite = new Sprite();
+	menuSprite->Initialize(menuTexture);
+	//アンカーポイントをスプライトの中心に
+	menuSprite->SetAnchorPoint(XMFLOAT2(0.5f, 0.5f));
+	menuSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2));
+	menuSprite->Update();
 
 	goalSprite.Initialize(clearTexture);
 	goalSprite.SetPos(XMFLOAT2(400, 200));
@@ -72,7 +80,7 @@ void GamePlayScene::Initialize()
 	}
 
 	goal = new Goal;
-	
+
 	for (int i = 0; i < map_->blockY; i++)
 	{
 		for (int j = 0; j < map_->blockZ; j++)
@@ -128,19 +136,19 @@ void GamePlayScene::Initialize()
 			for (int k = 0; k < map_->blockX; k++)
 			{
 
-			if (map_->map[i][j][k] == 2) {
-				MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
-				magnetDatas.push_back(nBlockPos);
-			}
+				if (map_->map[i][j][k] == 2) {
+					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
+					//magnetDatas.push_back(nBlockPos);
+				}
 
-			if (map_->map[i][j][k] == 3) {
-				MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale), false };
-				magnetDatas.push_back(sBlockPos);
-			}
+				if (map_->map[i][j][k] == 3) {
+					MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale), false };
+					magnetDatas.push_back(sBlockPos);
+				}
 
+			}
 		}
 	}
-}
 
 	//磁石の初期化と生成
 	for (int i = 0; i < magnetDatas.size(); i++) {
@@ -157,6 +165,9 @@ void GamePlayScene::Initialize()
 		colision->Initialize(player, magnetBlocks[i], map_, i);
 	}
 
+
+	//メニューは開かれていない状態
+	isMenu = false;
 }
 
 void GamePlayScene::Finalize()
@@ -180,40 +191,72 @@ void GamePlayScene::Update()
 
 	//----------------------ゲーム内ループはここから---------------------//
 
+	if (isMenu) {
+		//スタートボタンでメニューを閉じる
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
+			isMenu = false;
+		}
 
-	//磁力計算
-	for (int i = 0; i < magnetDatas.size(); i++) {
-		colision->UpdateDeta(player, magnetBlocks[i], i);
+		//スティック上下でメニューを選ぶ
+		if (input->IsTriggerLStickDown()) {
+			selectMenuNumber++;
+		}
+		else if (input->IsTriggerLStickUp()) {
+			selectMenuNumber--;
+		}
+
+		//最大値、最小値を超えないように
+		if (selectMenuNumber > MenuIndex::Title)selectMenuNumber = Title;
+		else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
+
+		ImGui::Begin("menu");
+		ImGui::Text("menuNumber %d", selectMenuNumber);
+		ImGui::End();
+
 	}
+	else {
 
-	colision->Update();
+		//スタートボタンでメニューへ
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
+			isMenu = true;
+			//選択は初期はリセット
+			selectMenuNumber = Reset;
+		}
 
-	//座標の更新
-	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		magnetBlocks[i] = colision->magnetBlocks[i];
+		//磁力計算
+		for (int i = 0; i < magnetDatas.size(); i++) {
+			colision->UpdateDeta(player, magnetBlocks[i], i);
+		}
 
-		magnetBlocks[i].Update();
+		colision->Update();
+
+		//座標の更新
+		for (int i = 0; i < magnetBlocks.size(); i++) {
+
+			magnetBlocks[i] = colision->magnetBlocks[i];
+
+			magnetBlocks[i].Update();
+
+		}
+
+		player->Update();
+
+		goal->isGoal = player->GetIsGoal();
+
+		goal->Update();
+
+		//カメラ座標は自機に追従
+		camera.target.x = player->GetPosition().x;
+		camera.target.y = player->GetPosition().y;
+		camera.target.z = player->GetPosition().z;
+		camera.eye = camera.target;
+		camera.eye.y += 20.0f;
+		camera.eye.z -= 2.5f;
+
+		camera.UpdateMatrix();
 
 	}
-
-	player->Update();
-
-	goal->isGoal = player->GetIsGoal();
-
-	goal->Update();
-
-	//カメラ座標は自機に追従
-	camera.target.x = player->GetPosition().x;
-	camera.target.y = player->GetPosition().y;
-	camera.target.z = player->GetPosition().z;
-	camera.eye = camera.target;
-	camera.eye.y += 20.0f;
-	camera.eye.z -= 2.5f;
-
-	camera.UpdateMatrix();
-
-
 
 	//----------------------ゲーム内ループはここまで---------------------//
 
@@ -263,6 +306,10 @@ void GamePlayScene::Draw()
 		goalSprite.Draw();
 	}
 
+	if (isMenu) {
+		menuSprite->Draw();
+	}
+
 }
 
 void GamePlayScene::SetStage(int stageNumber)
@@ -271,7 +318,7 @@ void GamePlayScene::SetStage(int stageNumber)
 	{
 	case Sample1:
 		stageStr = "map/map1.csv";
-		stageSize = {10,5,10};
+		stageSize = { 10,5,10 };
 		break;
 	case Sample2:
 		stageStr = "map/map2.csv";
@@ -287,10 +334,22 @@ void GamePlayScene::SetStage(int stageNumber)
 		break;
 	case tutorial1:
 		stageStr = "map/Tuto1.csv";
-		stageSize = {20,3,20};
+		stageSize = { 20,3,20 };
 		break;
 	default:
 		break;
 	}
 
+}
+
+void GamePlayScene::StageInitialize()
+{
+}
+
+void GamePlayScene::GoTitle()
+{
+}
+
+void GamePlayScene::GoStageSelect()
+{
 }

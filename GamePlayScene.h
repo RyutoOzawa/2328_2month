@@ -9,6 +9,11 @@
 #include"Sprite.h"
 #include"Goal.h"
 
+enum MenuIndex {
+	Reset,
+	StageSelect_MENU,
+	Title,
+};
 
 class GamePlayScene:public GameBaseScene
 {
@@ -27,6 +32,14 @@ public:
 
 	void SetStage(int stageNumber);
 
+	//ステージリセット
+	void StageInitialize();
+
+	//タイトルに戻る
+	void GoTitle();
+
+	//ステージセレクトに戻る
+	void GoStageSelect();
 
 public://メンバ変数
 
@@ -40,9 +53,11 @@ public://メンバ変数
 	uint32_t playerTexture = 0;		//プレイヤーのテクスチャ
 	uint32_t clearTexture = 0;		//クリア画面
 	uint32_t goalTexture = 0;		//ゴールのテクスチャ
+	uint32_t menuTexture = 0;		//メニューのテクスチャ
 
 	uint32_t backGroundTexture = 0;	//背景画像(現在はダミー
 	Sprite* backGroundSprite = nullptr;
+	Sprite* menuSprite = nullptr;
 
 	Object3d blockObj[20][20][20];	//ブロック(マップのオブジェクト)
 
@@ -65,5 +80,10 @@ public://メンバ変数
 
 	//ステージ大きさ
 	Vector3 stageSize = {};
+
+	//メニューを開いているかどうか
+	bool isMenu = false;
+	int selectMenuNumber = 0;
+
 };
 
