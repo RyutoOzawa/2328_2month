@@ -64,6 +64,7 @@ public:
 	void SetRockMove(bool rock, int num) { this->rockMove[num] = rock; }
 	bool GetRockMove(int num) { return this->rockMove[num]; }
 
+
 public:
 	Object3d obj;
 

@@ -70,6 +70,9 @@ public:
 	//mainPos のどの面にsubPosにあったっか
 	int GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos);
 
+	//ステージ読み解く
+	void ReSet();
+
 	//pos2 - pos1　で pos1　から pos2　のベクトルを求める
 	XMFLOAT3 GetVec(XMFLOAT3 pos1, XMFLOAT3 pos2);
 
