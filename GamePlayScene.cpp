@@ -50,7 +50,6 @@ void GamePlayScene::Initialize()
 	map_->SetSize(stageSize);
 	map_->Loding(stageStr.c_str());
 
-
 	//ゴールの初期化
 	goal = new Goal;
 
@@ -100,75 +99,6 @@ void GamePlayScene::Initialize()
 			}
 		}
 	}
-
-	//for (int i = 0; i < map_->blockY; i++)
-	//{
-	//	for (int j = 0; j < map_->blockZ; j++)
-	//	{
-	//		for (int k = 0; k < map_->blockX; k++)
-	//		{
-	//			if (map_->map[i][j][k] == 5)
-	//			{
-	//				goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
-	//			}
-	//		}
-	//	}
-	//}
-
-	//goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	//goal->obj.Update();
-
-	////プレイヤー初期化
-	//player = new Player();
-	//player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input, map_, goal);
-	//for (int i = 0; i < map_->blockY; i++)
-	//{
-	//	for (int j = 0; j < map_->blockZ; j++)
-	//	{
-	//		for (int k = 0; k < map_->blockX; k++)
-	//		{
-	//			if (map_->map[i][j][k] == 4)
-	//			{
-	//				player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
-	//			}
-	//		}
-	//	}
-	//}
-
-	//player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
-
-	////磁石データ初期化
-	//MagnetData nBlockPos{ XMFLOAT3(3,2,2),true };
-	//MagnetData sBlockPos{ XMFLOAT3(6,2,2), false };
-	//MagnetData n2BlockPos{ XMFLOAT3(3, 2, 5), true };
-	//MagnetData s2BlockPos{ XMFLOAT3(6, 2, 5), false };
-
-	////磁石データを配列に差し込む
-	//magnetDatas.push_back(nBlockPos);
-	//magnetDatas.push_back(sBlockPos);
-	//magnetDatas.push_back(n2BlockPos);
-	//magnetDatas.push_back(s2BlockPos);
-
-	//for (int i = 0; i < map_->blockY; i++)
-	//{
-	//	for (int j = 0; j < map_->blockZ; j++)
-	//	{
-	//		for (int k = 0; k < map_->blockX; k++)
-	//		{
-
-	//			//if (map_->map[i][j][k] == 2) {
-	//			//	MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
-	//			//	magnetDatas.push_back(nBlockPos);
-	//			//}
-
-	//			//if (map_->map[i][j][k] == 3) {
-	//			//	MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale), false };
-	//			//	magnetDatas.push_back(sBlockPos);
-	//			//}
-
-	//		}
-	//	}
-	//}
 
 	//磁石の初期化と生成
 	for (int i = 0; i < magnetDatas.size(); i++) {

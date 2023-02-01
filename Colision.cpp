@@ -2208,6 +2208,13 @@ int Colision::GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos)
 	return contact;
 }
 
+void Colision::ReSet()
+{
+
+
+
+}
+
 XMFLOAT3 Colision::GetVec(XMFLOAT3 pos1, XMFLOAT3 pos2)
 {
 	return XMFLOAT3(pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z);
