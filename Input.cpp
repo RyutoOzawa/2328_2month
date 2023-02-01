@@ -95,9 +95,19 @@ bool Input::IsDownLStickLeft(int deadZone)
 	return padState.Gamepad.sThumbLX < -deadZone;
 }
 
+bool Input::IsTriggerLStickLeft(int deadZone)
+{
+	return (padState.Gamepad.sThumbLX < -deadZone) && (oldPadState.Gamepad.sThumbLX >= -deadZone);
+}
+
 bool Input::IsDownLStickRight(int deadZone)
 {
 	return padState.Gamepad.sThumbLX > deadZone;
+}
+
+bool Input::IsTriggerLStickRight(int deadZone)
+{
+	return (padState.Gamepad.sThumbLX > deadZone) && (oldPadState.Gamepad.sThumbLX <=deadZone);
 }
 
 bool Input::IsDownLStickUp(int deadZone)
@@ -105,9 +115,19 @@ bool Input::IsDownLStickUp(int deadZone)
 	return padState.Gamepad.sThumbLY > deadZone;
 }
 
+bool Input::IsTriggerLStickUp(int deadZone)
+{
+	return (padState.Gamepad.sThumbLY > deadZone) && (oldPadState.Gamepad.sThumbLY <= deadZone);
+}
+
 bool Input::IsDownLStickDown(int deadZone)
 {
 	return padState.Gamepad.sThumbLY < -deadZone;
+}
+
+bool Input::IsTriggerLStickDown(int deadZone)
+{
+	return (padState.Gamepad.sThumbLY < -deadZone) && (oldPadState.Gamepad.sThumbLY >= -deadZone);
 }
 
 bool Input::IsDownRStickLeft(int deadZone)
@@ -115,9 +135,19 @@ bool Input::IsDownRStickLeft(int deadZone)
 	return padState.Gamepad.sThumbRX < -deadZone;
 }
 
+bool Input::IsTriggerRStickLeft(int deadZone)
+{
+	return (padState.Gamepad.sThumbRX < -deadZone) && (oldPadState.Gamepad.sThumbRX >= -deadZone);
+}
+
 bool Input::IsDownRStickRight(int deadZone)
 {
 	return padState.Gamepad.sThumbRX >deadZone;
+}
+
+bool Input::IsTriggerRStickRight(int deadZone)
+{
+	return (padState.Gamepad.sThumbRX > deadZone) && (oldPadState.Gamepad.sThumbRX <= deadZone);
 }
 
 bool Input::IsDownRStickUp(int deadZone)
@@ -125,7 +155,17 @@ bool Input::IsDownRStickUp(int deadZone)
 	return padState.Gamepad.sThumbRY >deadZone;
 }
 
+bool Input::IsTriggerRStickUp(int deadZone)
+{
+	return (padState.Gamepad.sThumbRY > deadZone) && (oldPadState.Gamepad.sThumbRY <= deadZone);
+}
+
 bool Input::IsDownRStickDown(int deadZone)
 {
 	return padState.Gamepad.sThumbRY < -deadZone;
+}
+
+bool Input::IsTriggerRStickDown(int deadZone)
+{
+	return (padState.Gamepad.sThumbRY < -deadZone) && (oldPadState.Gamepad.sThumbRY >= -deadZone);
 }
