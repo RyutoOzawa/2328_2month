@@ -83,7 +83,7 @@ void GamePlayScene::Initialize()
 
 				if (map_->map[i][j][k] == 2) {
 					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
-					magnetDatas.push_back(nBlockPos)
+					magnetDatas.push_back(nBlockPos);
 				}
 
 				if (map_->map[i][j][k] == 3) {
@@ -95,7 +95,7 @@ void GamePlayScene::Initialize()
 				{
 					player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
 					player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
-}
+				}
 				if (map_->map[i][j][k] == 5)
 				{
 					goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
