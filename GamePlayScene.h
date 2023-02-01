@@ -33,7 +33,7 @@ public:
 	void SetStage(int stageNumber);
 
 	//ステージリセット
-	void StageInitialize();
+	void StageInitialize(int stageNumber);
 
 	//タイトルに戻る
 	void GoTitle();
