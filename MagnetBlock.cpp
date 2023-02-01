@@ -105,3 +105,4 @@ bool MagnetBlock::Colision(XMFLOAT3 pos1, float pos1Size, XMFLOAT3 pos2, float p
 
 	return false;
 }
+

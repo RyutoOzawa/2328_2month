@@ -1,6 +1,6 @@
 #include "Colision.h"
 #include <cassert>
-#include"ImguiManager.h"
+//#include"ImguiManager.h"
 
 Colision::Colision() {}
 
@@ -544,12 +544,19 @@ void Colision::MapCollision()
 		if (magnetBlocks[i].GetRockMove(1) || magnetBlocks[i].GetRockMove(2)) {
 			bMoveVec[i].y = 0;
 		}
-		else if (magnetBlocks[i].GetRockMove(3) || magnetBlocks[i].GetRockMove(4)) {
+		else if (magnetBlocks[i].GetRockMove(3) && bMoveVec[i].x < 0) {
 			bMoveVec[i].x = 0;
 		}
-		else if (magnetBlocks[i].GetRockMove(5) || magnetBlocks[i].GetRockMove(6)) {
+		else if (magnetBlocks[i].GetRockMove(4) && bMoveVec[i].x > 0) {
+			bMoveVec[i].x = 0;
+		}
+		else if (magnetBlocks[i].GetRockMove(5) && bMoveVec[i].z > 0) {
 			bMoveVec[i].z = 0;
 		}
+		else if (magnetBlocks[i].GetRockMove(6) && bMoveVec[i].z < 0) {
+			bMoveVec[i].z = 0;
+		}
+
 
 
 	}
@@ -706,6 +713,7 @@ void Colision::PosCollision()
 								}
 							}
 							else {
+								magnetBlocks[i].SetRockMove(true,contact);
 								break;
 							}
 
@@ -1121,13 +1129,23 @@ void Colision::PosCollision()
 										adjustInteger = false;
 									}
 
+									if (magnetBlocks[i].GetRockMove(3) == false && adjustInteger == true) {
+										pos1.x -= adjust.x;
+										bMoveVec[i].x -= adjust.x;
+									}
+									else if (magnetBlocks[i].GetRockMove(4) == false && adjustInteger == false) {
+										pos1.x -= adjust.x;
+										bMoveVec[i].x -= adjust.x;
+									}
 
-									pos1.x -= adjust.x;
+									if (magnetBlocks[j].GetRockMove(3) == false && adjustInteger == false) {
+										pos2.x += adjust.x;
+										bMoveVec[j].x += adjust.x;
+									}else if (magnetBlocks[j].GetRockMove(4) == false && adjustInteger == true) {
+										pos2.x += adjust.x;
+										bMoveVec[j].x += adjust.x;
+									}
 
-									bMoveVec[i].x -= adjust.x;
-									pos2.x += adjust.x;
-
-									bMoveVec[j].x += adjust.x;
 
 								}
 								else if (contact1 == 5 || contact1 == 6) {
@@ -1142,6 +1160,9 @@ void Colision::PosCollision()
 
 							}
 							else {
+								magnetBlocks[i].SetRockMove(true,contact1);
+								magnetBlocks[j].SetRockMove(true,contact2);
+
 								break;
 							}
 
@@ -1882,7 +1903,7 @@ void Colision::InforUpdate()
 
 		for (int j = 0; j < 7; j++) {
 			magnetBlocks[i].ReSetContactNum(j);
-			//magnetBlocks[i].SetRockMove(false, j);
+			magnetBlocks[i].SetRockMove(false, j);
 		}
 
 
@@ -2185,6 +2206,13 @@ int Colision::GetContact(XMFLOAT3 mainPos, XMFLOAT3 subPos)
 
 
 	return contact;
+}
+
+void Colision::ReSet()
+{
+
+
+
 }
 
 XMFLOAT3 Colision::GetVec(XMFLOAT3 pos1, XMFLOAT3 pos2)
