@@ -176,7 +176,7 @@ void Player::OnMapCollisionZ2()
 
 void Player::ChangeState()
 {
-	if (input->IsKeyTrigger(DIK_SPACE)) {
+	if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
 		state++;
 		//state = SouthPole;
 		if (state > SouthPole) {
@@ -187,13 +187,13 @@ void Player::ChangeState()
 
 void Player::Move() {
 
-	if (input->IsKeyPress(DIK_A)) {
+	if (input->IsDownLStickLeft()) {
 		if (colX.y == 0) {
 			pos.x -= playerSpd;
 			move.x = -playerSpd;
 		}
 	}
-	else  if (input->IsKeyPress(DIK_D)) {
+	else  if (input->IsDownLStickRight()) {
 		if (colX.x == 0) {
 			pos.x += playerSpd;
 			move.x = playerSpd;
@@ -203,14 +203,14 @@ void Player::Move() {
 		move.x = 0;
 	}
 
-	if (input->IsKeyPress(DIK_S)) {
+	if (input->IsDownLStickDown()) {
 		if (colZ.y == 0) {
 
 			pos.z -= playerSpd;
 			move.z = -playerSpd;
 		}
 	}
-	else  if (input->IsKeyPress(DIK_W)) {
+	else  if (input->IsDownLStickUp()) {
 		if (colZ.x == 0) {
 
 			pos.z += playerSpd;
