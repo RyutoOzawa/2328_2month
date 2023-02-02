@@ -33,6 +33,13 @@ void GamePlayScene::Initialize()
 	selectBoxSprite->Update();
 	boxPos = selectBoxSprite->GetPosition();
 
+	playUITexture = Texture::LoadTexture(L"Resources/dummyUI_PLAY.png");
+	playUISprite = new Sprite();
+	playUISprite->Initialize(playUITexture);
+	playUISprite->SetAnchorPoint({ 0.0f,1.0f });
+	playUISprite->SetPos( { 64.0f, WindowsAPI::winH - 64.0f });
+	playUISprite->Update();
+
 	backGroundSprite = new Sprite();
 	backGroundSprite->Initialize(backGroundTexture);
 
@@ -81,6 +88,9 @@ void GamePlayScene::Finalize()
 
 	delete backGroundSprite;
 	delete menuSprite;
+	delete selectBoxSprite;
+	delete playUISprite;
+	delete colision;
 	//-------------ここまでにループ内で使用したものの後処理------------//
 }
 
@@ -266,6 +276,7 @@ void GamePlayScene::Draw()
 	//-------前景スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
+	playUISprite->Draw();
 
 	if (goal->isGoal) {
 		goalSprite.Draw();
