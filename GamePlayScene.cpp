@@ -70,18 +70,8 @@ void GamePlayScene::Finalize()
 	delete player;
 
 	delete backGroundSprite;
+	delete menuSprite;
 	//-------------ここまでにループ内で使用したものの後処理------------//
-
-				//if (map_->map[i][j][k] == 2) {
-				//	MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale),true };
-				//	magnetDatas.push_back(nBlockPos);
-				//}
-
-				//if (map_->map[i][j][k] == 3) {
-				//	MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale), false };
-				//	magnetDatas.push_back(sBlockPos);
-				//}
-
 }
 
 void GamePlayScene::Update()

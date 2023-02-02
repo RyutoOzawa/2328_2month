@@ -37,6 +37,15 @@ public://メンバ変数
 	uint32_t titleTexture = 0;	//背景画像(現在はダミー
 	Sprite* titleSprite = nullptr;
 
+	uint32_t uiButtonATexture = 0;
+	Sprite* uiButtonASprite = nullptr;
+
+	uint32_t uiStageSelectTexture = 0;
+	Sprite*  uiStageSelectSprite = nullptr;
+
+	uint32_t uiStageNumberTexture[10] = {};
+	Sprite* uiStageNumberSprite[10] = {};
+
 	int phase = 0;
 
 };
