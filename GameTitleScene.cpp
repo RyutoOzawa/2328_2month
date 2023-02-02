@@ -112,6 +112,11 @@ void GameTitleScene::Update()
 			//シーンの切り替えを依頼
 			sceneManager->ChangeScene("GAMEPLAY");
 		}
+
+		//Bボタンでタイトルへ
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_B)) {
+			phase = WaitInputSpaceKey;
+		}
 	}
 
 

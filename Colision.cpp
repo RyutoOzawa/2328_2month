@@ -374,9 +374,9 @@ void Colision::MapCollision()
 				if (isJump && pPosY1 < bPosY2[i] + (bSize / 2)) {
 
 					player->SetJump(true);
-					ImGui::Begin("right");
+				/*	ImGui::Begin("right");
 					ImGui::Text("true");
-					ImGui::End();
+					ImGui::End();*/
 
 				}
 
@@ -390,13 +390,13 @@ void Colision::MapCollision()
 
 	}
 
-	ImGui::Begin("PY");
+	/*ImGui::Begin("PY");
 	ImGui::Text("pPos = %f,%f \n", pPosY1, pPosY2);
 	ImGui::End();
 
 	ImGui::Begin("COL");
 	ImGui::Text("X.x = %f,X.y = %f,Z.x = %f,Z.y = %f \n", ColX.x, ColX.y, ColZ.x, ColZ.y);
-	ImGui::End();
+	ImGui::End();*/
 
 
 	//player->SetColX(ColX);
@@ -1067,9 +1067,9 @@ void Colision::PosCollision()
 							ColZ.y = 1;
 
 
-							ImGui::Begin("up");
+						/*	ImGui::Begin("up");
 							ImGui::Text("true");
-							ImGui::End();
+							ImGui::End();*/
 						}
 						else if (contact == 6) {
 							ColZ.x = 1;

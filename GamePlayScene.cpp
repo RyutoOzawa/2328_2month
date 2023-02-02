@@ -26,6 +26,13 @@ void GamePlayScene::Initialize()
 	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
 	menuTexture = Texture::LoadTexture(L"Resources/dummyIngameMenu.png");
 
+	selectBoxTexture = Texture::LoadTexture(L"Resources/dummyUI_selectBox.png");
+	selectBoxSprite = new Sprite();
+	selectBoxSprite->Initialize(selectBoxTexture);
+	selectBoxSprite->SetAnchorPoint({ 0.5f,0.5f });
+	selectBoxSprite->Update();
+	boxPos = selectBoxSprite->GetPosition();
+
 	backGroundSprite = new Sprite();
 	backGroundSprite->Initialize(backGroundTexture);
 
@@ -41,6 +48,9 @@ void GamePlayScene::Initialize()
 	//goalSprite.SetSize(XMFLOAT2(100, 100));
 	goalSprite.Update();
 
+	selectBoxPos[0] = { WindowsAPI::winW / 2,320.0f };
+	selectBoxPos[1] = { WindowsAPI::winW / 2,400.0f };
+	selectBoxPos[2] = { WindowsAPI::winW / 2,480.0f };
 
 	//カメラ初期化
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
@@ -149,10 +159,26 @@ void GamePlayScene::Update()
 
 			ImGui::Begin("menu");
 			ImGui::Text("menuNumber %d", selectMenuNumber);
+
+			ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
+			ImGui::Text("window position leftTop : %f,%f", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+			ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2), ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2));
+
+			ImGui::SliderFloat("boxPosX", &boxPos.x, 0.0f, WindowsAPI::winW);
+			ImGui::SliderFloat("boxPosY", &boxPos.y, 0.0f, WindowsAPI::winH);
+
 			ImGui::End();
+
+			selectBoxSprite->SetPos(selectBoxPos[selectMenuNumber]);
+			selectBoxSprite->Update();
 
 		}
 		else {
+
+			//fps表示
+			ImGui::Begin("fps");
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
 
 			//スタートボタンでメニューへ
 			if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
@@ -247,6 +273,7 @@ void GamePlayScene::Draw()
 
 	if (isMenu) {
 		menuSprite->Draw();
+		selectBoxSprite->Draw();
 	}
 
 }
