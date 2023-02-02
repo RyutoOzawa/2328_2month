@@ -97,7 +97,7 @@ private:
 
 	bool isJump = false;
 
-	float jumpHight = 4.0f;
+	float jumpHight = 1.4f;
 
 	float jumpBeforePosY;
 

@@ -123,13 +123,13 @@ void Player::GoalCol()
 	float gPosZ1 = goal->GetPos().z - (size / 2);
 	float gPosZ2 = goal->GetPos().z + (size / 2);
 
+	float adjust = 0.1;
 
+	if (pPosX1 < gPosX2 + adjust && gPosX1 - adjust < pPosX2) {
 
-	if (pPosX1 < gPosX2 && gPosX1 < pPosX2) {
+		if (pPosY1 < gPosY2 && gPosY1  < pPosY2) {
 
-		if (pPosY1 < gPosY2 && gPosY1 < pPosY2) {
-
-			if (pPosZ1 < gPosZ2 && gPosZ1 < pPosZ2) {
+			if (pPosZ1 < gPosZ2 + adjust && gPosZ1 - adjust < pPosZ2) {
 
 				//あったったらあったった時の処理
 				goal->InGoal();
