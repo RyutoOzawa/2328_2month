@@ -59,6 +59,11 @@ public://メンバ変数
 	Sprite* backGroundSprite = nullptr;
 	Sprite* menuSprite = nullptr;
 
+	uint32_t selectBoxTexture = 0;
+	Sprite* selectBoxSprite = nullptr;
+	DirectX::XMFLOAT2 boxPos{};
+	DirectX::XMFLOAT2 selectBoxPos[3]{};
+
 	Object3d blockObj[20][20][20];	//ブロック(マップのオブジェクト)
 
 	Player* player = nullptr;		//プレイヤー
