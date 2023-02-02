@@ -72,15 +72,17 @@ void GamePlayScene::Finalize()
 	delete backGroundSprite;
 	//-------------ここまでにループ内で使用したものの後処理------------//
 
-				if (map_->map[i][j][k] == 2) {
-					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale),true };
-					magnetDatas.push_back(nBlockPos);
-				}
+				//if (map_->map[i][j][k] == 2) {
+				//	MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale),true };
+				//	magnetDatas.push_back(nBlockPos);
+				//}
 
-				if (map_->map[i][j][k] == 3) {
-					MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale), false };
-					magnetDatas.push_back(sBlockPos);
-				}
+				//if (map_->map[i][j][k] == 3) {
+				//	MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale), false };
+				//	magnetDatas.push_back(sBlockPos);
+				//}
+
+}
 
 void GamePlayScene::Update()
 {
@@ -97,15 +99,15 @@ void GamePlayScene::Update()
 		}
 
 		//最大値、最小値を超えないように
-		if (clearMenuNumber >1)clearMenuNumber = 1;
+		if (clearMenuNumber > 1)clearMenuNumber = 1;
 		else if (clearMenuNumber < 0)clearMenuNumber = 0;
 
 		//Aボタンで決定
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
 			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
 			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::tutorial1) {
-					ShareData::stageNumber++;
-					StageInitialize(ShareData::stageNumber);
+				ShareData::stageNumber++;
+				StageInitialize(ShareData::stageNumber);
 			}//それ以外(ステージ選択ボタンが押されたか、ステージが一番最後)だったらステージ選択に戻る
 			else {
 				//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
