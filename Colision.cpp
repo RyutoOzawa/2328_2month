@@ -157,46 +157,46 @@ void Colision::MapCollision()
 
 	//自機を溝に落ちないように
 
-	////上
-	//if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer + 1 + playerSpeed) && map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer + 1 + playerSpeed)) {
+	//上
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer + 1 + playerSpeed) && map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer + 1 + playerSpeed)) {
 
-	//}
-	//else {
-	//	if (player->GetFall() == false) {
-	//		ColZ.x = 1;
-	//	}
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColZ.x = 1;
+		}
 
-	//}
+	}
 
-	////下
-	//if (map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer - 1 - playerSpeed) && map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer - 1 - playerSpeed)) {
+	//下
+	if (map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer - 1 - playerSpeed) && map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer - 1 - playerSpeed)) {
 
-	//}
-	//else {
-	//	if (player->GetFall() == false) {
-	//		ColZ.y = 1;
-	//	}
-	//}
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColZ.y = 1;
+		}
+	}
 
-	////右
-	//if (map_->mapcol(rightplayer + playerSpeed, downplayer - playerSpeed, backplayer) && map_->mapcol(rightplayer + playerSpeed, downplayer - playerSpeed, frontplayer)) {
+	//右
+	if (map_->mapcol(rightplayer + playerSpeed, downplayer - playerSpeed, backplayer) && map_->mapcol(rightplayer + playerSpeed, downplayer - playerSpeed, frontplayer)) {
 
-	//}
-	//else {
-	//	if (player->GetFall() == false) {
-	//		ColX.x = 1;
-	//	}
-	//}
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColX.x = 1;
+		}
+	}
 
-	////左
-	//if (map_->mapcol(leftplayer - playerSpeed, downplayer - playerSpeed, backplayer) && map_->mapcol(leftplayer - playerSpeed, downplayer - playerSpeed, frontplayer)) {
+	//左
+	if (map_->mapcol(leftplayer - playerSpeed, downplayer - playerSpeed, backplayer) && map_->mapcol(leftplayer - playerSpeed, downplayer - playerSpeed, frontplayer)) {
 
-	//}
-	//else {
-	//	if (player->GetFall() == false) {
-	//		ColX.y = 1;
-	//	}
-	//}
+	}
+	else {
+		if (player->GetFall() == false) {
+			ColX.y = 1;
+		}
+	}
 
 	//プレイヤーの下にブロックがあったら進めるように
 
@@ -402,6 +402,40 @@ void Colision::MapCollision()
 	//player->SetColX(ColX);
 	//player->SetColY(ColY);
 	//player->SetColZ(ColZ);
+
+
+	//ゴール
+
+	//右に仮想的に移動して当たったら
+	//if (map_->mapGoalCol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapGoalCol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, backplayer))
+	//{
+	//	player->GoalCol();
+	//}
+
+
+	////左に仮想的に移動して当たったら
+	//if (map_->mapGoalCol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapGoalCol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, backplayer))
+	//{
+	//	player->GoalCol();
+
+	//}
+
+
+	////z軸に対しての当たり判定
+	////奥に仮想的に移動して当たったら
+	//if (map_->mapGoalCol(leftplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed) || map_->mapGoalCol(rightplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed))
+	//{
+	//	player->GoalCol();
+
+	//}
+
+
+	////手前に仮想的に移動して当たったら
+	//if (map_->mapGoalCol(leftplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed) || map_->mapGoalCol(rightplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed))
+	//{
+	//	player->GoalCol();
+
+	//}
 
 	//右に仮想的に移動して当たったら
 	if (map_->mapcol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, backplayer))
