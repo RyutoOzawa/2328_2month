@@ -24,12 +24,10 @@ enum mapdate
 {
 	BLUNK,
 	BLOCK,
+	NMAG,
+	SMAG,
 	PLAYER,
-	GOAL,
-	CATUP,
-	CATLEFT,
-	CATDOWN,
-	CATRIGHT
+	GOAL
 };
 
 class Map
@@ -52,6 +50,9 @@ public:
 
 
 	bool mapcol(int x, int y, int z);
+
+	bool mapGoalCol(int x, int y, int z);
+
 
 	int dist(int x, int y, int z);
 
