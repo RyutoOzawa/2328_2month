@@ -64,11 +64,25 @@ void GamePlayScene::Initialize()
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
 
-	//XMFLOAT3 eye(25, 5, 6);	//���_��W
-	//XMFLOAT3 target(6, 2, 6);	//�����_��W
-	//XMFLOAT3 up(0, 1, 0);		//����x�N�g��
-
 	camera.Initialize(eye, target, up);
+
+
+	//↓------ベジエ曲線-------↓
+
+	//補間で使うデータ
+	//start -> end　を [s] で完了させる
+	Vector3 start(eye.x, eye.y, eye.z);	//スタート地点
+	Vector3 p(eye.x + 5, eye.y, eye.z + 5);	//制御点
+	Vector3 end(eye.x + 10, eye.y, eye.z + 10);	//エンド地点
+
+	points{ start,start,p2,p3,end,end };
+
+	//p1からスタートする
+	size_t startIndex = 1;
+
+	float maxTime = 5.0f;		//全体時間[s]
+	float timeRate;				//何％時間が進んだか(率)
+
 
 	//マップ読み込み
 	map_ = new Map;
@@ -220,15 +234,46 @@ void GamePlayScene::Update()
 
 			goal->Update();
 
+			//↓------------カメラ--------------↓
+
 			//カメラ座標は自機に追従
 			camera.target.x = player->GetPosition().x;
 			camera.target.y = player->GetPosition().y;
 			camera.target.z = player->GetPosition().z;
-			camera.eye = camera.target;
-			camera.eye.y += 20.0f;
-			camera.eye.z -= 2.5f;
+			//camera.eye = camera.target;
+			//camera.eye.y += 20.0f;
+			//camera.eye.z -= 2.5f;
+
+			//経過時間(elapsedTime [s])の計算
+			nowCount = GetNowHiPerformanceCount();
+			elapsedCount = nowCount - startCount;
+			float elapsedTime = static_cast<float> (elapsedCount) / 1'000'000.0f;
+
+			//スタート地点			: start
+			//エンド地点			: end
+			//経過時間			: elapsedTime [s]
+			//移動官僚の率(経過時間/全体時間) : timeRate (%)
+
+			timeRate = elapsedTime / maxTime;
+			/*	timeRate = min(elapsedTime / maxTime, 1.0f);*/
+
+			if (timeRate >= 1.0f) {
+				if (startIndex < points.size() - 3) {
+					startIndex++;
+					timeRate -= -1.0f;
+					startCount = GetNowHiPerformanceCount();
+				}
+				else {
+					timeRate = 1.0f;
+				}
+			}
+
+			position = splinePosition(points, startIndex, timeRate);
 
 			camera.UpdateMatrix();
+
+			//↑------------カメラ--------------↑
+
 
 		}
 	}
@@ -405,4 +450,23 @@ void GamePlayScene::GoTitle()
 
 void GamePlayScene::GoStageSelect()
 {
+}
+
+//制御店の集合(vectorコンテナ)、補間する区間の添え字、時間経過率
+Vector3 splinePosition(const std::vector<Vector3>& points, size_t startIndex, float t) {
+
+	//補間すべき点の数
+	size_t n = points.size() - 2;
+
+	if (startIndex > n)return points[n];
+	if (startIndex < 1)return points[1];
+
+	Vector3 p0 = points[startIndex - 1];
+	Vector3 p1 = points[startIndex];
+	Vector3 p2 = points[startIndex + 1];
+	Vector3 p3 = points[startIndex + 2];
+
+	Vector3 position = 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) + (-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t));
+
+	return position;
 }

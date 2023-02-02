@@ -41,6 +41,9 @@ public:
 	//ステージセレクトに戻る
 	void GoStageSelect();
 
+	//制御店の集合(vectorコンテナ)、補間する区間の添え字、時間経過率
+	Vector3 splinePosition(const std::vector<Vector3>& points, size_t startIndex, float t);
+
 public://メンバ変数
 
 	ImguiManager* imguiManager = nullptr;	//imgui用
@@ -94,6 +97,27 @@ public://メンバ変数
 	bool isMenu = false;
 	int selectMenuNumber = 0;
 	int clearMenuNumber = 0;
+
+	//↓------ベジエ曲線-------↓
+
+	//時間計測に必要なデータ
+	long long startCount = 0;
+	long long nowCount = 0;
+	long long elapsedCount = 0;
+
+	//補間で使うデータ
+	//start -> end　を [s] で完了させる
+	Vector3 start;	//スタート地点
+	Vector3 p ;	//制御点
+	Vector3 end ;	//エンド地点
+
+	std::vector<Vector3> points{};
+
+	//p1からスタートする
+	size_t startIndex = 1;
+
+	float maxTime = 5.0f;		//全体時間[s]
+	float timeRate;				//何％時間が進んだか(率)
 
 };
 

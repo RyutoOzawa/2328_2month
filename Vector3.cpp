@@ -106,3 +106,8 @@ const Vector3 operator/(const Vector3& v, float s)
 	Vector3 temp(v);
 	return temp /= s;
 }
+
+//üŒ`•âŠÔ
+const Vector3 lerp(Vector3 start, Vector3 end, float t) {
+	return (start * (1.0f - t)) + (end * t);
+}
