@@ -12,7 +12,21 @@ bool Map::mapcol(int x, int y, int z)
 	if (mapy < 0 || mapy >= blockY)	return false;
 	if (mapz < 0 || mapz >= blockZ)	return false;
 
-	return Map::map[mapy][mapz][mapx] == BLOCK;
+	return Map::map[mapy][mapz][mapx] == BLOCK || Map::map[mapy][mapz][mapx] == GOAL;
+}
+
+bool Map::mapGoalCol(int x, int y, int z)
+{
+	int mapx = x / (blockScale * blockSize);
+	int mapy = y / (blockScale * blockSize);
+	int mapz = z / (blockScale * blockSize);
+
+	//���肦�Ȃ��l��false�ŕԂ�
+	if (mapx < 0 || mapx >= blockX)	return false;
+	if (mapy < 0 || mapy >= blockY)	return false;
+	if (mapz < 0 || mapz >= blockZ)	return false;
+
+	return Map::map[mapy][mapz][mapx] == GOAL;
 }
 
 void Map::SetSize(Vector3 stageSize)
