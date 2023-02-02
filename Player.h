@@ -52,6 +52,8 @@ public:
 	void SetColZ(DirectX::XMFLOAT2 colZ_) { colZ = colZ_; }
 
 	void SetFall(bool isfall) { fall = isfall; }
+	bool GetFall() { return fall; }
+
 	void SetJump(bool isJump) { this->isJump = isJump; }
 
 	void SetPosition(DirectX::XMFLOAT3 pos_) { pos = pos_; }

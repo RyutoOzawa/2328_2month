@@ -47,6 +47,10 @@ void GamePlayScene::Initialize()
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
 
+	//XMFLOAT3 eye(25, 5, 6);	//���_��W
+	//XMFLOAT3 target(6, 2, 6);	//�����_��W
+	//XMFLOAT3 up(0, 1, 0);		//����x�N�g��
+
 	camera.Initialize(eye, target, up);
 
 	//マップ読み込み
@@ -85,15 +89,15 @@ void GamePlayScene::Update()
 		}
 
 		//最大値、最小値を超えないように
-		if (clearMenuNumber >1)clearMenuNumber = 1;
+		if (clearMenuNumber > 1)clearMenuNumber = 1;
 		else if (clearMenuNumber < 0)clearMenuNumber = 0;
 
 		//Aボタンで決定
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
 			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
 			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::tutorial1) {
-					ShareData::stageNumber++;
-					StageInitialize(ShareData::stageNumber);
+				ShareData::stageNumber++;
+				StageInitialize(ShareData::stageNumber);
 			}//それ以外(ステージ選択ボタンが押されたか、ステージが一番最後)だったらステージ選択に戻る
 			else {
 				//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
