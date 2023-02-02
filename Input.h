@@ -56,23 +56,39 @@ public:
 	XINPUT_STATE padState;
 	XINPUT_STATE oldPadState;
 
+	//初期化
 	void Initialize();
+
+	//更新
 	void Update();
+
+	//キーボード押下情報
 	bool IsKeyTrigger(BYTE key_);
 	bool IsKeyPress(BYTE key_);
 	bool IsKeyRelease(BYTE key_);
 
+	//パッド押下情報(ボタン)
 	bool IsPadTrigger(WORD Button);
 	bool IsPadPress(WORD Button);
 	bool IsPadRelease(WORD Button);
 
+	//パッド押下情報(左右スティック)
 	bool IsDownLStickLeft(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsTriggerLStickLeft(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
 	bool IsDownLStickRight(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsTriggerLStickRight(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
 	bool IsDownLStickUp(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsTriggerLStickUp(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
 	bool IsDownLStickDown(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
-	bool IsDownRStickLeft(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
-	bool IsDownRStickRight(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
-	bool IsDownRStickUp(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
-	bool IsDownRStickDown(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	bool IsTriggerLStickDown(int deadZone = XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+
+	bool IsDownRStickLeft(int deadZone = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+	bool IsTriggerRStickLeft(int deadZone = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+	bool IsDownRStickRight(int deadZone = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+	bool IsTriggerRStickRight(int deadZone = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+	bool IsDownRStickUp(int deadZone = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+	bool IsTriggerRStickUp(int deadZone = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+	bool IsDownRStickDown(int deadZone = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+	bool IsTriggerRStickDown(int deadZone = XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
 };
 

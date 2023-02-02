@@ -8,11 +8,19 @@ enum StageIndex {
 	StageIndexCount,
 };
 
+enum TitlePhaseIndex {
+	WaitInputSpaceKey,//スペースキーの入力待ち
+	StageSelect,
+};
+
 class ShareData
 {
 public:
+	//選択されたステージ番号
 	static int stageNumber;
 
+	//タイトルシーンの進行状態
+	static int titlePhase;
 };
 
 

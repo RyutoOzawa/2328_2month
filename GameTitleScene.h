@@ -9,11 +9,7 @@
 #include"Input.h"
 #include"Sprite.h"
 
-enum TitlePhaseIndex {
-	WaitInputSpaceKey,//スペースキーの入力待ち
-	StageSelect,
 
-};
 
 class GameTitleScene :public GameBaseScene
 {

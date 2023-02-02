@@ -21,8 +21,8 @@ void GameTitleScene::Initialize()
 	titleSprite = new Sprite();
 	titleSprite->Initialize(titleTexture);
 
-	//フェーズをスペースキー押し待ち状態に
-	phase = WaitInputSpaceKey;
+	//フェーズを共通データから持ってくる
+	phase = ShareData::titlePhase;
 }
 
 void GameTitleScene::Finalize()
@@ -49,10 +49,12 @@ void GameTitleScene::Update()
 	ImGui::Begin("debug");
 	if (phase == WaitInputSpaceKey) {
 		ImGui::Text("phase:WaitInputSpaceKey");
-		ImGui::Text("PUSH SAPCE GO TO STAGE SELECT");
+		ImGui::Text("PUSH PAD A GO TO STAGE SELECT");
+
+		ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
 
 		//スペースキーでステージ選択へ
-		if (input->IsKeyTrigger(DIK_SPACE))
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_A))
 		{
 			phase = StageSelect;
 		}
@@ -64,21 +66,22 @@ void GameTitleScene::Update()
 		ImGui::Text("stageNumber %d",ShareData::stageNumber);
 
 		//左右キーでステージ番号変更
-		if (input->IsKeyTrigger(DIK_LEFT)) {
+		if (input->IsTriggerLStickLeft()) {
 			ShareData::stageNumber--;
 		}
-		else if (input->IsKeyTrigger(DIK_RIGHT)) {
+		else if (input->IsTriggerLStickRight()) {
 			ShareData::stageNumber++;
 		}
 
 		if (ShareData::stageNumber < Sample1)ShareData::stageNumber = Sample1;
 		else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = tutorial1;
 
-		if (input->IsKeyTrigger(DIK_SPACE)) {
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
 			//シーンの切り替えを依頼
 			sceneManager->ChangeScene("GAMEPLAY");
 		}
 	}
+
 
 	ImGui::End();
 	//----------------------ゲーム内ループはここまで---------------------//
