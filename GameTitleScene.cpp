@@ -63,6 +63,10 @@ void GameTitleScene::Finalize()
 
 	delete titleSprite;
 	delete uiButtonASprite;
+	delete uiStageSelectSprite;
+	for (int i = 0; i < 10; i++) {
+		delete uiStageNumberSprite[i];
+	}
 	//-------------ここまでにループ内で使用したものの後処理------------//
 
 
