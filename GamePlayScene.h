@@ -119,5 +119,7 @@ public://メンバ変数
 	float maxTime = 5.0f;		//全体時間[s]
 	float timeRate;				//何％時間が進んだか(率)
 
+	Vector3 position;
+
 };
 

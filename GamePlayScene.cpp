@@ -37,7 +37,7 @@ void GamePlayScene::Initialize()
 	playUISprite = new Sprite();
 	playUISprite->Initialize(playUITexture);
 	playUISprite->SetAnchorPoint({ 0.0f,1.0f });
-	playUISprite->SetPos( { 64.0f, WindowsAPI::winH - 64.0f });
+	playUISprite->SetPos({ 64.0f, WindowsAPI::winH - 64.0f });
 	playUISprite->Update();
 
 	backGroundSprite = new Sprite();
@@ -71,13 +71,13 @@ void GamePlayScene::Initialize()
 
 	//補間で使うデータ
 	//start -> end　を [s] で完了させる
-	Vector3 start(eye.x, eye.y, eye.z);	//スタート地点
-	Vector3 p(eye.x + 5, eye.y, eye.z + 5);	//制御点
-	Vector3 end(eye.x + 10, eye.y, eye.z + 10);	//エンド地点
+	start = Vector3(eye.x, eye.y, eye.z);	//スタート地点
+	p = Vector3(eye.x + 5, eye.y, eye.z + 5);	//制御点
+	end = Vector3(eye.x + 10, eye.y, eye.z + 10);	//エンド地点
 
-	points{ start,start,p2,p3,end,end };
+	points = { start,start,p,end,end };
 
-	//p1からスタートする
+	//pからスタートする
 	size_t startIndex = 1;
 
 	float maxTime = 5.0f;		//全体時間[s]
@@ -240,35 +240,46 @@ void GamePlayScene::Update()
 			camera.target.x = player->GetPosition().x;
 			camera.target.y = player->GetPosition().y;
 			camera.target.z = player->GetPosition().z;
-			//camera.eye = camera.target;
-			//camera.eye.y += 20.0f;
-			//camera.eye.z -= 2.5f;
+			camera.eye = camera.target;
+			camera.eye.y += 20.0f;
+			camera.eye.z -= 2.5f;
 
-			//経過時間(elapsedTime [s])の計算
-			nowCount = GetNowHiPerformanceCount();
-			elapsedCount = nowCount - startCount;
-			float elapsedTime = static_cast<float> (elapsedCount) / 1'000'000.0f;
 
-			//スタート地点			: start
-			//エンド地点			: end
-			//経過時間			: elapsedTime [s]
-			//移動官僚の率(経過時間/全体時間) : timeRate (%)
+			//[R]でリセット
+			//if (CheckHitKey(KEY_INPUT_R)) {
+			//	startCount = GetNowHiPerformanceCount();
+			//	startIndex = 1;
+			//}
 
-			timeRate = elapsedTime / maxTime;
-			/*	timeRate = min(elapsedTime / maxTime, 1.0f);*/
+			////経過時間(elapsedTime [s])の計算
+			////nowCount = GetNowHiPerformanceCount();
+			//elapsedCount = nowCount - startCount;
+			//float elapsedTime = static_cast<float> (elapsedCount) / 1'000'000.0f;
 
-			if (timeRate >= 1.0f) {
-				if (startIndex < points.size() - 3) {
-					startIndex++;
-					timeRate -= -1.0f;
-					startCount = GetNowHiPerformanceCount();
-				}
-				else {
-					timeRate = 1.0f;
-				}
-			}
+			////スタート地点			: start
+			////エンド地点			: end
+			////経過時間			: elapsedTime [s]
+			////移動官僚の率(経過時間/全体時間) : timeRate (%)
 
-			position = splinePosition(points, startIndex, timeRate);
+			//timeRate = elapsedTime / maxTime;
+			///*	timeRate = min(elapsedTime / maxTime, 1.0f);*/
+
+			//if (timeRate >= 1.0f) {
+			//	if (startIndex < points.size() - 3) {
+			//		startIndex++;
+			//		timeRate -= -1.0f;
+			//		//startCount = GetNowHiPerformanceCount();
+			//	}
+			//	else {
+			//		timeRate = 1.0f;
+			//	}
+			//}
+
+			//position = splinePosition(points, startIndex, timeRate);
+
+			//camera.eye.x = position.x;
+			//camera.eye.y = position.y;
+			//camera.eye.z = position.z;
 
 			camera.UpdateMatrix();
 
