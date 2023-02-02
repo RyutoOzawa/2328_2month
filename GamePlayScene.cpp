@@ -66,10 +66,8 @@ void GamePlayScene::Finalize()
 	delete player;
 
 	delete backGroundSprite;
+	delete menuSprite;
 	//-------------ここまでにループ内で使用したものの後処理------------//
-
-
-
 }
 
 void GamePlayScene::Update()
