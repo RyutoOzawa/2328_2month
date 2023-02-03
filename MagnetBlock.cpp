@@ -27,7 +27,7 @@ void MagnetBlock::Initialize(MagnetData magnetData)
 	//プレイヤーのデフォルトカラーは白
 	//playerTexture = whiteTexture;
 	//サイズ調整
-	obj.scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
+	obj.scale = XMFLOAT3(size / 10, size / 10, size / 10);
 
 	isNorth = magnetData.isNorth_;
 

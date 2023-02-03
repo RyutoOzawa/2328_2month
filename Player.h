@@ -69,7 +69,7 @@ public:
 	float adjustPixelSpeed = 0.001f;
 
 
-	float size = 0.98;
+	float size = 0.9;
 
 	DirectX::XMFLOAT2 colX{};
 	DirectX::XMFLOAT2 colY{};

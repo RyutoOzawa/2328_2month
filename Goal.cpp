@@ -10,6 +10,8 @@ void Goal::Initialize(Input* input,const uint32_t& tex,XMFLOAT3 pos)
 	obj.model = Model::CreateModel();
 
 	obj.position = pos;
+	obj.scale = XMFLOAT3(0.1,0.1,0.1);
+
 	//プレイヤーのデフォルトカラーは白
 
 	this->input = input;

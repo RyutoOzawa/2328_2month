@@ -109,5 +109,12 @@ const Vector3 operator/(const Vector3& v, float s)
 
 //üŒ`•âŠÔ
 const Vector3 lerp(Vector3 start, Vector3 end, float t) {
-	return (start * (1.0f - t)) + (end * t);
+	
+	Vector3 result;
+	
+	result.x = (start.x * (1.0f - t)) + (end.x * t);
+	result.y = (start.y * (1.0f - t)) + (end.y * t);
+	result.z = (start.z * (1.0f - t)) + (end.z * t);
+
+	return result;
 }

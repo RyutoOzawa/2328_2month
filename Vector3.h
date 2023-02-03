@@ -36,3 +36,6 @@ const Vector3 operator*(const Vector3& v, float s);
 const Vector3 operator*(float s, const Vector3& v);
 const Vector3 operator/(const Vector3& v, float s);
 
+//•âŠÔŠÖ”
+//üŒ`•âŠÔ(1ŸŠÖ”•âŠÔ)
+const Vector3 lerp(Vector3 start, Vector3 end, float t);

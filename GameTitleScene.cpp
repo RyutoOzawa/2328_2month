@@ -90,7 +90,7 @@ void GameTitleScene::Update()
 		ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x/2), ImGui::GetWindowPos().y+(ImGui::GetWindowSize().y / 2));
 
 		//スペースキーでステージ選択へ
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_A))
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE))
 		{
 			phase = StageSelect;
 		}
@@ -102,23 +102,23 @@ void GameTitleScene::Update()
 		ImGui::Text("stageNumber %d",ShareData::stageNumber);
 
 		//左右キーでステージ番号変更
-		if (input->IsTriggerLStickLeft()) {
+		if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
 			ShareData::stageNumber--;
 		}
-		else if (input->IsTriggerLStickRight()) {
+		else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
 			ShareData::stageNumber++;
 		}
 
 		if (ShareData::stageNumber < Sample1)ShareData::stageNumber = Sample1;
 		else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = tutorial1;
 
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//シーンの切り替えを依頼
 			sceneManager->ChangeScene("GAMEPLAY");
 		}
 
 		//Bボタンでタイトルへ
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_B)) {
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
 			phase = WaitInputSpaceKey;
 		}
 	}

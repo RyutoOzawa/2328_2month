@@ -65,3 +65,152 @@ void Camera::UpdateMatrix()
 	constMap->view = matView;
 	constMap->projection = matProjection;
 }
+
+void Camera::InitializeData(Vector3 stageSize)
+{
+	placePos[0] = { stageSize.x,stageSize.y + (addSizeY  * 2),stageSize.z };
+
+	//ステージのX,Zそれぞれ真ん中
+	float midX = stageSize.x / 2;
+	float midZ = stageSize.z / 2;
+
+	//上
+	placePos[1] = { midX,stageSize.y + addSizeY,stageSize.z + addSizeZ };
+	//下
+	placePos[2] = { midX,stageSize.y + addSizeY,0 - addSizeZ };
+	//左
+	placePos[3] = { 0 - addSizeX ,stageSize.y + addSizeY,midZ };
+	//右
+	placePos[4] = { stageSize.x + addSizeX,stageSize.y + addSizeY, midZ };
+
+	isMove = false;
+
+}
+
+void Camera::UpdateEye()
+{
+
+
+
+	if (isMove == true) {
+
+		MoveEye();
+
+	}
+	else {
+
+		if (state == 0) {
+
+			eye = target;
+			eye.y = placePos[0].y;
+			eye.z = eye.z - 2.5f;
+
+			//placePos[0].x = target.x;
+			//placePos[0].y = target.y + addSizeY;
+			//placePos[0].z = target.z - 2.5f;
+
+		}
+		else if (state == 1) {
+
+			eye.x = placePos[1].x;
+			eye.y = placePos[1].y;
+			eye.z = placePos[1].z;
+
+		}
+		else if (state == 2) {
+
+			eye.x = placePos[2].x;
+			eye.y = placePos[2].y;
+			eye.z = placePos[2].z;
+
+		}
+		else if (state == 3) {
+
+			eye.x = placePos[3].x;
+			eye.y = placePos[3].y;
+			eye.z = placePos[3].z;
+
+		}
+		else if (state == 4) {
+
+			eye.x = placePos[4].x;
+			eye.y = placePos[4].y;
+			eye.z = placePos[4].z;
+
+		}
+	}
+}
+
+void Camera::ChangeEye(int place)
+{
+
+	isMove = true;
+	nextState = place;
+
+
+	elapsedCount = 0.0f;
+
+	//state == 0 のx.zは常に変わっているためここで情報を更新
+	if (state == 0 || nextState == 0) {
+		placePos[0].x = target.x;
+		placePos[0].z = target.z - 2.5f;
+	}
+
+	start = Vector3(placePos[state].x, placePos[state].y, placePos[state].z);	//スタート地点
+	end = Vector3(placePos[nextState].x, placePos[nextState].y, placePos[nextState].z);	//エンド地点
+
+	//スタート地点とエンド地点の真ん中を制御店に
+
+	float pX;
+
+	if (start.x > end.x) {
+		pX = start.x - end.x;
+	}
+	else {
+		pX = end.x - start.x;
+	}
+
+	float pZ;
+
+	if (start.z > end.z) {
+		pZ = start.z - end.z;
+	}
+	else {
+		pZ = end.z - start.z;
+	}
+
+	p = Vector3(pX / 2, addSizeY * 2, pZ / 2);	//制御点
+
+	state = place;
+
+}
+
+void Camera::MoveEye()
+{
+
+	//経過時間(elapsedTime [s])の計算
+	elapsedCount++;
+	float elapsedTime = static_cast<float> (elapsedCount) / 60.0f;
+
+	//スタート地点			: start
+	// 制御点				: p
+	//エンド地点			: end
+	//経過時間			: elapsedTime [s]
+	//移動官僚の率(経過時間/全体時間) : timeRate (%)
+
+	timeRate = elapsedTime / maxTime;
+
+	if (timeRate >= 1) {
+		isMove = false;
+	}
+
+	Vector3 a = lerp(start, p, timeRate);
+	Vector3 b = lerp(p, end, timeRate);
+
+	cameraPosition = lerp(a, b, timeRate);
+
+	eye.x = cameraPosition.x;
+	eye.y = cameraPosition.y;
+	eye.z = cameraPosition.z;
+
+}

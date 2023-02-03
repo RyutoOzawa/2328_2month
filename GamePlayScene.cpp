@@ -66,24 +66,6 @@ void GamePlayScene::Initialize()
 
 	camera.Initialize(eye, target, up);
 
-
-	//↓------ベジエ曲線-------↓
-
-	//補間で使うデータ
-	//start -> end　を [s] で完了させる
-	start = Vector3(eye.x, eye.y, eye.z);	//スタート地点
-	p = Vector3(eye.x + 5, eye.y, eye.z + 5);	//制御点
-	end = Vector3(eye.x + 10, eye.y, eye.z + 10);	//エンド地点
-
-	points = { start,start,p,end,end };
-
-	//pからスタートする
-	size_t startIndex = 1;
-
-	float maxTime = 5.0f;		//全体時間[s]
-	float timeRate;				//何％時間が進んだか(率)
-
-
 	//マップ読み込み
 	map_ = new Map;
 
@@ -115,10 +97,10 @@ void GamePlayScene::Update()
 
 	if (goal->isGoal) {
 		//スティック左右でメニューを選ぶ
-		if (input->IsTriggerLStickRight()) {
+		if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
 			clearMenuNumber++;
 		}
-		else if (input->IsTriggerLStickLeft()) {
+		else if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
 			clearMenuNumber--;
 		}
 
@@ -127,7 +109,7 @@ void GamePlayScene::Update()
 		else if (clearMenuNumber < 0)clearMenuNumber = 0;
 
 		//Aボタンで決定
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
 			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::tutorial1) {
 				ShareData::stageNumber++;
@@ -145,15 +127,15 @@ void GamePlayScene::Update()
 	else {
 		if (isMenu) {
 			//スタートボタンでメニューを閉じる
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_START) || input->IsKeyTrigger(DIK_M)) {
 				isMenu = false;
 			}
 
 			//スティック上下でメニューを選ぶ
-			if (input->IsTriggerLStickDown()) {
+			if (input->IsTriggerLStickDown() || input->IsKeyTrigger(DIK_S)) {
 				selectMenuNumber++;
 			}
-			else if (input->IsTriggerLStickUp()) {
+			else if (input->IsTriggerLStickUp() || input->IsKeyTrigger(DIK_W)) {
 				selectMenuNumber--;
 			}
 
@@ -161,7 +143,7 @@ void GamePlayScene::Update()
 			if (selectMenuNumber > MenuIndex::Title)selectMenuNumber = Title;
 			else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
 
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 
 				if (selectMenuNumber == Reset) {
 					StageInitialize(ShareData::stageNumber);
@@ -205,7 +187,7 @@ void GamePlayScene::Update()
 			ImGui::End();
 
 			//スタートボタンでメニューへ
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_START) || input->IsKeyTrigger(DIK_M)) {
 				isMenu = true;
 				//選択は初期はリセット
 				selectMenuNumber = Reset;
@@ -236,52 +218,85 @@ void GamePlayScene::Update()
 
 			//↓------------カメラ--------------↓
 
-			//カメラ座標は自機に追従
+			//カメラ視点座標は自機に追従
 			camera.target.x = player->GetPosition().x;
 			camera.target.y = player->GetPosition().y;
 			camera.target.z = player->GetPosition().z;
-			camera.eye = camera.target;
-			camera.eye.y += 20.0f;
-			camera.eye.z -= 2.5f;
+
+			if (input->IsKeyTrigger(DIK_RETURN)) {
+				cameraState++;
+				if (cameraState >= 5) {
+					cameraState = 0;
+				}
+				camera.ChangeEye(cameraState);
+			}
+
+			if (input->IsKeyTrigger(DIK_UP)) {
+
+				if (cameraState == 0) {
+					cameraState = 1;
+				}
+				else if (cameraState != 0) {
+					cameraState = 0;
+				}				
+
+				camera.ChangeEye(cameraState);
+			}
+			else if (input->IsKeyTrigger(DIK_DOWN)) {
+
+				if (cameraState == 0) {
+					cameraState = 2;
+				}
+				camera.ChangeEye(cameraState);
+			}
+			else if (input->IsKeyTrigger(DIK_LEFT)) {
+
+				if (cameraState == 0) {
+					cameraState = 3;
+				}
+				else if (cameraState == 1) {
+					cameraState = 4;
+				}				
+				else if (cameraState == 2) {
+					cameraState = 3;
+				}				
+				else if (cameraState == 3) {
+					cameraState = 1;
+				}				
+				else if (cameraState == 4) {
+					cameraState = 2;
+				}
+				camera.ChangeEye(cameraState);
+			}
+			else if (input->IsKeyTrigger(DIK_RIGHT)) {
+
+				if (cameraState == 0) {
+					cameraState = 4;
+				}
+				else if (cameraState == 1) {
+					cameraState = 3;
+				}				
+				else if (cameraState == 2) {
+					cameraState = 4;
+				}				
+				else if (cameraState == 3) {
+					cameraState = 2;
+				}				
+				else if (cameraState == 4) {
+					cameraState = 1;
+				}				
+				camera.ChangeEye(cameraState);
+			}
 
 
-			//[R]でリセット
-			//if (CheckHitKey(KEY_INPUT_R)) {
-			//	startCount = GetNowHiPerformanceCount();
-			//	startIndex = 1;
-			//}
-
-			////経過時間(elapsedTime [s])の計算
-			////nowCount = GetNowHiPerformanceCount();
-			//elapsedCount = nowCount - startCount;
-			//float elapsedTime = static_cast<float> (elapsedCount) / 1'000'000.0f;
-
-			////スタート地点			: start
-			////エンド地点			: end
-			////経過時間			: elapsedTime [s]
-			////移動官僚の率(経過時間/全体時間) : timeRate (%)
-
-			//timeRate = elapsedTime / maxTime;
-			///*	timeRate = min(elapsedTime / maxTime, 1.0f);*/
-
-			//if (timeRate >= 1.0f) {
-			//	if (startIndex < points.size() - 3) {
-			//		startIndex++;
-			//		timeRate -= -1.0f;
-			//		//startCount = GetNowHiPerformanceCount();
-			//	}
-			//	else {
-			//		timeRate = 1.0f;
-			//	}
-			//}
-
-			//position = splinePosition(points, startIndex, timeRate);
-
-			//camera.eye.x = position.x;
-			//camera.eye.y = position.y;
-			//camera.eye.z = position.z;
-
+			camera.UpdateEye();
 			camera.UpdateMatrix();
+
+			//fps表示
+			ImGui::Begin("fcamera");
+			ImGui::Text("cameraState = %d", cameraState);
+			ImGui::End();
+
 
 			//↑------------カメラ--------------↑
 
@@ -342,6 +357,7 @@ void GamePlayScene::Draw()
 		menuSprite->Draw();
 		selectBoxSprite->Draw();
 	}
+
 
 }
 
@@ -423,12 +439,12 @@ void GamePlayScene::StageInitialize(int stageNumber)
 				if (map_->map[i][j][k] == 4)
 				{
 					player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
-					player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+					//player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 				}
 				if (map_->map[i][j][k] == 5)
 				{
 					goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
-					goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+					//goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 					goal->obj.Update();
 				}
 			}
@@ -441,7 +457,7 @@ void GamePlayScene::StageInitialize(int stageNumber)
 		newBlock.Initialize(magnetDatas[i]);
 		//ゲームで使うようの配列に格納
 		magnetBlocks.push_back(newBlock);
-		magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+		//magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	}
 
 	//当たり判定初期化
@@ -450,6 +466,8 @@ void GamePlayScene::StageInitialize(int stageNumber)
 		colision->Initialize(player, magnetBlocks[i], map_, i);
 	}
 
+	//カメラにマップ情報を渡す
+	camera.InitializeData(stageSize);
 
 	//メニューは開かれていない状態
 	isMenu = false;
@@ -461,23 +479,4 @@ void GamePlayScene::GoTitle()
 
 void GamePlayScene::GoStageSelect()
 {
-}
-
-//制御店の集合(vectorコンテナ)、補間する区間の添え字、時間経過率
-Vector3 splinePosition(const std::vector<Vector3>& points, size_t startIndex, float t) {
-
-	//補間すべき点の数
-	size_t n = points.size() - 2;
-
-	if (startIndex > n)return points[n];
-	if (startIndex < 1)return points[1];
-
-	Vector3 p0 = points[startIndex - 1];
-	Vector3 p1 = points[startIndex];
-	Vector3 p2 = points[startIndex + 1];
-	Vector3 p3 = points[startIndex + 2];
-
-	Vector3 position = 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) + (-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t));
-
-	return position;
 }
