@@ -88,7 +88,7 @@ private:
 	//磁石との
 	bool isMagMove[20] = {};
 
-	float size = 0.98;
+	float size = 0.9;
 
 	//　Y上下 X左右 Z奥手前
 	int contactNum[7] = {};

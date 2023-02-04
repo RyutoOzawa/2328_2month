@@ -95,5 +95,24 @@ public://メンバ変数
 	int selectMenuNumber = 0;
 	int clearMenuNumber = 0;
 
+	////↓------ベジエ曲線-------↓
+
+	////時間計測に必要なデータ
+	//long long elapsedCount = 0;
+
+	////補間で使うデータ
+	////start -> end　を [s] で完了させる
+	//Vector3 start;	//スタート地点
+	//Vector3 p ;	//制御点
+	//Vector3 end ;	//エンド地点
+
+	//float maxTime = 5.0f;		//全体時間[s]
+	//float timeRate;				//何％時間が進んだか(率)
+
+	//Vector3 cameraPosition;
+	//bool cameraMove = false;
+
+	int cameraState = 0;
+
 };
 

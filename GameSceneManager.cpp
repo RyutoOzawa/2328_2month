@@ -48,6 +48,7 @@ void GameSceneManager::Update()
 void GameSceneManager::Draw()
 {
 	activeScene->Draw();
+
 }
 
 void GameSceneManager::ChangeScene(const std::string& sceneName)

@@ -17,7 +17,7 @@ void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32
 	//プレイヤーのデフォルトカラーは白
 	playerTexture = whiteTexture;
 	//サイズ調整
-	obj.scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
+	obj.scale = XMFLOAT3(size / 10, size / 10, size / 10);
 
 	this->map = map;
 	this->goal = goal;
@@ -53,6 +53,14 @@ void Player::Update()
 	//行列更新
 	obj.Update();
 
+	ImGui::Begin("jump");
+	ImGui::Text("%d",isJump);
+	ImGui::End();
+
+	ImGui::Begin("fall");
+	ImGui::Text("%d",fall);
+	ImGui::End();
+
 }
 
 void Player::Draw()
@@ -79,9 +87,9 @@ void Player::Fall()
 
 void Player::Jump()
 {
-	if (input->IsKeyPress(DIK_RETURN)) {
-		isJump = true;
-	}
+	//if (input->IsKeyPress(DIK_RETURN)) {
+	//	isJump = true;
+	//}
 
 	if (isJump) {
 
@@ -92,6 +100,7 @@ void Player::Jump()
 
 		if (jumpBeforePosY + jumpHight <= pos.y) {
 			isJump = false;
+			fall = true;
 		}
 
 	}
@@ -123,11 +132,11 @@ void Player::GoalCol()
 	float gPosZ1 = goal->GetPos().z - (size / 2);
 	float gPosZ2 = goal->GetPos().z + (size / 2);
 
-	float adjust = 0.01;
+	float adjust = 0.0;
 
 	if (pPosX1 < gPosX2 + adjust && gPosX1 - adjust < pPosX2) {
 
-		if (pPosY1 < gPosY2 && gPosY1  < pPosY2) {
+		if (pPosY1 < gPosY2 && gPosY1 < pPosY2) {
 
 			if (pPosZ1 < gPosZ2 + adjust && gPosZ1 - adjust < pPosZ2) {
 
@@ -176,7 +185,7 @@ void Player::OnMapCollisionZ2()
 
 void Player::ChangeState()
 {
-	if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
+	if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 		state++;
 		//state = SouthPole;
 		if (state > SouthPole) {
@@ -187,13 +196,13 @@ void Player::ChangeState()
 
 void Player::Move() {
 
-	if (input->IsDownLStickLeft()) {
+	if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_A)) {
 		if (colX.y == 0) {
 			pos.x -= playerSpd;
 			move.x = -playerSpd;
 		}
 	}
-	else  if (input->IsDownLStickRight()) {
+	else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_D)) {
 		if (colX.x == 0) {
 			pos.x += playerSpd;
 			move.x = playerSpd;
@@ -203,14 +212,14 @@ void Player::Move() {
 		move.x = 0;
 	}
 
-	if (input->IsDownLStickDown()) {
+	if (input->IsDownLStickDown() || input->IsKeyPress(DIK_S)) {
 		if (colZ.y == 0) {
 
 			pos.z -= playerSpd;
 			move.z = -playerSpd;
 		}
 	}
-	else  if (input->IsDownLStickUp()) {
+	else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_W)) {
 		if (colZ.x == 0) {
 
 			pos.z += playerSpd;

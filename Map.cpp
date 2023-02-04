@@ -1,32 +1,32 @@
 ﻿#include "Map.h"
 #include <cassert>
 
-bool Map::mapcol(int x, int y, int z)
+bool Map::mapcol(float x, float y, float z)
 {
 	int mapx = x / (blockScale * blockSize);
 	int mapy = y / (blockScale * blockSize);
 	int mapz = z / (blockScale * blockSize);
 
 	//���肦�Ȃ��l��false�ŕԂ�
-	if (mapx < 0 || mapx >= blockX)	return false;
-	if (mapy < 0 || mapy >= blockY)	return false;
-	if (mapz < 0 || mapz >= blockZ)	return false;
+	if (x < 0 || x >= blockX)	return true;
+	if (y < 0 || y >= blockY)	return false;
+	if (z < 0 || z >= blockZ)	return true;
 
-	return Map::map[mapy][mapz][mapx] == BLOCK || Map::map[mapy][mapz][mapx] == GOAL;
+	return Map::map[mapy][mapz][mapx] == BLOCK;
 }
 
-bool Map::mapGoalCol(int x, int y, int z)
+bool Map::mapInGoalCol(float x, float y, float z)
 {
 	int mapx = x / (blockScale * blockSize);
 	int mapy = y / (blockScale * blockSize);
 	int mapz = z / (blockScale * blockSize);
 
 	//���肦�Ȃ��l��false�ŕԂ�
-	if (mapx < 0 || mapx >= blockX)	return false;
-	if (mapy < 0 || mapy >= blockY)	return false;
-	if (mapz < 0 || mapz >= blockZ)	return false;
+	if (x < 0 || x >= blockX)	return true;
+	if (y < 0 || y >= blockY)	return true;
+	if (z < 0 || z >= blockZ)	return true;
 
-	return Map::map[mapy][mapz][mapx] == GOAL;
+	return Map::map[mapy][mapz][mapx] == BLOCK || Map::map[mapy][mapz][mapx] == GOAL;
 }
 
 void Map::SetSize(Vector3 stageSize)

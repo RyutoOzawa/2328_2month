@@ -46,6 +46,8 @@ public:
 
 	bool GetIsGoal() {return goal->isGoal;}
 
+	float GetIsJump(){ return isJump; }
+
 	//セッター
 	void SetColX(DirectX::XMFLOAT2 colX_) { colX = colX_; }
 	void SetColY(DirectX::XMFLOAT2 colY_) { colY = colY_; }
@@ -69,7 +71,7 @@ public:
 	float adjustPixelSpeed = 0.001f;
 
 
-	float size = 0.98;
+	float size = 0.9;
 
 	DirectX::XMFLOAT2 colX{};
 	DirectX::XMFLOAT2 colY{};
@@ -97,7 +99,7 @@ private:
 
 	bool isJump = false;
 
-	float jumpHight = 1.4f;
+	float jumpHight = 5.0f;
 
 	float jumpBeforePosY;
 

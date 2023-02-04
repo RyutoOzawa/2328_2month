@@ -37,7 +37,7 @@ void GamePlayScene::Initialize()
 	playUISprite = new Sprite();
 	playUISprite->Initialize(playUITexture);
 	playUISprite->SetAnchorPoint({ 0.0f,1.0f });
-	playUISprite->SetPos( { 64.0f, WindowsAPI::winH - 64.0f });
+	playUISprite->SetPos({ 64.0f, WindowsAPI::winH - 64.0f });
 	playUISprite->Update();
 
 	backGroundSprite = new Sprite();
@@ -63,10 +63,6 @@ void GamePlayScene::Initialize()
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
 	XMFLOAT3 up(0, 1, 0);		//上方向ベクトル
-
-	//XMFLOAT3 eye(25, 5, 6);	//���_��W
-	//XMFLOAT3 target(6, 2, 6);	//�����_��W
-	//XMFLOAT3 up(0, 1, 0);		//����x�N�g��
 
 	camera.Initialize(eye, target, up);
 
@@ -101,10 +97,10 @@ void GamePlayScene::Update()
 
 	if (goal->isGoal) {
 		//スティック左右でメニューを選ぶ
-		if (input->IsTriggerLStickRight()) {
+		if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
 			clearMenuNumber++;
 		}
-		else if (input->IsTriggerLStickLeft()) {
+		else if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
 			clearMenuNumber--;
 		}
 
@@ -113,7 +109,7 @@ void GamePlayScene::Update()
 		else if (clearMenuNumber < 0)clearMenuNumber = 0;
 
 		//Aボタンで決定
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
 			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::tutorial1) {
 				ShareData::stageNumber++;
@@ -131,15 +127,15 @@ void GamePlayScene::Update()
 	else {
 		if (isMenu) {
 			//スタートボタンでメニューを閉じる
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_START) || input->IsKeyTrigger(DIK_M)) {
 				isMenu = false;
 			}
 
 			//スティック上下でメニューを選ぶ
-			if (input->IsTriggerLStickDown()) {
+			if (input->IsTriggerLStickDown() || input->IsKeyTrigger(DIK_S)) {
 				selectMenuNumber++;
 			}
-			else if (input->IsTriggerLStickUp()) {
+			else if (input->IsTriggerLStickUp() || input->IsKeyTrigger(DIK_W)) {
 				selectMenuNumber--;
 			}
 
@@ -147,7 +143,7 @@ void GamePlayScene::Update()
 			if (selectMenuNumber > MenuIndex::Title)selectMenuNumber = Title;
 			else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
 
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_A)) {
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 
 				if (selectMenuNumber == Reset) {
 					StageInitialize(ShareData::stageNumber);
@@ -191,7 +187,7 @@ void GamePlayScene::Update()
 			ImGui::End();
 
 			//スタートボタンでメニューへ
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_START)) {
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_START) || input->IsKeyTrigger(DIK_M)) {
 				isMenu = true;
 				//選択は初期はリセット
 				selectMenuNumber = Reset;
@@ -220,15 +216,88 @@ void GamePlayScene::Update()
 
 			goal->Update();
 
-			//カメラ座標は自機に追従
-			camera.target.x = player->GetPosition().x;
-			camera.target.y = player->GetPosition().y;
-			camera.target.z = player->GetPosition().z;
-			camera.eye = camera.target;
-			camera.eye.y += 20.0f;
-			camera.eye.z -= 2.5f;
+			//↓------------カメラ--------------↓
 
-			camera.UpdateMatrix();
+			////カメラ視点座標は自機に追従
+			//camera.target.x = player->GetPosition().x;
+			//camera.target.y = player->GetPosition().y;
+			//camera.target.z = player->GetPosition().z;
+
+			if (input->IsKeyTrigger(DIK_RETURN)) {
+				cameraState++;
+				if (cameraState >= 5) {
+					cameraState = 0;
+				}
+				camera.ChangeState(cameraState);
+			}
+
+			if (input->IsKeyTrigger(DIK_UP)) {
+
+				if (cameraState == 0) {
+					cameraState = 1;
+				}
+				else if (cameraState != 0) {
+					cameraState = 0;
+				}				
+
+				camera.ChangeState(cameraState);
+			}
+			else if (input->IsKeyTrigger(DIK_DOWN)) {
+
+				if (cameraState == 0) {
+					cameraState = 2;
+				}
+				camera.ChangeState(cameraState);
+			}
+			else if (input->IsKeyTrigger(DIK_LEFT)) {
+
+				if (cameraState == 0) {
+					cameraState = 3;
+				}
+				else if (cameraState == 1) {
+					cameraState = 4;
+				}				
+				else if (cameraState == 2) {
+					cameraState = 3;
+				}				
+				else if (cameraState == 3) {
+					cameraState = 1;
+				}				
+				else if (cameraState == 4) {
+					cameraState = 2;
+				}
+				camera.ChangeState(cameraState);
+			}
+			else if (input->IsKeyTrigger(DIK_RIGHT)) {
+
+				if (cameraState == 0) {
+					cameraState = 4;
+				}
+				else if (cameraState == 1) {
+					cameraState = 3;
+				}				
+				else if (cameraState == 2) {
+					cameraState = 4;
+				}				
+				else if (cameraState == 3) {
+					cameraState = 2;
+				}				
+				else if (cameraState == 4) {
+					cameraState = 1;
+				}				
+				camera.ChangeState(cameraState);
+			}
+
+			camera.Update(player->GetPosition());
+
+			//fps表示
+			ImGui::Begin("fcamera");
+			ImGui::Text("cameraState = %d", cameraState);
+			ImGui::End();
+
+
+			//↑------------カメラ--------------↑
+
 
 		}
 	}
@@ -286,6 +355,7 @@ void GamePlayScene::Draw()
 		menuSprite->Draw();
 		selectBoxSprite->Draw();
 	}
+
 
 }
 
@@ -356,24 +426,24 @@ void GamePlayScene::StageInitialize(int stageNumber)
 				blockObj[i][j][k].Update();
 
 				if (map_->map[i][j][k] == 2) {
-					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale),true };
+					MagnetData nBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale),true };
 					magnetDatas.push_back(nBlockPos);
 				}
 
 				if (map_->map[i][j][k] == 3) {
-					MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale + 1,j * blockSize * blockScale), false };
+					MagnetData sBlockPos{ XMFLOAT3(k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale), false };
 					magnetDatas.push_back(sBlockPos);
 				}
 
 				if (map_->map[i][j][k] == 4)
 				{
 					player->SetPosition({ k * blockSize * blockScale,i * blockSize * blockScale,j * blockSize * blockScale });
-					player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+					//player->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 				}
 				if (map_->map[i][j][k] == 5)
 				{
 					goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
-					goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+					//goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 					goal->obj.Update();
 				}
 			}
@@ -396,6 +466,8 @@ void GamePlayScene::StageInitialize(int stageNumber)
 		colision->Initialize(player, magnetBlocks[i], map_, i);
 	}
 
+	//カメラにマップ情報を渡す
+	camera.InitializeData(stageSize);
 
 	//メニューは開かれていない状態
 	isMenu = false;

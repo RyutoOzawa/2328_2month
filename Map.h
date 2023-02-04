@@ -49,9 +49,9 @@ public:
 	void LodingSave(int stage);
 
 
-	bool mapcol(int x, int y, int z);
+	bool mapcol(float x, float y, float z);
 
-	bool mapGoalCol(int x, int y, int z);
+	bool mapInGoalCol(float x, float y, float z);
 
 
 	int dist(int x, int y, int z);
