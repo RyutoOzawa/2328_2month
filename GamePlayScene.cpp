@@ -17,8 +17,8 @@ void GamePlayScene::Initialize()
 	input = Input::GetInstance();
 
 	//テクスチャデータ初期化
-	magnetTextureN = Texture::LoadTexture(L"Resources/red1x1.png");
-	magnetTextureS = Texture::LoadTexture(L"Resources/blue1x1.png");
+	magnetTextureN = Texture::LoadTexture(L"Resources/magnetN.png");
+	magnetTextureS = Texture::LoadTexture(L"Resources/magnetS.png");
 	groundTexture = Texture::LoadTexture(L"Resources/ground.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
 	backGroundTexture = Texture::LoadTexture(L"Resources/dummyPlayGame.png");
@@ -352,6 +352,7 @@ void GamePlayScene::StageInitialize(int stageNumber)
 				blockObj[i][j][k].position.y = i * blockSize * blockScale;
 				blockObj[i][j][k].position.z = j * blockSize * blockScale;
 				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
+
 				blockObj[i][j][k].Update();
 
 				if (map_->map[i][j][k] == 2) {
@@ -386,6 +387,7 @@ void GamePlayScene::StageInitialize(int stageNumber)
 		//ゲームで使うようの配列に格納
 		magnetBlocks.push_back(newBlock);
 		magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+		magnetBlocks[i].obj.rotation.x = (DirectX::XM_PI / 2.0f);
 	}
 
 	//当たり判定初期化
