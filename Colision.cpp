@@ -1585,35 +1585,35 @@ void Colision::PosCollision()
 
 						if (contact1 == 1) {
 
-							//if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
+							if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
 
-							//	//上に0.1移動してあったっていたら
+								//上に0.1移動してあったっていたら
 
-							//	if (bPosZ1[j] < bPosZ2[i] + 0.01 && bPosZ1[i] + 0.01 < bPosZ2[j]) {
+								if (bPosZ1[j] < bPosZ2[i] + 0.01 && bPosZ1[i] + 0.01 < bPosZ2[j]) {
 
-							//		magnetBlocks[i].SetContactNum(contact1, j);
-							//		magnetBlocks[j].SetContactNum(contact2, i);
+									magnetBlocks[i].SetContactNum(contact1, j);
+									magnetBlocks[j].SetContactNum(contact2, i);
 
-							//	}
+								}
 
-							//}
+							}
 
 						}
 						else if (contact1 == 2) {
 
 
-							//if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
+							if (bPosX1[j] < bPosX2[i] && bPosX1[i] < bPosX2[j]) {
 
-							//	////下に0.1移動してあったっていたら
+								////下に0.1移動してあったっていたら
 
-							//	if (bPosZ1[j] < bPosZ2[i] - 0.01 && bPosZ1[i] - 0.01 < bPosZ2[j]) {
+								if (bPosZ1[j] < bPosZ2[i] - 0.01 && bPosZ1[i] - 0.01 < bPosZ2[j]) {
 
-							//		magnetBlocks[i].SetContactNum(contact1, j);
-							//		magnetBlocks[j].SetContactNum(contact2, i);
+									magnetBlocks[i].SetContactNum(contact1, j);
+									magnetBlocks[j].SetContactNum(contact2, i);
 
 
-							//	}
-							//}
+								}
+							}
 						}
 						else if (contact1 == 3) {
 							//左に0.1移動してあったっていたら

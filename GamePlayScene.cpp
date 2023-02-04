@@ -218,10 +218,6 @@ void GamePlayScene::Update()
 
 			//↓------------カメラ--------------↓
 
-			////カメラ視点座標は自機に追従
-			//camera.target.x = player->GetPosition().x;
-			//camera.target.y = player->GetPosition().y;
-			//camera.target.z = player->GetPosition().z;
 
 			if (input->IsKeyTrigger(DIK_RETURN)) {
 				cameraState++;
@@ -456,7 +452,7 @@ void GamePlayScene::StageInitialize(int stageNumber)
 		newBlock.Initialize(magnetDatas[i]);
 		//ゲームで使うようの配列に格納
 		magnetBlocks.push_back(newBlock);
-		magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+		//magnetBlocks[i].obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
 		magnetBlocks[i].obj.rotation.x = (DirectX::XM_PI / 2.0f);
 	}
 
