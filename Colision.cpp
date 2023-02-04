@@ -42,12 +42,12 @@ void Colision::Update() {
 	//くっついてるブロックのベクトルを統一
 	//StickMag();
 
-	//MagFall();
-	
+	MagFall();
+
 	//ブロックとの当たり判定
 	MapCollision();
 
-	MagFall();
+	//MagFall();
 
 	////くっついてるブロックのベクトルを統一
 	//StickMag();
@@ -132,11 +132,17 @@ void Colision::MapCollision()
 	{
 
 		player->SetFall(false);
+		ImGui::Begin("fall");
+		ImGui::Text("false");
+		ImGui::End();
 
 	}
 	else {
 
 		player->SetFall(true);
+		ImGui::Begin("fall");
+		ImGui::Text("true");
+		ImGui::End();
 
 	}
 
@@ -153,50 +159,6 @@ void Colision::MapCollision()
 		//player->SetFall(false);
 
 	}
-
-
-	//自機を溝に落ちないように
-
-	////上
-	//if (map_->mapcol(leftplayer, downplayer - playerSpeed, frontplayer + 1 + playerSpeed) && map_->mapcol(rightplayer, downplayer - playerSpeed, frontplayer + 1 + playerSpeed)) {
-
-	//}
-	//else {
-	//	if (player->GetFall() == false) {
-	//		ColZ.x = 1;
-	//	}
-
-	//}
-
-	////下
-	//if (map_->mapcol(leftplayer, downplayer - playerSpeed, backplayer - 1 - playerSpeed) && map_->mapcol(rightplayer, downplayer - playerSpeed, backplayer - 1 - playerSpeed)) {
-
-	//}
-	//else {
-	//	if (player->GetFall() == false) {
-	//		ColZ.y = 1;
-	//	}
-	//}
-
-	////右
-	//if (map_->mapcol(rightplayer + playerSpeed, downplayer - playerSpeed, backplayer) && map_->mapcol(rightplayer + playerSpeed, downplayer - playerSpeed, frontplayer)) {
-
-	//}
-	//else {
-	//	if (player->GetFall() == false) {
-	//		ColX.x = 1;
-	//	}
-	//}
-
-	////左
-	//if (map_->mapcol(leftplayer - playerSpeed, downplayer - playerSpeed, backplayer) && map_->mapcol(leftplayer - playerSpeed, downplayer - playerSpeed, frontplayer)) {
-
-	//}
-	//else {
-	//	if (player->GetFall() == false) {
-	//		ColX.y = 1;
-	//	}
-	//}
 
 	//プレイヤーの下にブロックがあったら進めるように
 
@@ -219,32 +181,40 @@ void Colision::MapCollision()
 			//左上の点がブロック状にあるか
 			if (pPosX1 > bPosX1[i] - adjust && pPosX1 < bPosX2[i] + adjust) {
 
-				if (pPosZ2 > bPosZ1[i] - adjust && pPosZ2 < bPosZ2[i] + adjust) {
+				if (pPosY1 < bPosY2[i] + adjust) {
 
-					leftUp = true;
+					if (pPosZ2 > bPosZ1[i] - adjust && pPosZ2 < bPosZ2[i] + adjust) {
 
+						leftUp = true;
+
+					}
 				}
-
 			}
 
 			//右上の点がブロック状にあるか
 			if (pPosX2 > bPosX1[i] - adjust && pPosX2 < bPosX2[i] + adjust) {
 
-				if (pPosZ2 > bPosZ1[i] - adjust && pPosZ2 < bPosZ2[i] + adjust) {
+				if (pPosY1 < bPosY2[i] + adjust) {
 
-					rightUp = true;
+					if (pPosZ2 > bPosZ1[i] - adjust && pPosZ2 < bPosZ2[i] + adjust) {
+
+						rightUp = true;
+
+					}
 
 				}
-
 			}
 
 			//左下の点がブロック状にあるか
 			if (pPosX1 > bPosX1[i] - adjust && pPosX1 < bPosX2[i] + adjust) {
 
-				if (pPosZ1 > bPosZ1[i] - adjust && pPosZ1 < bPosZ2[i] + adjust) {
+				if (pPosY1 < bPosY2[i] + adjust) {
 
-					leftDown = true;
+					if (pPosZ1 > bPosZ1[i] - adjust && pPosZ1 < bPosZ2[i] + adjust) {
 
+						leftDown = true;
+
+					}
 				}
 
 			}
@@ -252,13 +222,18 @@ void Colision::MapCollision()
 			//右下の点がブロック状にあるか
 			if (pPosX2 > bPosX1[i] - adjust && pPosX2 < bPosX2[i] + adjust) {
 
-				if (pPosZ1 > bPosZ1[i] - adjust && pPosZ1 < bPosZ2[i] + adjust) {
+				if (pPosY1 < bPosY2[i] + adjust) {
 
-					rightDown = true;
+					if (pPosZ1 > bPosZ1[i] - adjust && pPosZ1 < bPosZ2[i] + adjust) {
 
+						rightDown = true;
+
+					}
 				}
 
 			}
+
+
 
 			//左上と右上の点がブロック上にあったら落ちない
 
@@ -326,16 +301,16 @@ void Colision::MapCollision()
 					isJump = false;
 				}
 
-
 				if (isJump && pPosY1 < bPosY2[i] + (bSize / 2)) {
 
 					player->SetJump(true);
 
-					//ImGui::Begin("right");
-					//ImGui::Text("true");
-					//ImGui::End();
-
 				}
+
+				////プレイヤーが高さ上限まで飛んだら
+				//if (pPosY1 >= player->GetJumpHigjt()) {
+				//	player->SetJump(false);
+				//}
 
 			}
 
@@ -362,49 +337,15 @@ void Colision::MapCollision()
 	//player->SetColZ(ColZ);
 
 
-	//ゴール
-
 	//右に仮想的に移動して当たったら
-	//if (map_->mapGoalCol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapGoalCol(rightplayer + playerSpeed, downplayer + player->GetSize() / 2, backplayer))
-	//{
-	//	player->GoalCol();
-	//}
-
-
-	////左に仮想的に移動して当たったら
-	//if (map_->mapGoalCol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapGoalCol(leftplayer - playerSpeed, downplayer + player->GetSize() / 2, backplayer))
-	//{
-	//	player->GoalCol();
-
-	//}
-
-
-	////z軸に対しての当たり判定
-	////奥に仮想的に移動して当たったら
-	//if (map_->mapGoalCol(leftplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed) || map_->mapGoalCol(rightplayer, downplayer + player->GetSize() / 2, backplayer + playerSpeed))
-	//{
-	//	player->GoalCol();
-
-	//}
-
-
-	////手前に仮想的に移動して当たったら
-	//if (map_->mapGoalCol(leftplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed) || map_->mapGoalCol(rightplayer, downplayer + player->GetSize() / 2, frontplayer - playerSpeed))
-	//{
-	//	player->GoalCol();
-
-	//}
-
-
-	//右に仮想的に移動して当たったら
-	if (map_->mapcol(rightplayer + playerSpeed, downplayer, frontplayer) || map_->mapcol(rightplayer + playerSpeed, downplayer, backplayer)|| map_->mapcol(rightplayer + playerSpeed, upplayer, frontplayer) || map_->mapcol(rightplayer + playerSpeed, upplayer, backplayer))
+	if (map_->mapcol(rightplayer + playerSpeed, downplayer, frontplayer) || map_->mapcol(rightplayer + playerSpeed, downplayer, backplayer) || map_->mapcol(rightplayer + playerSpeed, upplayer, frontplayer) || map_->mapcol(rightplayer + playerSpeed, upplayer, backplayer))
 	{
 
 		if (player->GetMove().x > 0 && ColX.x == 0) {
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if (map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer, frontplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer , backplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, upplayer, frontplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed,upplayer, backplayer)) {
+				if (map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer, frontplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer, backplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, upplayer, frontplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, upplayer, backplayer)) {
 					break;
 				}
 
@@ -422,13 +363,13 @@ void Colision::MapCollision()
 
 
 	//左に仮想的に移動して当たったら
-	if (map_->mapcol(leftplayer - playerSpeed, downplayer, frontplayer) || map_->mapcol(leftplayer - playerSpeed, downplayer, backplayer) || map_->mapcol(leftplayer - playerSpeed,upplayer, frontplayer) || map_->mapcol(leftplayer - playerSpeed, upplayer, backplayer))
+	if (map_->mapcol(leftplayer - playerSpeed, downplayer, frontplayer) || map_->mapcol(leftplayer - playerSpeed, downplayer, backplayer) || map_->mapcol(leftplayer - playerSpeed, upplayer, frontplayer) || map_->mapcol(leftplayer - playerSpeed, upplayer, backplayer))
 	{
 		if (player->GetMove().x < 0 && ColX.y == 0) {
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if (map_->mapcol(leftplayer - adjustPixcelSpeed, downplayer, frontplayer) || map_->mapcol(leftplayer - adjustPixcelSpeed, downplayer, backplayer) || (map_->mapcol(leftplayer - adjustPixcelSpeed,upplayer, frontplayer) || map_->mapcol(leftplayer - adjustPixcelSpeed, upplayer, backplayer))) {
+				if (map_->mapcol(leftplayer - adjustPixcelSpeed, downplayer, frontplayer) || map_->mapcol(leftplayer - adjustPixcelSpeed, downplayer, backplayer) || (map_->mapcol(leftplayer - adjustPixcelSpeed, upplayer, frontplayer) || map_->mapcol(leftplayer - adjustPixcelSpeed, upplayer, backplayer))) {
 					break;
 				}
 
@@ -444,51 +385,15 @@ void Colision::MapCollision()
 
 	}
 
-
-	////上に仮想的に移動して当たったら
-	//if (map_->mapcol(leftplayer, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer, downplayer + player->GetSize() / 2, backplayer))
-	//{
-
-	//	if (player->GetMove().x > 0 && ColX.x == 0) {
-	//		//１ピクセル先に壁が来るまで移動
-	//		while (true)
-	//		{
-	//			if ((map_->mapcol(leftplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, frontplayer) || map_->mapcol(rightplayer + adjustPixcelSpeed, downplayer + player->GetSize() / 2, backplayer))) {
-	//				break;
-	//			}
-
-	//			player->OnMapCollisionX2();
-	//			rightplayer = player->GetPosition().x + player->GetSize() - adjustPlayerSize;
-	//			leftplayer = player->GetPosition().x + adjustPlayerSize;
-
-	//		}
-
-
-	//	}
-	//	
-
-	//}
-
-	//if (map_->mapcol(leftplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, backplayer) || map_->mapcol(rightplayer, upplayer + playerSpeed, frontplayer) || map_->mapcol(leftplayer, upplayer + playerSpeed, backplayer))
-	//
-
-	float left = leftplayer;
-	float down = downplayer + player->GetSize() / 2;
-	float front = frontplayer;
-
-	ImGui::Begin("mapCol");
-	ImGui::Text("x = %f,y = %f,z = %f", left, down, front);
-	ImGui::End();
-
 	//z軸に対しての当たり判定
 	//奥に仮想的に移動して当たったら
-	if (map_->mapcol(leftplayer, downplayer, backplayer + playerSpeed) || map_->mapcol(rightplayer, downplayer, backplayer + playerSpeed) || map_->mapcol(leftplayer,upplayer, backplayer + playerSpeed) || map_->mapcol(rightplayer, upplayer, backplayer + playerSpeed))
+	if (map_->mapcol(leftplayer, downplayer, backplayer + playerSpeed) || map_->mapcol(rightplayer, downplayer, backplayer + playerSpeed) || map_->mapcol(leftplayer, upplayer, backplayer + playerSpeed) || map_->mapcol(rightplayer, upplayer, backplayer + playerSpeed))
 	{
 		if (player->GetMove().z > 0 && ColZ.x == 0) {
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if (map_->mapcol(leftplayer, downplayer, backplayer + adjustPixcelSpeed) || map_->mapcol(rightplayer, downplayer , backplayer + adjustPixcelSpeed) || map_->mapcol(leftplayer,upplayer, backplayer + adjustPixcelSpeed) || map_->mapcol(rightplayer,upplayer, backplayer + adjustPixcelSpeed)) {
+				if (map_->mapcol(leftplayer, downplayer, backplayer + adjustPixcelSpeed) || map_->mapcol(rightplayer, downplayer, backplayer + adjustPixcelSpeed) || map_->mapcol(leftplayer, upplayer, backplayer + adjustPixcelSpeed) || map_->mapcol(rightplayer, upplayer, backplayer + adjustPixcelSpeed)) {
 					break;
 				}
 
@@ -503,7 +408,7 @@ void Colision::MapCollision()
 	}
 
 	//手前に仮想的に移動して当たったら
-	if (map_->mapcol(leftplayer, downplayer, frontplayer - playerSpeed) || map_->mapcol(rightplayer, downplayer, frontplayer - playerSpeed) || map_->mapcol(leftplayer,upplayer, frontplayer - playerSpeed) || map_->mapcol(rightplayer,upplayer, frontplayer - playerSpeed))
+	if (map_->mapcol(leftplayer, downplayer, frontplayer - playerSpeed) || map_->mapcol(rightplayer, downplayer, frontplayer - playerSpeed) || map_->mapcol(leftplayer, upplayer, frontplayer - playerSpeed) || map_->mapcol(rightplayer, upplayer, frontplayer - playerSpeed))
 	{
 
 
@@ -515,7 +420,7 @@ void Colision::MapCollision()
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if (map_->mapcol(leftplayer, downplayer, frontplayer - adjustPixcelSpeed) || map_->mapcol(rightplayer, downplayer, frontplayer - adjustPixcelSpeed) || map_->mapcol(leftplayer,upplayer, frontplayer - adjustPixcelSpeed) || map_->mapcol(rightplayer,upplayer, frontplayer - adjustPixcelSpeed)) {
+				if (map_->mapcol(leftplayer, downplayer, frontplayer - adjustPixcelSpeed) || map_->mapcol(rightplayer, downplayer, frontplayer - adjustPixcelSpeed) || map_->mapcol(leftplayer, upplayer, frontplayer - adjustPixcelSpeed) || map_->mapcol(rightplayer, upplayer, frontplayer - adjustPixcelSpeed)) {
 					break;
 				}
 
@@ -566,16 +471,18 @@ void Colision::MapCollision()
 		}
 
 		//右に仮想的に移動して当たったら
-		if (map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))
+		if (map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks, backmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, upmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, upmagnetBlocks, backmagnetBlocks))
 		{
-
+			ImGui::Begin("x+");
+			ImGui::Text("true");
+			ImGui::End();
 			bMoveVec[i].x = 0;
 			magnetBlocks[i].SetRockMove(true, 4);
 
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if ((map_->mapInGoalCol(rightmagnetBlocks + adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))) {
+				if (map_->mapInGoalCol(rightmagnetBlocks + adjustPixcelSpeed, downmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + adjustPixcelSpeed, downmagnetBlocks, backmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + adjustPixcelSpeed, upmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + adjustPixcelSpeed, upmagnetBlocks, backmagnetBlocks)) {
 					break;
 				}
 
@@ -588,42 +495,19 @@ void Colision::MapCollision()
 
 		}
 
-		////ゴール
-		//		//右に仮想的に移動して当たったら
-		//if (map_->mapGoalCol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))
-		//{
-
-		//	bMoveVec[i].x = 0;
-		//	magnetBlocks[i].SetRockMove(true, 4);
-
-		//	//１ピクセル先に壁が来るまで移動
-		//	while (true)
-		//	{
-		//		if ((map_->mapGoalCol(rightmagnetBlocks + adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))) {
-		//			break;
-		//		}
-
-		//		rightmagnetBlocks += adjustPixcelSpeed - adjustmagnetBlocksSize;
-		//		leftmagnetBlocks += adjustPixcelSpeed + adjustmagnetBlocksSize;
-
-		//		bMoveVec[i].x += adjustPixcelSpeed;
-
-		//	}
-
-		//}
-
-
 		//左に仮想的に移動して当たったら
-		else if (map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))
+		else if (map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks, backmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, upmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, upmagnetBlocks, backmagnetBlocks))
 		{
-
+			ImGui::Begin("x-");
+			ImGui::Text("true");
+			ImGui::End();
 			bMoveVec[i].x = 0;
 			magnetBlocks[i].SetRockMove(true, 3);
 
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if ((map_->mapInGoalCol(leftmagnetBlocks - adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks - adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))) {
+				if (map_->mapInGoalCol(leftmagnetBlocks - adjustPixcelSpeed, downmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks - adjustPixcelSpeed, downmagnetBlocks, backmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks - adjustPixcelSpeed, upmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks - adjustPixcelSpeed, upmagnetBlocks, backmagnetBlocks)) {
 					break;
 				}
 
@@ -637,32 +521,11 @@ void Colision::MapCollision()
 
 		}
 
-		////ゴール
-		//else if (map_->mapGoalCol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))
-		//{
-
-		//	bMoveVec[i].x = 0;
-		//	magnetBlocks[i].SetRockMove(true, 3);
-
-		//	//１ピクセル先に壁が来るまで移動
-		//	while (true)
-		//	{
-		//		if ((map_->mapGoalCol(leftmagnetBlocks - adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks - adjustPixcelSpeed, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks))) {
-		//			break;
-		//		}
-
-
-		//		rightmagnetBlocks -= adjustPixcelSpeed - adjustmagnetBlocksSize;
-		//		leftmagnetBlocks -= adjustPixcelSpeed + adjustmagnetBlocksSize;
-
-		//		bMoveVec[i].x -= adjustPixcelSpeed;
-		//	}
-
-
-		//}
+		//落下スピード
+		float magFallSpeed = 0.05;
 
 		//下に仮想的に移動して当たったら
-		if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - bMoveVec[i].y, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - bMoveVec[i].y, backmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - bMoveVec[i].y, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - bMoveVec[i].y, backmagnetBlocks))
+		if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - magFallSpeed, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - magFallSpeed, backmagnetBlocks))
 		{
 
 			bMoveVec[i].y = 0;
@@ -671,7 +534,7 @@ void Colision::MapCollision()
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if ((map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, backmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, frontmagnetBlocks || map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, backmagnetBlocks)))) {
+				if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - adjustPixcelSpeed, backmagnetBlocks)) {
 					break;
 				}
 
@@ -687,16 +550,20 @@ void Colision::MapCollision()
 
 		//z軸に対しての当たり判定
 		//奥に仮想的に移動して当たったら
-		if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + bMoveVec[i].z))
+		if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks, backmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks, backmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks, backmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks, backmagnetBlocks + bMoveVec[i].z))
 		{
 
+			ImGui::Begin("z+");
+			ImGui::Text("true");
+			ImGui::End();
 			bMoveVec[i].z = 0;
+
 			magnetBlocks[i].SetRockMove(true, 5);
 
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if ((map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + adjustPixcelSpeed) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, backmagnetBlocks + adjustPixcelSpeed))) {
+				if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks, backmagnetBlocks + adjustPixcelSpeed) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks, backmagnetBlocks + adjustPixcelSpeed) || map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks, backmagnetBlocks + adjustPixcelSpeed) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks, backmagnetBlocks + adjustPixcelSpeed)) {
 					break;
 				}
 
@@ -710,16 +577,18 @@ void Colision::MapCollision()
 
 
 		//手前に仮想的に移動して当たったら
-		else if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks + bMoveVec[i].z))
+		else if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks, frontmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks, frontmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks, frontmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks, frontmagnetBlocks + bMoveVec[i].z))
 		{
-
+			ImGui::Begin("z-");
+			ImGui::Text("true");
+			ImGui::End();
 			bMoveVec[i].z = 0;
 			magnetBlocks[i].SetRockMove(true, 6);
 
 			//１ピクセル先に壁が来るまで移動
 			while (true)
 			{
-				if ((map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks - adjustPixcelSpeed) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks + magnetBlocks[i].GetSize() / 2, frontmagnetBlocks - adjustPixcelSpeed))) {
+				if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks, frontmagnetBlocks - adjustPixcelSpeed) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks, frontmagnetBlocks - adjustPixcelSpeed) || map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks, frontmagnetBlocks - adjustPixcelSpeed) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks, frontmagnetBlocks - adjustPixcelSpeed)) {
 					break;
 				}
 
@@ -728,33 +597,6 @@ void Colision::MapCollision()
 
 				bMoveVec[i].z -= adjustPixcelSpeed;
 			}
-		}
-
-				//下に仮想的に移動して当たったら
-		if (map_->mapInGoalCol(leftmagnetBlocks + 0.1, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks + 0.1) || map_->mapInGoalCol(rightmagnetBlocks - 0.1, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks - 0.1) || map_->mapInGoalCol(rightmagnetBlocks - 0.1, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks + 0.1) || map_->mapInGoalCol(leftmagnetBlocks + 0.1, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks - 0.1))
-		{
-
-			bFall[i] = false;
-
-		}
-		else {
-
-			bFall[i] = true;
-			//magnetBlocks[i].SetIsMove(false);
-
-		}
-
-		//上に仮想的に移動して当たったら
-		if (map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, backmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, backmagnetBlocks))
-		{
-			//magnetBlocks->SetFall(true);
-			//magnetBlocks->SetJump(false);
-
-		}
-		else {
-
-			//magnetBlocks->SetFall(false);
-
 		}
 
 	}
@@ -1089,9 +931,9 @@ void Colision::PosCollision()
 							ColZ.y = 1;
 
 
-						/*	ImGui::Begin("up");
-							ImGui::Text("true");
-							ImGui::End();*/
+							/*	ImGui::Begin("up");
+								ImGui::Text("true");
+								ImGui::End();*/
 						}
 						else if (contact == 6) {
 							ColZ.x = 1;
@@ -1986,7 +1828,7 @@ void Colision::MagnetPower()
 								debugText_->Printf("qqqqqqqqqqqq ");*/
 
 					if (k == 1) {
-						if (magnetBlocks[i].GetPos().y - bSize / 2+ bMoveVec[i].y <= pPos.y + bMoveVec[j].y) {
+						if (magnetBlocks[i].GetPos().y - bSize / 2 + bMoveVec[i].y <= pPos.y + bMoveVec[j].y) {
 							magnetBlocks[i].SetIsMove(false);
 
 						}
@@ -1996,7 +1838,7 @@ void Colision::MagnetPower()
 					}
 
 					if (k == 2) {
-						if (magnetBlocks[i].GetPos().y + bSize / 2+ bMoveVec[i].y > pPos.y + bMoveVec[j].y) {
+						if (magnetBlocks[i].GetPos().y + bSize / 2 + bMoveVec[i].y > pPos.y + bMoveVec[j].y) {
 							magnetBlocks[i].SetIsMove(false);
 						}
 						else {
@@ -2442,12 +2284,61 @@ void Colision::InforUpdateMagnetPos()
 
 void Colision::MagFall()
 {
+
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		if (bFall[i] == true /*&& bColY.y == false*/) {
-			bMoveVec[i].y -= 0.025;
+		//落下関係
+
+		float leftmagnetBlocks = magnetBlocks[i].GetPos().x;
+		float downmagnetBlocks = magnetBlocks[i].GetPos().y;
+		float frontmagnetBlocks = magnetBlocks[i].GetPos().z;
+
+		float rightmagnetBlocks = magnetBlocks[i].GetPos().x + magnetBlocks[i].GetSize();
+		float upmagnetBlocks = magnetBlocks[i].GetPos().y + magnetBlocks[i].GetSize();
+		float backmagnetBlocks = magnetBlocks[i].GetPos().z + magnetBlocks[i].GetSize();
+
+		float magnetBlocksSpeed = 0.05;
+
+		//当たらないよう調整する用
+		float adjustPixcelSpeed = 0.01;
+		//サイズ調整用
+		float adjustmagnetBlocksSize = 0.00;
+
+		//下に仮想的に移動して当たったら
+		if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - magnetBlocksSpeed, backmagnetBlocks))
+		{
+			bFall[i] = false;
+
+		}
+		else {
+
+			bFall[i] = true;
+			//magnetBlocks[i].SetIsMove(false);
+
 		}
 
+		//上に仮想的に移動して当たったら
+		if (map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, backmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks + magnetBlocksSpeed, backmagnetBlocks))
+		{
+			//magnetBlocks->SetFall(true);
+			//magnetBlocks->SetJump(false);
+
+		}
+		else {
+
+			//magnetBlocks->SetFall(false);
+
+		}
+
+		for (int i = 0; i < magnetBlocks.size(); i++) {
+
+			if (bFall[i] == true /*&& bColY.y == false*/) {
+
+
+				bMoveVec[i].y -= 0.025;
+			}
+
+		}
 	}
 
 }

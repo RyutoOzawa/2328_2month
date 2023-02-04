@@ -53,6 +53,14 @@ void Player::Update()
 	//行列更新
 	obj.Update();
 
+	ImGui::Begin("jump");
+	ImGui::Text("%d",isJump);
+	ImGui::End();
+
+	ImGui::Begin("fall");
+	ImGui::Text("%d",fall);
+	ImGui::End();
+
 }
 
 void Player::Draw()
@@ -92,6 +100,7 @@ void Player::Jump()
 
 		if (jumpBeforePosY + jumpHight <= pos.y) {
 			isJump = false;
+			fall = true;
 		}
 
 	}
@@ -127,7 +136,7 @@ void Player::GoalCol()
 
 	if (pPosX1 < gPosX2 + adjust && gPosX1 - adjust < pPosX2) {
 
-		if (pPosY1 < gPosY2 && gPosY1  < pPosY2) {
+		if (pPosY1 < gPosY2 && gPosY1 < pPosY2) {
 
 			if (pPosZ1 < gPosZ2 + adjust && gPosZ1 - adjust < pPosZ2) {
 

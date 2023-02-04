@@ -9,7 +9,7 @@ bool Map::mapcol(float x, float y, float z)
 
 	//���肦�Ȃ��l��false�ŕԂ�
 	if (x < 0 || x >= blockX)	return true;
-	if (y < 0 || y >= blockY)	return true;
+	if (y < 0 || y >= blockY)	return false;
 	if (z < 0 || z >= blockZ)	return true;
 
 	return Map::map[mapy][mapz][mapx] == BLOCK;
