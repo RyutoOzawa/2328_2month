@@ -218,17 +218,17 @@ void GamePlayScene::Update()
 
 			//↓------------カメラ--------------↓
 
-			//カメラ視点座標は自機に追従
-			camera.target.x = player->GetPosition().x;
-			camera.target.y = player->GetPosition().y;
-			camera.target.z = player->GetPosition().z;
+			////カメラ視点座標は自機に追従
+			//camera.target.x = player->GetPosition().x;
+			//camera.target.y = player->GetPosition().y;
+			//camera.target.z = player->GetPosition().z;
 
 			if (input->IsKeyTrigger(DIK_RETURN)) {
 				cameraState++;
 				if (cameraState >= 5) {
 					cameraState = 0;
 				}
-				camera.ChangeEye(cameraState);
+				camera.ChangeState(cameraState);
 			}
 
 			if (input->IsKeyTrigger(DIK_UP)) {
@@ -240,14 +240,14 @@ void GamePlayScene::Update()
 					cameraState = 0;
 				}				
 
-				camera.ChangeEye(cameraState);
+				camera.ChangeState(cameraState);
 			}
 			else if (input->IsKeyTrigger(DIK_DOWN)) {
 
 				if (cameraState == 0) {
 					cameraState = 2;
 				}
-				camera.ChangeEye(cameraState);
+				camera.ChangeState(cameraState);
 			}
 			else if (input->IsKeyTrigger(DIK_LEFT)) {
 
@@ -266,7 +266,7 @@ void GamePlayScene::Update()
 				else if (cameraState == 4) {
 					cameraState = 2;
 				}
-				camera.ChangeEye(cameraState);
+				camera.ChangeState(cameraState);
 			}
 			else if (input->IsKeyTrigger(DIK_RIGHT)) {
 
@@ -285,12 +285,10 @@ void GamePlayScene::Update()
 				else if (cameraState == 4) {
 					cameraState = 1;
 				}				
-				camera.ChangeEye(cameraState);
+				camera.ChangeState(cameraState);
 			}
 
-
-			camera.UpdateEye();
-			camera.UpdateMatrix();
+			camera.Update(player->GetPosition());
 
 			//fps表示
 			ImGui::Begin("fcamera");

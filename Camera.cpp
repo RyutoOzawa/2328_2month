@@ -12,7 +12,7 @@ void Camera::StaticInitialize(ID3D12Device* dev)
 	device = dev;
 }
 
-void Camera::Initialize(const DirectX::XMFLOAT3& eye, const DirectX::XMFLOAT3& target, const DirectX::XMFLOAT3& up)
+void Camera::Initialize(const XMFLOAT3& eye, const XMFLOAT3& target, const XMFLOAT3& up)
 {
 	//引数をメンバに移して行列更新
 	this->eye = eye;
@@ -68,22 +68,33 @@ void Camera::UpdateMatrix()
 
 void Camera::InitializeData(Vector3 stageSize)
 {
-	placePos[0] = { stageSize.x,stageSize.y + (addSizeY  * 2),stageSize.z };
+	//ステージの真ん中
 
-	//ステージのX,Zそれぞれ真ん中
-	float midX = stageSize.x / 2;
-	float midZ = stageSize.z / 2;
+	stageMid = { stageSize.x / 2,stageSize.y / 2, stageSize.z / 2 };
+
+	stagePos[0] = { stageSize.x,stageSize.y + (addSizeY * 2),stageSize.z };
 
 	//上
-	placePos[1] = { midX,stageSize.y + addSizeY,stageSize.z + addSizeZ };
+	stagePos[1] = { stageMid.x,stageSize.y + addSizeY,stageSize.z + addSizeZ };
 	//下
-	placePos[2] = { midX,stageSize.y + addSizeY,0 - addSizeZ };
+	stagePos[2] = { stageMid.x,stageSize.y + addSizeY,0 - addSizeZ };
 	//左
-	placePos[3] = { 0 - addSizeX ,stageSize.y + addSizeY,midZ };
+	stagePos[3] = { 0 - addSizeX ,stageSize.y + addSizeY,	stageMid.z };
 	//右
-	placePos[4] = { stageSize.x + addSizeX,stageSize.y + addSizeY, midZ };
+	stagePos[4] = { stageSize.x + addSizeX,stageSize.y + addSizeY, 	stageMid.z };
 
-	isMove = false;
+	isMoveEye = false;
+
+}
+
+void Camera::Update(XMFLOAT3 pPos)
+{
+
+	UpdateTarget(pPos);
+
+	UpdateEye();
+
+	UpdateMatrix();
 
 }
 
@@ -92,17 +103,17 @@ void Camera::UpdateEye()
 
 
 
-	if (isMove == true) {
+	if (isMoveEye == true) {
 
 		MoveEye();
 
 	}
 	else {
 
-		if (state == 0) {
+		if (state_ == 0) {
 
 			eye = target;
-			eye.y = placePos[0].y;
+			eye.y = stagePos[0].y;
 			eye.z = eye.z - 2.5f;
 
 			//placePos[0].x = target.x;
@@ -110,78 +121,100 @@ void Camera::UpdateEye()
 			//placePos[0].z = target.z - 2.5f;
 
 		}
-		else if (state == 1) {
+		else if (state_ == 1) {
 
-			eye.x = placePos[1].x;
-			eye.y = placePos[1].y;
-			eye.z = placePos[1].z;
-
-		}
-		else if (state == 2) {
-
-			eye.x = placePos[2].x;
-			eye.y = placePos[2].y;
-			eye.z = placePos[2].z;
+			eye.x = stagePos[1].x;
+			eye.y = stagePos[1].y;
+			eye.z = stagePos[1].z;
 
 		}
-		else if (state == 3) {
+		else if (state_ == 2) {
 
-			eye.x = placePos[3].x;
-			eye.y = placePos[3].y;
-			eye.z = placePos[3].z;
+			eye.x = stagePos[2].x;
+			eye.y = stagePos[2].y;
+			eye.z = stagePos[2].z;
 
 		}
-		else if (state == 4) {
+		else if (state_ == 3) {
 
-			eye.x = placePos[4].x;
-			eye.y = placePos[4].y;
-			eye.z = placePos[4].z;
+			eye.x = stagePos[3].x;
+			eye.y = stagePos[3].y;
+			eye.z = stagePos[3].z;
+
+		}
+		else if (state_ == 4) {
+
+			eye.x = stagePos[4].x;
+			eye.y = stagePos[4].y;
+			eye.z = stagePos[4].z;
 
 		}
 	}
 }
 
-void Camera::ChangeEye(int place)
+void Camera::UpdateTarget(XMFLOAT3 pPos)
 {
 
-	isMove = true;
-	nextState = place;
 
-
-	elapsedCount = 0.0f;
-
-	//state == 0 のx.zは常に変わっているためここで情報を更新
-	if (state == 0 || nextState == 0) {
-		placePos[0].x = target.x;
-		placePos[0].z = target.z - 2.5f;
+	if (state_ == 0) {
+		//カメラ視点座標は自機に追従
+		target.x = pPos.x;
+		target.y = pPos.y;
+		target.z = pPos.z;
+	}
+	else {
+		target.x = stageMid.x;
+		target.y = 2;
+		target.z = stageMid.z;
 	}
 
-	start = Vector3(placePos[state].x, placePos[state].y, placePos[state].z);	//スタート地点
-	end = Vector3(placePos[nextState].x, placePos[nextState].y, placePos[nextState].z);	//エンド地点
+
+}
+
+void Camera::ChangeState(int state)
+{
+
+	//ベジエ移動実行中をtrue
+	isMoveEye = true;
+	//移動先をセット
+	nextState = state;
+
+	//eye　ベジエリセット
+
+	elapsedCountEye = 0.0f;
+
+	//state == 0 のx.zは常に変わっているためここで情報を更新
+	if (state_ == 0 || nextState == 0) {
+		stagePos[0].x = target.x;
+		stagePos[0].z = target.z - 2.5f;
+	}
+
+	startEye = Vector3(stagePos[state_].x, stagePos[state_].y, stagePos[state_].z);	//スタート地点
+	endEye = Vector3(stagePos[nextState].x, stagePos[nextState].y, stagePos[nextState].z);	//エンド地点
 
 	//スタート地点とエンド地点の真ん中を制御店に
 
 	float pX;
 
-	if (start.x > end.x) {
-		pX = start.x - end.x;
+	if (startEye.x > endEye.x) {
+		pX = startEye.x - endEye.x;
 	}
 	else {
-		pX = end.x - start.x;
+		pX = endEye.x - startEye.x;
 	}
 
 	float pZ;
 
-	if (start.z > end.z) {
-		pZ = start.z - end.z;
+	if (startEye.z > endEye.z) {
+		pZ = startEye.z - endEye.z;
 	}
 	else {
-		pZ = end.z - start.z;
+		pZ = endEye.z - startEye.z;
 	}
 
-	p = Vector3(pX / 2, addSizeY * 2, pZ / 2);	//制御点
+	pEye = Vector3(pX / 2, addSizeY * 2, pZ / 2);	//制御点
 
-	state = place;
+	this->state_ = state;
 
 }
 
@@ -189,8 +222,8 @@ void Camera::MoveEye()
 {
 
 	//経過時間(elapsedTime [s])の計算
-	elapsedCount++;
-	float elapsedTime = static_cast<float> (elapsedCount) / 60.0f;
+	elapsedCountEye++;
+	float elapsedTime = static_cast<float> (elapsedCountEye) / 60.0f;
 
 	//スタート地点			: start
 	// 制御点				: p
@@ -201,11 +234,11 @@ void Camera::MoveEye()
 	timeRate = elapsedTime / maxTime;
 
 	if (timeRate >= 1) {
-		isMove = false;
+		isMoveEye = false;
 	}
 
-	Vector3 a = lerp(start, p, timeRate);
-	Vector3 b = lerp(p, end, timeRate);
+	Vector3 a = lerp(startEye, pEye, timeRate);
+	Vector3 b = lerp(pEye, endEye, timeRate);
 
 	cameraPosition = lerp(a, b, timeRate);
 
