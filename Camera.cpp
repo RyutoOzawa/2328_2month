@@ -101,8 +101,6 @@ void Camera::Update(XMFLOAT3 pPos)
 void Camera::UpdateEye()
 {
 
-
-
 	if (isMoveEye == true) {
 
 		MoveEye();
