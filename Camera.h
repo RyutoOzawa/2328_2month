@@ -54,6 +54,11 @@ public:
 	//ベジエ曲線での移動
 	void MoveEye();
 
+	//カメラと中心点のベクトル
+
+	XMFLOAT3 GetCameraVec() { return cameraVec; }
+
+	void UpdateCameraVec();
 
 private:
 
@@ -71,6 +76,9 @@ private:
 	float addSizeX = 10;
 	float addSizeY = 10;
 	float addSizeZ = 10;
+
+	//カメラと中心点のベクトル
+	XMFLOAT3 cameraVec;
 
 	//↓------ベジエ曲線-------↓
 

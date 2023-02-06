@@ -3,6 +3,8 @@
 #include"ImguiManager.h"
 using namespace DirectX;
 
+const double PI = 3.141592653589;
+
 void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32_t& texB, Input* input, Map* map, Goal* goal)
 {
 	//引数からメンバへ
@@ -18,15 +20,16 @@ void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32
 	playerTexture = whiteTexture;
 	//サイズ調整
 	obj.scale = XMFLOAT3(size / 10, size / 10, size / 10);
+	obj.rotation = XMFLOAT3(0, 0, 270 * (PI / 180));
 
 	this->map = map;
 	this->goal = goal;
 }
 
-void Player::Update()
+void Player::Update(int cameraState)
 {
 	//移動
-	Move();
+	Move(cameraState);
 
 	Jump();
 
@@ -54,11 +57,11 @@ void Player::Update()
 	obj.Update();
 
 	ImGui::Begin("jump");
-	ImGui::Text("%d",isJump);
+	ImGui::Text("%d", isJump);
 	ImGui::End();
 
 	ImGui::Begin("fall");
-	ImGui::Text("%d",fall);
+	ImGui::Text("%d", fall);
 	ImGui::End();
 
 }
@@ -194,43 +197,156 @@ void Player::ChangeState()
 	}
 }
 
-void Player::Move() {
+void Player::Move(int cameraState) {
 
-	if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_A)) {
-		if (colX.y == 0) {
-			pos.x -= playerSpd;
-			move.x = -playerSpd;
+	if (cameraState == 0 || cameraState == 2) {
+
+		if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_A)) {
+			if (colX.y == 0) {
+				pos.x -= playerSpd;
+				move.x = -playerSpd;
+			}
 		}
-	}
-	else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_D)) {
-		if (colX.x == 0) {
-			pos.x += playerSpd;
-			move.x = playerSpd;
+		else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_D)) {
+			if (colX.x == 0) {
+				pos.x += playerSpd;
+				move.x = playerSpd;
+			}
 		}
-	}
-	else {
-		move.x = 0;
-	}
-
-	if (input->IsDownLStickDown() || input->IsKeyPress(DIK_S)) {
-		if (colZ.y == 0) {
-
-			pos.z -= playerSpd;
-			move.z = -playerSpd;
+		else {
+			move.x = 0;
 		}
-	}
-	else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_W)) {
-		if (colZ.x == 0) {
 
-			pos.z += playerSpd;
-			move.z = playerSpd;
+		if (input->IsDownLStickDown() || input->IsKeyPress(DIK_S)) {
+			if (colZ.y == 0) {
+
+				pos.z -= playerSpd;
+				move.z = -playerSpd;
+			}
 		}
-	}
-	else {
-		move.z = 0;
-	}
+		else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_W)) {
+			if (colZ.x == 0) {
 
+				pos.z += playerSpd;
+				move.z = playerSpd;
+			}
+		}
+		else {
+			move.z = 0;
+		}
 
+	}
+	else if (cameraState == 1){
+
+		if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_D)) {
+			if (colX.y == 0) {
+				pos.x -= playerSpd;
+				move.x = -playerSpd;
+			}
+		}
+		else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_A)) {
+			if (colX.x == 0) {
+				pos.x += playerSpd;
+				move.x = playerSpd;
+			}
+		}
+		else {
+			move.x = 0;
+		}
+
+		if (input->IsDownLStickDown() || input->IsKeyPress(DIK_W)) {
+			if (colZ.y == 0) {
+
+				pos.z -= playerSpd;
+				move.z = -playerSpd;
+			}
+		}
+		else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_S)) {
+			if (colZ.x == 0) {
+
+				pos.z += playerSpd;
+				move.z = playerSpd;
+			}
+		}
+		else {
+			move.z = 0;
+		}
+
+	}
+	else if (cameraState == 3) {
+
+		if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_S)) {
+			if (colX.y == 0) {
+				pos.x -= playerSpd;
+				move.x = -playerSpd;
+			}
+		}
+		else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_W)) {
+			if (colX.x == 0) {
+				pos.x += playerSpd;
+				move.x = playerSpd;
+			}
+		}
+		else {
+			move.x = 0;
+		}
+
+		if (input->IsDownLStickDown() || input->IsKeyPress(DIK_D)) {
+			if (colZ.y == 0) {
+
+				pos.z -= playerSpd;
+				move.z = -playerSpd;
+			}
+		}
+		else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_A)) {
+			if (colZ.x == 0) {
+
+				pos.z += playerSpd;
+				move.z = playerSpd;
+			}
+		}
+		else {
+			move.z = 0;
+		}
+
+	}
+	else if (cameraState == 4) {
+
+		if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_W)) {
+			if (colX.y == 0) {
+				pos.x -= playerSpd;
+				move.x = -playerSpd;
+			}
+		}
+		else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_S)) {
+			if (colX.x == 0) {
+				pos.x += playerSpd;
+				move.x = playerSpd;
+			}
+		}
+		else {
+			move.x = 0;
+		}
+
+		if (input->IsDownLStickDown() || input->IsKeyPress(DIK_A)) {
+			if (colZ.y == 0) {
+
+				pos.z -= playerSpd;
+				move.z = -playerSpd;
+			}
+		}
+		else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_D)) {
+			if (colZ.x == 0) {
+
+				pos.z += playerSpd;
+				move.z = playerSpd;
+			}
+		}
+		else {
+			move.z = 0;
+		}
+
+	}
 
 	//自機座標をimguiでいじる
 	//ImGui::Begin("player");

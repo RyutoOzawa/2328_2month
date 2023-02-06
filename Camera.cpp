@@ -68,6 +68,14 @@ void Camera::UpdateMatrix()
 
 void Camera::InitializeData(Vector3 stageSize)
 {
+
+	if (stageSize.x > stageSize.z) {
+		addSizeY = stageSize.x;
+	}
+	else {
+		addSizeY = stageSize.z;
+	}
+
 	//ステージの真ん中
 
 	stageMid = { stageSize.x / 2,stageSize.y / 2, stageSize.z / 2 };
@@ -95,6 +103,8 @@ void Camera::Update(XMFLOAT3 pPos)
 	UpdateEye();
 
 	UpdateMatrix();
+
+	UpdateCameraVec();
 
 }
 
@@ -154,17 +164,18 @@ void Camera::UpdateTarget(XMFLOAT3 pPos)
 {
 
 
-	if (state_ == 0) {
-		//カメラ視点座標は自機に追従
-		target.x = pPos.x;
-		target.y = pPos.y;
-		target.z = pPos.z;
-	}
-	else {
-		target.x = stageMid.x;
-		target.y = 2;
-		target.z = stageMid.z;
-	}
+	//if (state_ == 0) {
+	//	//カメラ視点座標は自機に追従
+	//	target.x = pPos.x;
+	//	target.y = pPos.y;
+	//	target.z = pPos.z;
+	//}
+	//else {
+	target.x = stageMid.x;
+	target.y = 2;
+	target.z = stageMid.z;
+
+	//}
 
 
 }
@@ -243,5 +254,34 @@ void Camera::MoveEye()
 	eye.x = cameraPosition.x;
 	eye.y = cameraPosition.y;
 	eye.z = cameraPosition.z;
+
+}
+
+void Camera::UpdateCameraVec()
+{
+
+	//中心点とeyeのベクトル
+	cameraVec = XMFLOAT3(stageMid.x - eye.x, 1, stageMid.z - eye.z);
+
+	//大きさを求める
+	float cameraVecLengthX = sqrt(cameraVec.x * cameraVec.x);
+	float cameraVecLengthZ = sqrt(cameraVec.z * cameraVec.z);
+
+	//正規化
+
+	float lX = 1 / cameraVecLengthX;
+	float lZ = 1 / cameraVecLengthZ;
+
+	cameraVec.x *= lX;
+	cameraVec.z *= lZ;
+
+
+	if (stageMid.x == eye.x) {
+		cameraVec.x = 1;
+	}
+
+	if (stageMid.z == eye.z) {
+		cameraVec.z = 1;
+	}
 
 }

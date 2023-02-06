@@ -60,9 +60,9 @@ void Colision::Update() {
 		setPos[i].y += bMoveVec[i].y;
 		setPos[i].z += bMoveVec[i].z;
 
-		////ImGui::Begin("setPos");
-		////ImGui::Text("%d = %f,%f,%f \n", i, setPos[i].x, setPos[i].y, setPos[i].z);
-		////ImGui::End();
+		ImGui::Begin("setPos");
+		ImGui::Text("%d = %f,%f,%f \n", i, setPos[i].x, setPos[i].y, setPos[i].z);
+		ImGui::End();
 
 		magnetBlocks[i].SetPos(setPos[i]);
 
@@ -2501,7 +2501,7 @@ void Colision::MagFall()
 		float upmagnetBlocks = magnetBlocks[i].GetPos().y + magnetBlocks[i].GetSize();
 		float backmagnetBlocks = magnetBlocks[i].GetPos().z + magnetBlocks[i].GetSize();
 
-		float magnetBlocksSpeed = 0.05;
+		float magnetBlocksSpeed = 0.1;
 
 		//当たらないよう調整する用
 		float adjustPixcelSpeed = 0.01;

@@ -16,7 +16,7 @@ public:
 	void Initialize(const uint32_t& texW, const uint32_t& texR,
 		const uint32_t& texB, Input* input, Map* map, Goal* goal);
 
-	void Update();
+	void Update(int cameraState);
 
 	void Draw();
 
@@ -79,7 +79,7 @@ public:
 
 	//プライベートメンバ関数
 private:
-	void Move();
+	void Move(int cameraState);
 	void ChangeState();
 
 
