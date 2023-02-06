@@ -19,6 +19,8 @@ void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32
 	//サイズ調整
 	obj.scale = XMFLOAT3(0.99f, 0.99f, 0.99f);
 
+
+
 	this->map = map;
 	this->goal = goal;
 }

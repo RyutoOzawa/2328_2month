@@ -7,9 +7,13 @@ void Goal::Initialize(Input* input,const uint32_t& tex,XMFLOAT3 pos)
 
 	//オブジェクトデータ初期化
 	obj.Initialize();
-	obj.model = Model::CreateModel();
+	obj.model = Model::CreateModel("goalObj");
 
 	obj.position = pos;
+	//obj.scale = { 10.0f,10.0f,10.0f };
+	//obj.rotation.x = XM_PI / 2.0f;
+
+
 	//プレイヤーのデフォルトカラーは白
 
 	this->input = input;
@@ -18,6 +22,12 @@ void Goal::Initialize(Input* input,const uint32_t& tex,XMFLOAT3 pos)
 
 void Goal::Update()
 {
+
+	obj.rotation.y += 4.0f * DirectX::XM_PI / 180;
+	if (obj.rotation.y > XM_2PI)obj.rotation.y -= XM_2PI;
+
+	obj.Update();
+
 	if (isGoal) {
 
 		if (input->IsKeyPress(DIK_N)) {
@@ -35,7 +45,7 @@ void Goal::Update()
 
 void Goal::Draw()
 {
-	obj.model->textureIndex = goalTexture;
+//	obj.model->textureIndex = goalTexture;
 	obj.Draw();
 
 }
