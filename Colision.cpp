@@ -518,7 +518,7 @@ void Colision::MapCollision()
 		}
 
 		//落下スピード
-		float magFallSpeed = 0.1;
+		float magFallSpeed = 0.11;
 
 		//下に仮想的に移動して当たったら
 		if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - magFallSpeed, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - magFallSpeed, backmagnetBlocks))
@@ -902,7 +902,7 @@ void Colision::MapCollision()
 						}
 						else if (contact == 4) {
 							if (magnetBlocks[i].GetRockMove(3)) {
- 								ColX.y = 1;
+								ColX.y = 1;
 							}
 						}
 						else if (contact == 5) {
@@ -1222,7 +1222,7 @@ void Colision::PosCollision()
 					//	//}
 
 					//}
-					 if (contact == 3) {
+					if (contact == 3) {
 						//左に0.1移動してあったっていたら
 
 						if (pPosZ1 < bPosZ2[i] && bPosZ1[i] < pPosZ2) {
@@ -2516,6 +2516,7 @@ void Colision::MagFall()
 		}
 		else {
 
+			//落下
 			bFall[i] = true;
 			//magnetBlocks[i].SetIsMove(false);
 
@@ -2534,15 +2535,148 @@ void Colision::MagFall()
 
 		}
 
-		for (int i = 0; i < magnetBlocks.size(); i++) {
 
-			if (bFall[i] == true /*&& bColY.y == false*/) {
+		//ブロックの下にブロックがあったら進めるように
+
+		InforUpdateMagnetPos();
+
+		//当たり判定調整用
+
+		for (int j = 0; j < magnetBlocks.size(); j++) {
+
+			if (i < j) {
+				break;
+			}
+
+			float adjust = 0.2;
+
+			bool leftUp = false;
+			bool rightUp = false;
+			bool leftDown = false;
+			bool rightDown = false;
+
+			//ブロック[i]の下辺よりブロック[j]の上辺が下だった場合,ブロックの上にいるとする
+			if (bPosY1[i] > bPosY2[j] - adjust) {
+
+				//左上の点がブロック状にあるか
+				if (bPosX1[i] > bPosX1[j] - adjust && bPosX1[i] < bPosX2[j] + adjust) {
+
+					if (bPosY1[i] < bPosY2[j] + adjust) {
+
+						if (bPosZ2[i] > bPosZ1[j] - adjust && bPosZ2[i] < bPosZ2[j] + adjust) {
+
+							leftUp = true;
+
+						}
+					}
+				}
+
+				//右上の点がブロック状にあるか
+				if (bPosX2[i] > bPosX1[j] - adjust && bPosX2[i] < bPosX2[j] + adjust) {
+
+					if (bPosY1[i] < bPosY2[j] + adjust) {
+
+						if (bPosZ2[i] > bPosZ1[j] - adjust && bPosZ2[i] < bPosZ2[j] + adjust) {
+
+							rightUp = true;
+
+						}
+
+					}
+				}
+
+				//左下の点がブロック状にあるか
+				if (bPosX1[i] > bPosX1[j] - adjust && bPosX1[i] < bPosX2[j] + adjust) {
+
+					if (bPosY1[i] < bPosY2[j] + adjust) {
+
+						if (bPosZ1[i] > bPosZ1[j] - adjust && bPosZ1[i] < bPosZ2[j] + adjust) {
+
+							leftDown = true;
+
+						}
+					}
+
+				}
+
+				//右下の点がブロック状にあるか
+				if (bPosX2[i] > bPosX1[j] - adjust && bPosX2[i] < bPosX2[j] + adjust) {
+
+					if (bPosY1[i] < bPosY2[j] + adjust) {
+
+						if (bPosZ1[i] > bPosZ1[j] - adjust && bPosZ1[i] < bPosZ2[j] + adjust) {
+
+							rightDown = true;
+
+						}
+					}
+
+				}
 
 
-				bMoveVec[i].y -= 0.025;
+
+				//左上と右上の点がブロック上にあったら落ちない
+
+				if (leftUp || rightUp) {
+					bFall[i] = false;
+				}
+
+				//左下と右下の点がブロック上にあったら落ちない
+				if (leftDown || rightDown) {
+					bFall[i] = false;
+
+				}
+
+				//左上と左下の点がブロック上にあったら落ちない
+				if (leftUp || leftDown) {
+					bFall[i] = false;
+
+				}
+
+				//右上と右下の点がブロック上にあったら落ちない
+
+				if (rightUp || rightDown) {
+					bFall[i] = false;
+				}
+
+
+			}
+
+			//ImGui::Begin("bY");
+			//ImGui::Text("bPos[%d] = %f,%f \n", i, bPosY1[i], bPosY2[i]);
+			//ImGui::End();
+
+		}
+
+
+		//くっついているブロックのどれかが落下しないなら自身も落下しない
+
+		for (int j = 0; j < magnetBlocks.size(); j++) {
+
+
+			if (magnetBlocks[i].GetContactNum(j) != 100 && magnetBlocks[i].GetContactNum(j) != j) {
+
+				if (bFall[magnetBlocks[i].GetContactNum(j)] == false) {
+					bFall[i] = false;
+				}
+
 			}
 
 		}
+
+	}
+
+
+	//落下
+
+	for (int i = 0; i < magnetBlocks.size(); i++) {
+
+		if (bFall[i] == true /*&& bColY.y == false*/) {
+
+
+			bMoveVec[i].y -= 0.025;
+		}
+
 	}
 
 }
