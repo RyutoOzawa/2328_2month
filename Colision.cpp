@@ -518,7 +518,7 @@ void Colision::MapCollision()
 		}
 
 		//落下スピード
-		float magFallSpeed = 0.05;
+		float magFallSpeed = 0.1;
 
 		//下に仮想的に移動して当たったら
 		if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks - magFallSpeed, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks - magFallSpeed, backmagnetBlocks))
@@ -2501,7 +2501,7 @@ void Colision::MagFall()
 		float upmagnetBlocks = magnetBlocks[i].GetPos().y + magnetBlocks[i].GetSize();
 		float backmagnetBlocks = magnetBlocks[i].GetPos().z + magnetBlocks[i].GetSize();
 
-		float magnetBlocksSpeed = 0.1;
+		float magnetBlocksSpeed = 0.01;
 
 		//当たらないよう調整する用
 		float adjustPixcelSpeed = 0.01;
