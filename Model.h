@@ -53,9 +53,10 @@ class Model {
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff;	//インデックスバッファ
 
 
-	Material material;			//マテリアル
 
 public:
+
+	Material material;			//マテリアル
 	static ID3D12Device* device;
 	uint32_t textureIndex = 0;	//テクスチャ番号
 

@@ -439,7 +439,7 @@ void GamePlayScene::StageInitialize(int stageNumber)
 				if (map_->map[i][j][k] == 5)
 				{
 					goal->Initialize(input, goalTexture, XMFLOAT3(k * blockSize * blockScale, i * blockSize * blockScale, j * blockSize * blockScale));
-					//goal->obj.scale = XMFLOAT3(0.1f, 0.1f, 0.1f);
+					goal->obj.scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
 					goal->obj.Update();
 				}
 			}

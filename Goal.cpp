@@ -5,14 +5,14 @@ void Goal::Initialize(Input* input,const uint32_t& tex,XMFLOAT3 pos)
 	this->pos = pos;
 	goalTexture = tex;
 
-	//ƒIƒuƒWƒFƒNƒgƒf[ƒ^‰Šú‰»
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ‡ãƒ¼ã‚¿åˆæœŸåŒ–
 	obj.Initialize();
-	obj.model = Model::CreateModel();
+	obj.model = Model::CreateModel("goalObj");
 
 	obj.position = pos;
-	obj.scale = XMFLOAT3(0.1,0.1,0.1);
+	//obj.rotation.x = XM_PI / 2.0f;
 
-	//ƒvƒŒƒCƒ„[‚ÌƒfƒtƒHƒ‹ƒgƒJƒ‰[‚Í”’
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ©ãƒ¼ã¯ç™½
 
 	this->input = input;
 
@@ -20,6 +20,12 @@ void Goal::Initialize(Input* input,const uint32_t& tex,XMFLOAT3 pos)
 
 void Goal::Update()
 {
+
+	obj.rotation.y += 4.0f * DirectX::XM_PI / 180;
+	if (obj.rotation.y > XM_2PI)obj.rotation.y -= XM_2PI;
+
+	obj.Update();
+
 	if (isGoal) {
 
 		if (input->IsKeyPress(DIK_N)) {
@@ -37,7 +43,7 @@ void Goal::Update()
 
 void Goal::Draw()
 {
-	obj.model->textureIndex = goalTexture;
+//	obj.model->textureIndex = goalTexture;
 	obj.Draw();
 
 }
