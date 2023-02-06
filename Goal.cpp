@@ -5,16 +5,14 @@ void Goal::Initialize(Input* input,const uint32_t& tex,XMFLOAT3 pos)
 	this->pos = pos;
 	goalTexture = tex;
 
-	//ƒIƒuƒWƒFƒNƒgƒf[ƒ^‰Šú‰»
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒ‡ãƒ¼ã‚¿åˆæœŸåŒ–
 	obj.Initialize();
 	obj.model = Model::CreateModel("goalObj");
 
 	obj.position = pos;
-	//obj.scale = { 10.0f,10.0f,10.0f };
 	//obj.rotation.x = XM_PI / 2.0f;
 
-
-	//ƒvƒŒƒCƒ„[‚ÌƒfƒtƒHƒ‹ƒgƒJƒ‰[‚Í”’
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ©ãƒ¼ã¯ç™½
 
 	this->input = input;
 
