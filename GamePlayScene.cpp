@@ -4,6 +4,7 @@
 #include"SpriteManager.h"
 #include"GameSceneManager.h"
 #include"ShareData.h"
+#include"Util.h"
 
 using namespace DirectX;
 
@@ -19,9 +20,13 @@ void GamePlayScene::Initialize()
 	//テクスチャデータ初期化
 	magnetTextureN = Texture::LoadTexture(L"Resources/magnetN.png");
 	magnetTextureS = Texture::LoadTexture(L"Resources/magnetS.png");
-	groundTexture = Texture::LoadTexture(L"Resources/ground.png");
+	groundTexture = Texture::LoadTexture(L"Resources/testGround.png");
+	groundTextures[0] = Texture::LoadTexture(L"Resources/groundPattern1.png");
+	groundTextures[1] = Texture::LoadTexture(L"Resources/groundPattern2.png");
+	groundTextures[2] = Texture::LoadTexture(L"Resources/groundPattern3.png");
+	groundTextures[3] = Texture::LoadTexture(L"Resources/groundPattern4.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
-	backGroundTexture = Texture::LoadTexture(L"Resources/dummyPlayGame.png");
+	backGroundTexture = Texture::LoadTexture(L"Resources/playGameBack.png");
 	clearTexture = Texture::LoadTexture(L"Resources/clear.png");
 	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
 	menuTexture = Texture::LoadTexture(L"Resources/dummyIngameMenu.png");
@@ -165,14 +170,12 @@ void GamePlayScene::Update()
 
 			ImGui::Begin("menu");
 			ImGui::Text("menuNumber %d", selectMenuNumber);
-
 			ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
 			ImGui::Text("window position leftTop : %f,%f", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 			ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2), ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2));
-
+			ImGui::SliderFloat("alpha", &menuSprite->color.w, 0.0f, 1.0f);
 			ImGui::SliderFloat("boxPosX", &boxPos.x, 0.0f, WindowsAPI::winW);
 			ImGui::SliderFloat("boxPosY", &boxPos.y, 0.0f, WindowsAPI::winH);
-
 			ImGui::End();
 
 			selectBoxSprite->SetPos(selectBoxPos[selectMenuNumber]);
@@ -324,12 +327,19 @@ void GamePlayScene::Draw()
 	//マップの描画
 	for (int i = 0; i < map_->blockY; i++)
 	{
+		
+
 		for (int j = 0; j < map_->blockZ; j++)
 		{
 			for (int k = 0; k < map_->blockX; k++)
 			{
 				if (map_->map[i][j][k] == 1)
 				{
+					if (i != 1) {
+						blockObj[i][j][k].model->textureIndex = groundTexture;
+					}
+
+
 					blockObj[i][j][k].Draw();
 				}
 			}
@@ -341,7 +351,7 @@ void GamePlayScene::Draw()
 	//-------前景スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
-	playUISprite->Draw();
+	//playUISprite->Draw();
 
 	if (goal->isGoal) {
 		goalSprite.Draw();
@@ -413,12 +423,12 @@ void GamePlayScene::StageInitialize(int stageNumber)
 			{
 				blockObj[i][j][k].Initialize();
 				blockObj[i][j][k].model = Model::CreateModel();
-				blockObj[i][j][k].model->textureIndex = groundTexture;
+				blockObj[i][j][k].model->textureIndex = groundTextures[static_cast<int>(Random(0,4))];
 				blockObj[i][j][k].position.x = k * blockSize * blockScale;
 				blockObj[i][j][k].position.y = i * blockSize * blockScale;
 				blockObj[i][j][k].position.z = j * blockSize * blockScale;
 				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
-
+				blockObj[i][j][k].rotation.x = XM_PI / 2.0f;
 				blockObj[i][j][k].Update();
 
 				if (map_->map[i][j][k] == 2) {
