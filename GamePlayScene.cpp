@@ -30,6 +30,8 @@ void GamePlayScene::Initialize()
 	clearTexture = Texture::LoadTexture(L"Resources/clear.png");
 	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
 	menuTexture = Texture::LoadTexture(L"Resources/dummyIngameMenu.png");
+	playerTextureN = Texture::LoadTexture(L"Resources/playerN.png");
+	playerTextureS = Texture::LoadTexture(L"Resources/playerS.png");
 
 	selectBoxTexture = Texture::LoadTexture(L"Resources/dummyUI_selectBox.png");
 	selectBoxSprite = new Sprite();
@@ -38,11 +40,11 @@ void GamePlayScene::Initialize()
 	selectBoxSprite->Update();
 	boxPos = selectBoxSprite->GetPosition();
 
-	playUITexture = Texture::LoadTexture(L"Resources/dummyUI_PLAY.png");
+	playUITexture = Texture::LoadTexture(L"Resources/playGameUI.png");
 	playUISprite = new Sprite();
 	playUISprite->Initialize(playUITexture);
 	playUISprite->SetAnchorPoint({ 0.0f,1.0f });
-	playUISprite->SetPos({ 64.0f, WindowsAPI::winH - 64.0f });
+	playUISprite->SetPos({ 0.0f, WindowsAPI::winH });
 	playUISprite->Update();
 
 	backGroundSprite = new Sprite();
@@ -213,11 +215,14 @@ void GamePlayScene::Update()
 
 			}
 
-			player->Update();
+			player->Update(cameraState);
 
 			goal->isGoal = player->GetIsGoal();
 
 			goal->Update();
+
+			//playUISprite->color.z = 0.0f;
+			//playUISprite->Update();
 
 			//↓------------カメラ--------------↓
 
@@ -408,7 +413,7 @@ void GamePlayScene::StageInitialize(int stageNumber)
 
 	//プレイヤー初期化
 	player = new Player();
-	player->Initialize(playerTexture, magnetTextureN, magnetTextureS, input, map_, goal);
+	player->Initialize(playerTexture, playerTextureN, playerTextureS, input, map_, goal);
 
 	//磁石関係初期化
 	magnetDatas.clear();
