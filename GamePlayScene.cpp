@@ -21,7 +21,7 @@ void GamePlayScene::Initialize()
 	magnetTextureS = Texture::LoadTexture(L"Resources/magnetS.png");
 	groundTexture = Texture::LoadTexture(L"Resources/ground.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white.png");
-	backGroundTexture = Texture::LoadTexture(L"Resources/dummyPlayGame.png");
+	backGroundTexture = Texture::LoadTexture(L"Resources/playGameBack.png");
 	clearTexture = Texture::LoadTexture(L"Resources/clear.png");
 	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
 	menuTexture = Texture::LoadTexture(L"Resources/dummyIngameMenu.png");
@@ -35,11 +35,11 @@ void GamePlayScene::Initialize()
 	selectBoxSprite->Update();
 	boxPos = selectBoxSprite->GetPosition();
 
-	playUITexture = Texture::LoadTexture(L"Resources/dummyUI_PLAY.png");
+	playUITexture = Texture::LoadTexture(L"Resources/playGameUI.png");
 	playUISprite = new Sprite();
 	playUISprite->Initialize(playUITexture);
 	playUISprite->SetAnchorPoint({ 0.0f,1.0f });
-	playUISprite->SetPos({ 64.0f, WindowsAPI::winH - 64.0f });
+	playUISprite->SetPos({ 0.0f, WindowsAPI::winH });
 	playUISprite->Update();
 
 	backGroundSprite = new Sprite();
@@ -217,6 +217,9 @@ void GamePlayScene::Update()
 			goal->isGoal = player->GetIsGoal();
 
 			goal->Update();
+
+			//playUISprite->color.z = 0.0f;
+			//playUISprite->Update();
 
 			//↓------------カメラ--------------↓
 
