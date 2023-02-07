@@ -378,8 +378,8 @@ void GamePlayScene::SetStage(int stageNumber)
 		stageSize = { 20,3,20 };
 		break;
 	case tutorial1:
-		stageStr = "map/Tuto1.csv";
-		stageSize = { 20,3,20 };
+		stageStr = "map/##zisyakukazu.csv";
+		stageSize = { 20,5,20 };
 		break;
 	default:
 		break;
