@@ -9,7 +9,7 @@
 #include"Input.h"
 #include"Sprite.h"
 #include"Util.h"
-
+#include "AudioManager.h"
 
 
 class GameTitleScene :public GameBaseScene
@@ -52,6 +52,13 @@ public://ƒƒ“ƒo•Ï”
 
 	uint32_t  titleBackTexture[4]{};
 	Sprite* titleBackSprite[4]{};
+
+	AudioManager *titleBGM;
+	float titleBGMVolume = 0.1f;
+	AudioManager *decisionSE;
+	float decisionSEVolume = 1.0f;
+	AudioManager *serectSE;
+	float serectSEVolume = 1.0f;
 
 	int phase = 0;
 
