@@ -371,6 +371,7 @@ void GamePlayScene::SetStage(int stageNumber)
 	//	Needmagnet,		//8
 	//	Jam,			//9
 	//	Mislead,		//10
+
 	switch (stageNumber)
 	{
 	case Tutoattract:
