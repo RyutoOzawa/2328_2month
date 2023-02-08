@@ -166,7 +166,7 @@ void GameTitleScene::Update()
 		{
 			phase = StageSelect;
 			decisionSE->StopWave();
-			decisionSE->SoundPlayWave(false,decisionSEVolume);
+			decisionSE->SoundPlayWave(false, decisionSEVolume);
 		}
 	}
 	else if (phase == StageSelect) {
@@ -175,51 +175,48 @@ void GameTitleScene::Update()
 
 		ImGui::End();
 		//左右キーでステージ番号変更
-
-		if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
-			ShareData::stageNumber--;
-			serectSE->StopWave();
-			serectSE->SoundPlayWave(false, serectSEVolume);
-		}
-		else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
-			ShareData::stageNumber++;
-			serectSE->StopWave();
-			serectSE->SoundPlayWave(false, serectSEVolume);
-		}
-
-
 		//ステージ番号移動のイージングが終わっているなら操作可能
 		if (!stageNumEase.GetActive()) {
 
 			if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
-				ShareData::stageNumber--;
-				stageNumEase.Start(0.5f);
-				isLeftDown = true;
+				if (ShareData::stageNumber > 0) {
+					ShareData::stageNumber--;
+					//数値が変動したならイージングを始める
+					stageNumEase.Start(0.5f);
+					isLeftDown = true;
+				}
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
+
 			}
 			else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
-				ShareData::stageNumber++;
-				stageNumEase.Start(0.5f);
-				isLeftDown = false;
+				if (ShareData::stageNumber < StageIndexCount-1) {
+					ShareData::stageNumber++;
+					stageNumEase.Start(0.5f);
+					isLeftDown = false;
+				}
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 			}
 
 
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
-			//シーンの切り替えを依頼
-			ShareData::CloseSceneChange();
-			decisionSE->StopWave();
-			decisionSE->SoundPlayWave(false, decisionSEVolume);
-		}
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
+				//シーンの切り替えを依頼
+				ShareData::CloseSceneChange();
+				decisionSE->StopWave();
+				decisionSE->SoundPlayWave(false, decisionSEVolume);
+			}
 
-		//Bボタンでタイトルへ
-		if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
-			phase = WaitInputSpaceKey;
-			decisionSE->StopWave();
-			decisionSE->SoundPlayWave(false,decisionSEVolume);
-		}
+			//Bボタンでタイトルへ
+			if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
+				phase = WaitInputSpaceKey;
+				decisionSE->StopWave();
+				decisionSE->SoundPlayWave(false, decisionSEVolume);
+			}
 
 			if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
 			else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
-
+		}
 		//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
 		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 			sceneManager->ChangeScene("GAMEPLAY");
@@ -291,7 +288,7 @@ void GameTitleScene::Update()
 			if (i == ShareData::stageNumber) {
 				easeStagePos = stagePos[Center];
 			}
-			else if (i == ShareData::stageNumber+1) {
+			else if (i == ShareData::stageNumber + 1) {
 				easeStagePos = stagePos[Right];
 			}
 			else if (i == ShareData::stageNumber - 1) {
@@ -304,7 +301,7 @@ void GameTitleScene::Update()
 
 		//変動した座標をセット
 		uiStageNumberSprite[i]->SetPos(easeStagePos);
-		ImGui::Text("pos[%d] %f,%f",i, uiStageNumberSprite[i]->GetPosition().x, uiStageNumberSprite[i]->GetPosition().y);
+		ImGui::Text("pos[%d] %f,%f", i, uiStageNumberSprite[i]->GetPosition().x, uiStageNumberSprite[i]->GetPosition().y);
 	}
 
 
@@ -358,7 +355,7 @@ void GameTitleScene::Draw()
 		titleSprite->Draw();
 	}
 
-	
+
 
 	if (phase == WaitInputSpaceKey) {
 		uiButtonASprite->Draw();

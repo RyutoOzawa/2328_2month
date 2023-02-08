@@ -4,7 +4,7 @@
 #include"Map.h"
 #include"MagnetBlock.h"
 #include"Colision.h"
-//#include"ImguiManager.h"
+#include"ImguiManager.h"
 #include"Input.h"
 #include"Sprite.h"
 #include"Goal.h"

@@ -190,13 +190,13 @@ void GamePlayScene::Finalize()
 
 	
 
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++) {
-			for (int k = 0; k < 20; k++) {
-				delete blockObj[i][j][k];
-			}
-		}
-	}
+	//for (int i = 0; i < 20; i++) {
+	//	for (int j = 0; j < 20; j++) {
+	//		for (int k = 0; k < 20; k++) {
+	//			delete blockObj[i][j][k];
+	//		}
+	//	}
+	//}
 
 	for (int i = 0; i < 4; i++) {
 		delete backGroundSprite[i];
