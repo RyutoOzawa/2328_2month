@@ -9,8 +9,16 @@
 #include"Input.h"
 #include"Sprite.h"
 #include"Util.h"
+#include"AudioManager.h"
 
-
+enum StageSelectPosIndex {
+	LeftLeft,
+	Left,
+	Center,
+	Right,
+	RightRight,
+	StageSelectPosCount,
+};
 
 class GameTitleScene :public GameBaseScene
 {
@@ -52,6 +60,19 @@ public://メンバ変数
 
 	uint32_t  titleBackTexture[4]{};
 	Sprite* titleBackSprite[4]{};
+
+	//アニメーション用の変数群
+	//ステージセレクトの基本位置(ど真ん中とイージング時の上下の制御に使う)
+	DirectX::XMFLOAT2 stageBasePos{};
+	DirectX::XMFLOAT2 stagePos[StageSelectPosCount]{};
+
+	//タイトル待機時とステージセレクトになって上に吹っ飛ばされた時の座標
+	DirectX::XMFLOAT2 titleSpritePos[2]{};
+
+	EaseingData stageNumEase;
+	EaseingData phaseChangeEase;
+
+	bool isLeftDown = false;
 
 	int phase = 0;
 
