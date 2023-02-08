@@ -40,7 +40,7 @@ void GamePlayScene::Initialize()
 	groundTextures[1] = Texture::LoadTexture(L"Resources/groundPattern2.png");
 	groundTextures[2] = Texture::LoadTexture(L"Resources/groundPattern3.png");
 	groundTextures[3] = Texture::LoadTexture(L"Resources/groundPattern4.png");
-	playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
+	playerTexture = Texture::LoadTexture(L"Resources/white.png");
 	backGroundTexture = Texture::LoadTexture(L"Resources/playGameBack.png");
 	clearTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clear.png");
 	clearNextTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearNext.png");
@@ -392,15 +392,7 @@ void GamePlayScene::Update()
 			//↓------------カメラ--------------↓
 
 
-			if (input->IsKeyTrigger(DIK_RETURN)) {
-				cameraState++;
-				if (cameraState >= 5) {
-					cameraState = 0;
-				}
-				camera.ChangeState(cameraState);
-			}
-
-			if (input->IsKeyTrigger(DIK_UP)) {
+			if (input->IsKeyTrigger(DIK_UP) || input->IsTriggerRStickUp()) {
 
 				if (cameraState == 0) {
 					cameraState = 1;
@@ -411,14 +403,15 @@ void GamePlayScene::Update()
 
 				camera.ChangeState(cameraState);
 			}
-			else if (input->IsKeyTrigger(DIK_DOWN)) {
+			else if (input->IsKeyTrigger(DIK_DOWN) || input->IsTriggerRStickDown()) {
 
 				if (cameraState == 0) {
 					cameraState = 2;
 				}
 				camera.ChangeState(cameraState);
 			}
-			else if (input->IsKeyTrigger(DIK_LEFT)) {
+			else if (input->IsKeyTrigger(DIK_LEFT) || input->IsTriggerRStickLeft()) {
+
 
 				if (cameraState == 0) {
 					cameraState = 3;
@@ -437,7 +430,7 @@ void GamePlayScene::Update()
 				}
 				camera.ChangeState(cameraState);
 			}
-			else if (input->IsKeyTrigger(DIK_RIGHT)) {
+			else if (input->IsKeyTrigger(DIK_RIGHT) || input->IsTriggerRStickRight()) {
 
 				if (cameraState == 0) {
 					cameraState = 4;
@@ -494,8 +487,6 @@ void GamePlayScene::Draw()
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 		magnetBlocks[i].Draw(magnetTextureN, magnetTextureS);
 	}
-
-
 
 	//マップの描画
 	for (int i = 0; i < map_->blockY; i++)

@@ -245,13 +245,13 @@ void Player::Move(int cameraState) {
 	}
 	else if (cameraState == 1){
 
-		if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_D)) {
+		if (input->IsDownLStickRight() || input->IsKeyPress(DIK_D)) {
 			if (colX.y == 0) {
 				pos.x -= playerSpd;
 				move.x = -playerSpd;
 			}
 		}
-		else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_A)) {
+		else  if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_A)) {
 			if (colX.x == 0) {
 				pos.x += playerSpd;
 				move.x = playerSpd;
@@ -261,14 +261,14 @@ void Player::Move(int cameraState) {
 			move.x = 0;
 		}
 
-		if (input->IsDownLStickDown() || input->IsKeyPress(DIK_W)) {
+		if (input->IsDownLStickUp() || input->IsKeyPress(DIK_W)) {
 			if (colZ.y == 0) {
 
 				pos.z -= playerSpd;
 				move.z = -playerSpd;
 			}
 		}
-		else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_S)) {
+		else  if (input->IsDownLStickDown() || input->IsKeyPress(DIK_S)) {
 			if (colZ.x == 0) {
 
 				pos.z += playerSpd;
@@ -282,13 +282,13 @@ void Player::Move(int cameraState) {
 	}
 	else if (cameraState == 3) {
 
-		if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_S)) {
+		if (input->IsDownLStickDown() || input->IsKeyPress(DIK_S)) {
 			if (colX.y == 0) {
 				pos.x -= playerSpd;
 				move.x = -playerSpd;
 			}
 		}
-		else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_W)) {
+		else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_W)) {
 			if (colX.x == 0) {
 				pos.x += playerSpd;
 				move.x = playerSpd;
@@ -298,14 +298,14 @@ void Player::Move(int cameraState) {
 			move.x = 0;
 		}
 
-		if (input->IsDownLStickDown() || input->IsKeyPress(DIK_D)) {
+		if (input->IsDownLStickRight() || input->IsKeyPress(DIK_D)) {
 			if (colZ.y == 0) {
 
 				pos.z -= playerSpd;
 				move.z = -playerSpd;
 			}
 		}
-		else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_A)) {
+		else  if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_A)) {
 			if (colZ.x == 0) {
 
 				pos.z += playerSpd;
@@ -319,13 +319,13 @@ void Player::Move(int cameraState) {
 	}
 	else if (cameraState == 4) {
 
-		if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_W)) {
+		if (input->IsDownLStickUp() || input->IsKeyPress(DIK_W)) {
 			if (colX.y == 0) {
 				pos.x -= playerSpd;
 				move.x = -playerSpd;
 			}
 		}
-		else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_S)) {
+		else  if (input->IsDownLStickDown() || input->IsKeyPress(DIK_S)) {
 			if (colX.x == 0) {
 				pos.x += playerSpd;
 				move.x = playerSpd;
@@ -335,14 +335,14 @@ void Player::Move(int cameraState) {
 			move.x = 0;
 		}
 
-		if (input->IsDownLStickDown() || input->IsKeyPress(DIK_A)) {
+		if (input->IsDownLStickLeft() || input->IsKeyPress(DIK_A)) {
 			if (colZ.y == 0) {
 
 				pos.z -= playerSpd;
 				move.z = -playerSpd;
 			}
 		}
-		else  if (input->IsDownLStickUp() || input->IsKeyPress(DIK_D)) {
+		else  if (input->IsDownLStickRight() || input->IsKeyPress(DIK_D)) {
 			if (colZ.x == 0) {
 
 				pos.z += playerSpd;
