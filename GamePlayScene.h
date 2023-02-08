@@ -69,6 +69,8 @@ public://メンバ変数
 	uint32_t playUITexture =0;
 	Sprite* playUISprite = nullptr;
 
+	Sprite* sceneChangeSprite[2]{};
+
 	DirectX::XMFLOAT2 boxPos{};
 	DirectX::XMFLOAT2 selectBoxPos[3]{};
 

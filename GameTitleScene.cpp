@@ -6,12 +6,15 @@ using namespace DirectX;
 #include"GameSceneManager.h"
 #include"ShareData.h"
 
+
 void GameTitleScene::Initialize()
 {
 	//--------------ゲーム内変数初期化--------------//
 
 	//inputのインスタンス取得
 	input = Input::GetInstance();
+
+
 
 	//テクスチャデータ初期化
 	titleTexture = Texture::LoadTexture(L"Resources/dummyTitle.png");
@@ -27,6 +30,8 @@ void GameTitleScene::Initialize()
 	uiStageNumberTexture[7] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber8.png");
 	uiStageNumberTexture[8] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber9.png");
 	uiStageNumberTexture[9] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber10.png");
+	sceneChangeTexture[0] = Texture::LoadTexture(L"Resources/magnetN.png");
+	sceneChangeTexture[1] = Texture::LoadTexture(L"Resources/magnetS.png");
 
 	titleSprite = new Sprite();
 	titleSprite->Initialize(titleTexture);
@@ -45,13 +50,34 @@ void GameTitleScene::Initialize()
 	for (int i = 0; i < _countof(uiStageNumberSprite); i++) {
 		uiStageNumberSprite[i] = new Sprite();
 		uiStageNumberSprite[i]->Initialize(uiStageNumberTexture[i]);
-		uiStageNumberSprite[i]->SetAnchorPoint({0.5f,0.5f});
-		uiStageNumberSprite[i]->SetPos({WindowsAPI::winW/2,WindowsAPI::winH/2});
+		uiStageNumberSprite[i]->SetAnchorPoint({ 0.5f,0.5f });
+		uiStageNumberSprite[i]->SetPos({ WindowsAPI::winW / 2,WindowsAPI::winH / 2 });
 		uiStageNumberSprite[i]->Update();
 	}
 
+
+
+	//シーンチェンジ用の変数
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		ShareData::nextPos[i] = ShareData::easePos[i][1];
+		sceneChangeSprite[i] = new Sprite();
+		sceneChangeSprite[i]->Initialize(sceneChangeTexture[i]);
+		sceneChangeSprite[i]->SetSize({ WindowsAPI::winH,WindowsAPI::winH });
+		sceneChangeSprite[i]->SetPos(ShareData::easePos[i][1]);
+	}
+
+	//直前のシーンでシーンクローズ処理が行われたかチェック(このシーンの初期化がexe起動かどうかのチェック)
+	if (ShareData::isBeforeSceneClosed) {
+		ShareData::OpenSceneChange();
+	}
+
+	sceneChangeSprite[0]->SetAnchorPoint({ 1.0f,0.0f });
+
+
 	//フェーズを共通データから持ってくる
 	phase = ShareData::titlePhase;
+
+
 }
 
 void GameTitleScene::Finalize()
@@ -67,6 +93,10 @@ void GameTitleScene::Finalize()
 	for (int i = 0; i < 10; i++) {
 		delete uiStageNumberSprite[i];
 	}
+
+	for (int i = 0; i < 2; i++) {
+		delete	sceneChangeSprite[i];
+	}
 	//-------------ここまでにループ内で使用したものの後処理------------//
 
 
@@ -79,7 +109,11 @@ void GameTitleScene::Update()
 
 	//----------------------ゲーム内ループはここから---------------------//
 
+	ImGui::Begin("Easing data");
 
+	ImGui::Text("timeRate:%f", ShareData::sceneChangeEase.timeRate);
+
+	ImGui::End();
 	ImGui::Begin("debug");
 	if (phase == WaitInputSpaceKey) {
 		ImGui::Text("phase:WaitInputSpaceKey");
@@ -87,7 +121,10 @@ void GameTitleScene::Update()
 
 		ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
 		ImGui::Text("window position leftTop : %f,%f", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-		ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x/2), ImGui::GetWindowPos().y+(ImGui::GetWindowSize().y / 2));
+		ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2), ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2));
+
+
+
 
 		//スペースキーでステージ選択へ
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE))
@@ -99,7 +136,7 @@ void GameTitleScene::Update()
 
 		ImGui::Text("phase:StageSelect");
 		ImGui::Text("select stage to LEFT or RIGHT ");
-		ImGui::Text("stageNumber %d",ShareData::stageNumber);
+		ImGui::Text("stageNumber %d", ShareData::stageNumber);
 
 		//左右キーでステージ番号変更
 		if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
@@ -114,13 +151,39 @@ void GameTitleScene::Update()
 
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//シーンの切り替えを依頼
-			sceneManager->ChangeScene("GAMEPLAY");
+			ShareData::CloseSceneChange();
 		}
 
 		//Bボタンでタイトルへ
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
 			phase = WaitInputSpaceKey;
 		}
+
+			//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
+		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
+			sceneManager->ChangeScene("GAMEPLAY");
+		}
+
+		
+
+	}
+
+	//シーンチェンジ用の更新はフェーズを問わず行う
+	//イージングタイマー制御用の更新
+	ShareData::sceneChangeEase.Update();
+
+	for (int i = 0; i < 2; i++) {
+		if (!ShareData::sceneChangeEase.GetActive()) {
+			sceneChangeSprite[i]->SetPos(ShareData::nextPos[i]);
+			ShareData::isActiveSceneChange = false;
+		}
+		else {
+			XMFLOAT2 spritePos = EaseIn2D(ShareData::easePos[i][1], ShareData::easePos[i][0],
+				ShareData::sceneChangeEase.timeRate);
+			sceneChangeSprite[i]->SetPos(spritePos);
+
+		}
+		sceneChangeSprite[i]->Update();
 	}
 
 
@@ -137,6 +200,10 @@ void GameTitleScene::Draw()
 
 	titleSprite->Draw();
 
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		sceneChangeSprite[i]->Draw();
+	}
+
 	if (phase == WaitInputSpaceKey) {
 		uiButtonASprite->Draw();
 	}
@@ -146,5 +213,7 @@ void GameTitleScene::Draw()
 			uiStageNumberSprite[ShareData::stageNumber]->Draw();
 		}
 	}
+
+
 
 }
