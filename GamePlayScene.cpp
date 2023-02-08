@@ -118,7 +118,7 @@ void GamePlayScene::Update()
 		//Aボタンで決定
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
-			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::tutorial1) {
+			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::Mislead) {
 				ShareData::stageNumber++;
 				StageInitialize(ShareData::stageNumber);
 			}//それ以外(ステージ選択ボタンが押されたか、ステージが一番最後)だったらステージ選択に戻る
@@ -242,7 +242,7 @@ void GamePlayScene::Update()
 				}
 				else if (cameraState != 0) {
 					cameraState = 0;
-				}				
+				}
 
 				camera.ChangeState(cameraState);
 			}
@@ -260,13 +260,13 @@ void GamePlayScene::Update()
 				}
 				else if (cameraState == 1) {
 					cameraState = 4;
-				}				
+				}
 				else if (cameraState == 2) {
 					cameraState = 3;
-				}				
+				}
 				else if (cameraState == 3) {
 					cameraState = 1;
-				}				
+				}
 				else if (cameraState == 4) {
 					cameraState = 2;
 				}
@@ -279,16 +279,16 @@ void GamePlayScene::Update()
 				}
 				else if (cameraState == 1) {
 					cameraState = 3;
-				}				
+				}
 				else if (cameraState == 2) {
 					cameraState = 4;
-				}				
+				}
 				else if (cameraState == 3) {
 					cameraState = 2;
-				}				
+				}
 				else if (cameraState == 4) {
 					cameraState = 1;
-				}				
+				}
 				camera.ChangeState(cameraState);
 			}
 
@@ -372,28 +372,67 @@ void GamePlayScene::Draw()
 
 void GamePlayScene::SetStage(int stageNumber)
 {
+
+	//Tutoattract,	//0
+	//	Whichload,		//1
+	//	Dontpanic,		//2
+	//	Switching,		//3
+	//	Down,			//4
+	//	Order,			//5
+	//	Tutorepulsion,	//6
+	//	Direction,		//7
+	//	Needmagnet,		//8
+	//	Jam,			//9
+	//	Mislead,		//10
+
 	switch (stageNumber)
 	{
-	case Sample1:
-		stageStr = "map/map1.csv";
-		stageSize = { 10,5,10 };
-		break;
-	case Sample2:
-		stageStr = "map/order.csv";
+	case Tutoattract:
+		stageStr = "map/Tutoattract.csv";
 		stageSize = { 20,3,20 };
 		break;
-	case Sample3:
+	case Whichload:
 		stageStr = "map/whichload.csv";
 		stageSize = { 20,4,20 };
 		break;
-	case Sample4:
+	case Dontpanic:
 		stageStr = "map/dontpanic.csv";
 		stageSize = { 20,3,20 };
 		break;
-	case tutorial1:
-		stageStr = "map/Tuto1.csv";
+	case Switching:
+		stageStr = "map/switching.csv";
+		stageSize = { 3,5,20 };
+		break;
+	case Down:
+		stageStr = "map/down.csv";
+		stageSize = { 20,4,20 };
+		break;
+	case Order:
+		stageStr = "map/order.csv";
 		stageSize = { 20,3,20 };
 		break;
+	case Tutorepulsion:
+		stageStr = "map/Tutorepulsion.csv";
+		stageSize = { 20,3,20 };
+		break;
+	case Direction:
+		stageStr = "map/direction.csv";
+		stageSize = { 20,4,20 };
+		break;
+	case Needmagnet:
+		stageStr = "map/needmagnet.csv";
+		stageSize = { 20,4,20 };
+		break;
+	case Jam:
+		stageStr = "map/Jam.csv";
+		stageSize = { 20,3,20 };
+		break;
+	case Mislead:
+		stageStr = "map/mislead.csv";
+		stageSize = { 20,5,20 };
+		break;
+
+
 	default:
 		break;
 	}
