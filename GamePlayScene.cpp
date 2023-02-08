@@ -297,10 +297,16 @@ void GamePlayScene::Update()
 			else {
 				//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 				ShareData::titlePhase = TitlePhaseIndex::StageSelect;
-				sceneManager->ChangeScene("TITLE");
+				ShareData::CloseSceneChange();
 				playBGM->StopWave();
 			}
 
+		}
+
+		//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
+		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
+			sceneManager->ChangeScene("TITLE");
+			playBGM->StopWave();
 		}
 
 	}
