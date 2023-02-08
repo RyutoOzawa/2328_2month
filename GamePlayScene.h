@@ -56,6 +56,9 @@ public://メンバ変数
 	uint32_t playerTextureS = 0;		//プレイヤーSのテクスチャ
 
 	uint32_t clearTexture = 0;		//クリア画面
+	uint32_t clearNextTexture = 0;		//クリア画面
+	uint32_t clearStageSerectTexture = 0;		//クリア画面
+
 	uint32_t goalTexture = 0;		//ゴールのテクスチャ
 	uint32_t menuTexture = 0;		//メニューのテクスチャ
 	uint32_t menuResetTexture = 0;		//メニューのResetのテクスチャ
@@ -76,6 +79,10 @@ public://メンバ変数
 	uint32_t playUITexture =0;
 	Sprite* playUISprite = nullptr;
 
+	//クリア画面
+	Sprite* clearSprite = nullptr;
+	Sprite* clearNextSprite = nullptr;
+	Sprite* clearStageSerectSprite = nullptr;
 
 
 	DirectX::XMFLOAT2 boxPos{};

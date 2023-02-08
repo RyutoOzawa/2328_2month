@@ -27,8 +27,10 @@ void GamePlayScene::Initialize()
 	groundTextures[3] = Texture::LoadTexture(L"Resources/groundPattern4.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white1x1.png");
 	backGroundTexture = Texture::LoadTexture(L"Resources/playGameBack.png");
-	clearTexture = Texture::LoadTexture(L"Resources/clear.png");
-	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
+	clearTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clear.png");
+	clearNextTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearNext.png");
+	clearStageSerectTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearStageSerect.png");
+
 	menuTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menu.png");
 	menuResetTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menuReset.png");
 	menuTitleTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menuTitle.png");
@@ -91,10 +93,22 @@ void GamePlayScene::Initialize()
 	menuStageSerectSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2 + 40));
 	menuStageSerectSprite->Update();
 
-	goalSprite.Initialize(clearTexture);
-	goalSprite.SetPos(XMFLOAT2(400, 200));
-	//goalSprite.SetSize(XMFLOAT2(100, 100));
-	goalSprite.Update();
+	//clear
+	clearSprite = new Sprite();
+	clearSprite->Initialize(clearTexture);
+	clearSprite->SetPos(XMFLOAT2(340, 200));
+	clearSprite->Update();
+
+	clearNextSprite = new Sprite();
+	clearNextSprite->Initialize(clearNextTexture);
+	clearNextSprite->SetPos(XMFLOAT2(560, 350));
+	clearNextSprite->Update();
+
+	clearStageSerectSprite = new Sprite();
+	clearStageSerectSprite->Initialize(clearStageSerectTexture);
+	clearStageSerectSprite->SetPos(XMFLOAT2(450, 420));
+	clearStageSerectSprite->Update();
+
 
 	selectBoxPos[0] = { WindowsAPI::winW / 2,320.0f };
 	selectBoxPos[1] = { WindowsAPI::winW / 2,400.0f };
@@ -390,10 +404,16 @@ void GamePlayScene::Draw()
 	//-------前景スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
-	//playUISprite->Draw();
+	playUISprite->Draw();
 
 	if (goal->isGoal) {
-		goalSprite.Draw();
+		clearSprite->Draw();
+
+		clearNextSprite->color = { 0,0,0,1 };
+		clearNextSprite->Update();
+		clearNextSprite->Draw();
+		clearStageSerectSprite->Draw();
+
 	}
 
 	if (isMenu) {
