@@ -185,9 +185,9 @@ void GameTitleScene::Update()
 			stageBasePos.y = WindowsAPI::winH + WindowsAPI::winW / 2;
 
 			tPos.x = titleSpritePos[0].x;
-			tPos.y = (sin(titleAngle * XM_PI / 180.0f)/4+1.0f) * titleSpritePos[0].y;
+			tPos.y = (sin(titleAngle * XM_PI / 180.0f) / 4 + 1.0f) * titleSpritePos[0].y;
 
-			
+
 
 
 			titleAngle++;
@@ -206,44 +206,46 @@ void GameTitleScene::Update()
 		if (!stageNumEase.GetActive()) {
 			if (!phaseChangeEase.GetActive()) {
 
+				if (!ShareData::sceneChangeEase.GetActive()) {
 
-				if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
-					if (ShareData::stageNumber > 0) {
-						ShareData::stageNumber--;
-						//数値が変動したならイージングを始める
-						stageNumEase.Start(0.5f);
-						isLeftDown = true;
+					if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
+						if (ShareData::stageNumber > 0) {
+							ShareData::stageNumber--;
+							//数値が変動したならイージングを始める
+							stageNumEase.Start(0.5f);
+							isLeftDown = true;
+						}
+						serectSE->StopWave();
+						serectSE->SoundPlayWave(false, serectSEVolume);
+
 					}
-					serectSE->StopWave();
-					serectSE->SoundPlayWave(false, serectSEVolume);
-
-				}
-				else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
-					if (ShareData::stageNumber < StageIndexCount - 1) {
-						ShareData::stageNumber++;
-						stageNumEase.Start(0.5f);
-						isLeftDown = false;
+					else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
+						if (ShareData::stageNumber < StageIndexCount - 1) {
+							ShareData::stageNumber++;
+							stageNumEase.Start(0.5f);
+							isLeftDown = false;
+						}
+						serectSE->StopWave();
+						serectSE->SoundPlayWave(false, serectSEVolume);
 					}
-					serectSE->StopWave();
-					serectSE->SoundPlayWave(false, serectSEVolume);
+
+
+					if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
+						//シーンの切り替えを依頼
+						ShareData::CloseSceneChange();
+						decisionSE->StopWave();
+						decisionSE->SoundPlayWave(false, decisionSEVolume);
+					}
+
+
+					//Bボタンでタイトルへ
+					if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
+						phase = WaitInputSpaceKey;
+						decisionSE->StopWave();
+						decisionSE->SoundPlayWave(false, decisionSEVolume);
+						phaseChangeEase.Start(1.0f);
+					}
 				}
-
-
-				if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
-					//シーンの切り替えを依頼
-					ShareData::CloseSceneChange();
-					decisionSE->StopWave();
-					decisionSE->SoundPlayWave(false, decisionSEVolume);
-				}
-
-				//Bボタンでタイトルへ
-				if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
-					phase = WaitInputSpaceKey;
-					decisionSE->StopWave();
-					decisionSE->SoundPlayWave(false, decisionSEVolume);
-					phaseChangeEase.Start(1.0f);
-				}
-
 				if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
 				else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
 			}
