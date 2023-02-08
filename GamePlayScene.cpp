@@ -655,7 +655,7 @@ void GamePlayScene::SetStage(int stageNumber)
 		break;
 	case Order:
 		stageStr = "map/order.csv";
-		stageSize = { 20,3,20 };
+		stageSize = { 20,4,20 };
 		break;
 	case Tutorepulsion:
 		stageStr = "map/Tutorepulsion.csv";
