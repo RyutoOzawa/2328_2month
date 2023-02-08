@@ -236,9 +236,13 @@ void GameTitleScene::Update()
 
 	
 
+	sinAngle += 2.0f;
+	if (sinAngle > 360.0f)sinAngle -= 360.0f;
+	ImGui::Text("angle %f", sinAngle);
 	//背景の星を点滅させる
 	for (int i = 1; i < _countof(titleBackSprite); i++) {
-		titleBackSprite[i]->color.w = sin(clock() / (100 + (i * 200)));
+		titleBackSprite[i]->color.w = (sin((sinAngle + i * 120.0f) * XM_PI / 180.0f)) / 2.0f + 0.5f;
+		ImGui::Text("alpha[%d] %f", i, titleBackSprite[i]->color.w);
 	}
 
 	ImGui::End();

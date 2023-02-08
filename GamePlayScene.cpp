@@ -414,63 +414,67 @@ void GamePlayScene::Update()
 
 			//↓------------カメラ--------------↓
 
+			if (camera.GetisMoveEye() == false) {
 
-			if (input->IsKeyTrigger(DIK_UP) || input->IsTriggerRStickUp()) {
+				if (input->IsKeyTrigger(DIK_UP) || input->IsTriggerRStickUp()) {
 
-				if (cameraState == 0) {
-					cameraState = 1;
-				}
-				else if (cameraState != 0) {
-					cameraState = 0;
-				}
+					if (cameraState == 0) {
+						cameraState = 1;
+					}
+					else if (cameraState != 0) {
+						cameraState = 0;
+					}
 
-				camera.ChangeState(cameraState);
-			}
-			else if (input->IsKeyTrigger(DIK_DOWN) || input->IsTriggerRStickDown()) {
+					camera.ChangeState(cameraState);
+				}
+				else if (input->IsKeyTrigger(DIK_DOWN) || input->IsTriggerRStickDown()) {
 
-				if (cameraState == 0) {
-					cameraState = 2;
+					if (cameraState == 0) {
+						cameraState = 2;
+					}
+
+					camera.ChangeState(cameraState);
 				}
-				camera.ChangeState(cameraState);
-			}
-			else if (input->IsKeyTrigger(DIK_LEFT) || input->IsTriggerRStickLeft()) {
+				else if (input->IsKeyTrigger(DIK_LEFT) || input->IsTriggerRStickLeft()) {
 
 
-				if (cameraState == 0) {
-					cameraState = 3;
-				}
-				else if (cameraState == 1) {
-					cameraState = 4;
-				}
-				else if (cameraState == 2) {
-					cameraState = 3;
-				}
-				else if (cameraState == 3) {
-					cameraState = 1;
-				}
-				else if (cameraState == 4) {
-					cameraState = 2;
-				}
-				camera.ChangeState(cameraState);
-			}
-			else if (input->IsKeyTrigger(DIK_RIGHT) || input->IsTriggerRStickRight()) {
+					if (cameraState == 0) {
+						cameraState = 3;
+					}
+					else if (cameraState == 1) {
+						cameraState = 4;
+					}
+					else if (cameraState == 2) {
+						cameraState = 3;
+					}
+					else if (cameraState == 3) {
+						cameraState = 1;
+					}
+					else if (cameraState == 4) {
+						cameraState = 2;
+					}
 
-				if (cameraState == 0) {
-					cameraState = 4;
+					camera.ChangeState(cameraState);
 				}
-				else if (cameraState == 1) {
-					cameraState = 3;
+				else if (input->IsKeyTrigger(DIK_RIGHT) || input->IsTriggerRStickRight()) {
+
+					if (cameraState == 0) {
+						cameraState = 4;
+					}
+					else if (cameraState == 1) {
+						cameraState = 3;
+					}
+					else if (cameraState == 2) {
+						cameraState = 4;
+					}
+					else if (cameraState == 3) {
+						cameraState = 2;
+					}
+					else if (cameraState == 4) {
+						cameraState = 1;
+					}
+					camera.ChangeState(cameraState);
 				}
-				else if (cameraState == 2) {
-					cameraState = 4;
-				}
-				else if (cameraState == 3) {
-					cameraState = 2;
-				}
-				else if (cameraState == 4) {
-					cameraState = 1;
-				}
-				camera.ChangeState(cameraState);
 			}
 
 			camera.Update(player->GetPosition());

@@ -61,6 +61,8 @@ public://ƒƒ“ƒo•Ï”
 	float serectSEVolume = 1.0f;
 
 	int phase = 0;
+	 
+	float sinAngle = 0.0f;
 
 };
 
