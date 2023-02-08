@@ -177,15 +177,35 @@ void GamePlayScene::Finalize()
 	//delete skyDome;
 	delete map_;
 	delete player;
+	delete blockModel;
+
+	
+
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 20; j++) {
+			for (int k = 0; k < 20; k++) {
+				delete blockObj[i][j][k];
+			}
+		}
+	}
 
 	for (int i = 0; i < 4; i++) {
 		delete backGroundSprite[i];
 	}
 
 	delete menuSprite;
+	delete menuResetSprite;
+	delete menuTitleSprite;
+	delete menuStageSerectSprite;
+	delete clearSprite;
+	delete clearNextSprite;
+	delete clearStageSerectSprite;
+
 	delete selectBoxSprite;
 	delete playUISprite;
 	delete colision;
+
+	delete goal;
 
 	for (int i = 0; i < 2; i++) {
 		delete sceneChangeSprite[i];
@@ -438,18 +458,18 @@ void GamePlayScene::Update()
 
 			//↑------------カメラ--------------↑
 
-			ImGui::Begin("color");
+			/*ImGui::Begin("color");*/
 
 
 			sinAngle += 2.0f;
 			if (sinAngle > 360.0f)sinAngle -= 360.0f;
-			ImGui::Text("angle %f", sinAngle);
+			/*ImGui::Text("angle %f", sinAngle);*/
 			//背景の星を点滅させる
 			for (int i = 1; i < _countof(backGroundSprite); i++) {
 				backGroundSprite[i]->color.w = (sin((sinAngle + i * 120.0f) * XM_PI / 180.0f)) / 2.0f + 0.5f;
-				ImGui::Text("alpha[%d] %f", i, backGroundSprite[i]->color.w);
+				/*ImGui::Text("alpha[%d] %f", i, backGroundSprite[i]->color.w);*/
 			}
-			ImGui::End();
+			/*ImGui::End();*/
 		}
 	}
 

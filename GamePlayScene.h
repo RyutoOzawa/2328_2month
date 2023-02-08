@@ -4,7 +4,7 @@
 #include"Map.h"
 #include"MagnetBlock.h"
 #include"Colision.h"
-#include"ImguiManager.h"
+//#include"ImguiManager.h"
 #include"Input.h"
 #include"Sprite.h"
 #include"Goal.h"
@@ -43,7 +43,7 @@ public:
 
 public://メンバ変数
 
-	ImguiManager* imguiManager = nullptr;	//imgui用
+	//ImguiManager* imguiManager = nullptr;	//imgui用
 	Input* input = nullptr;
 
 		//ゲーム内で使用する変数まとめ
