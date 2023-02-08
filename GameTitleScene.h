@@ -44,8 +44,8 @@ public://ƒƒ“ƒo•Ï”
 	uint32_t uiStageSelectTexture = 0;
 	Sprite* uiStageSelectSprite = nullptr;
 
-	uint32_t uiStageNumberTexture[10] = {};
-	Sprite* uiStageNumberSprite[10] = {};
+	uint32_t uiStageNumberTexture[11] = {};
+	Sprite* uiStageNumberSprite[11] = {};
 
 	uint32_t sceneChangeTexture[2]{};
 	Sprite* sceneChangeSprite[2]{};

@@ -2642,30 +2642,29 @@ void Colision::MagFall()
 
 			}
 
-			//ImGui::Begin("bY");
-			//ImGui::Text("bPos[%d] = %f,%f \n", i, bPosY1[i], bPosY2[i]);
-			//ImGui::End();
-
 		}
 
 
 		//くっついているブロックのどれかが落下しないなら自身も落下しない
 
-		for (int j = 0; j < magnetBlocks.size(); j++) {
+		for (int j = 3 ; j < 7; j++) {
 
-
-			if (magnetBlocks[i].GetContactNum(j) != 100 && magnetBlocks[i].GetContactNum(j) != j) {
+			if (magnetBlocks[i].GetContactNum(j) != 100 && magnetBlocks[i].GetContactNum(j) != i) {
 
 				if (bFall[magnetBlocks[i].GetContactNum(j)] == false) {
-					bFall[i] = false;
+					//bFall[i] = false;
 				}
 
 			}
 
+			//ImGui::Begin("bY");
+			//ImGui::Text("%d \n", i, magnetBlocks[i].GetContactNum(j);
+			//ImGui::End();
+
+
 		}
 
 	}
-
 
 	//落下
 

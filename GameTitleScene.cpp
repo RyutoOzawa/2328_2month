@@ -9,18 +9,19 @@ using namespace DirectX;
 
 void GameTitleScene::Initialize()
 {
-	//--------------ƒQ[ƒ€“à•Ï”‰Šú‰»--------------//
+	//--------------ã‚²ãƒ¼ãƒ å†…å¤‰æ•°åˆæœŸåŒ–--------------//
 
-	//input‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+	//inputã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 	input = Input::GetInstance();
 
 
 
-	//ƒeƒNƒXƒ`ƒƒƒf[ƒ^‰Šú‰»
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ‡ãƒ¼ã‚¿åˆæœŸåŒ–
 	titleTexture = Texture::LoadTexture(L"Resources/dummyTitle.png");
 	uiButtonATexture = Texture::LoadTexture(L"Resources/dummyTitleUI_buttonA.png");
 	uiStageSelectTexture = Texture::LoadTexture(L"Resources/dummyTitleUI_SelectStage.png");
-	uiStageNumberTexture[0] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber1.png");
+
+	uiStageNumberTexture[0] = Texture::LoadTexture(L"Resources/mario.jpg");
 	uiStageNumberTexture[1] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber2.png");
 	uiStageNumberTexture[2] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber3.png");
 	uiStageNumberTexture[3] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber4.png");
@@ -32,6 +33,7 @@ void GameTitleScene::Initialize()
 	uiStageNumberTexture[9] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber10.png");
 	sceneChangeTexture[0] = Texture::LoadTexture(L"Resources/magnetN.png");
 	sceneChangeTexture[1] = Texture::LoadTexture(L"Resources/magnetS.png");
+
 
 	titleSprite = new Sprite();
 	titleSprite->Initialize(titleTexture);
@@ -57,7 +59,7 @@ void GameTitleScene::Initialize()
 
 
 
-	//ƒV[ƒ“ƒ`ƒFƒ“ƒW—p‚Ì•Ï”
+	//ã‚·ãƒ¼ãƒ³ãƒã‚§ãƒ³ã‚¸ç”¨ã®å¤‰æ•°
 	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
 		ShareData::nextPos[i] = ShareData::easePos[i][1];
 		sceneChangeSprite[i] = new Sprite();
@@ -66,7 +68,7 @@ void GameTitleScene::Initialize()
 		sceneChangeSprite[i]->SetPos(ShareData::easePos[i][1]);
 	}
 
-	//’¼‘O‚ÌƒV[ƒ“‚ÅƒV[ƒ“ƒNƒ[ƒYˆ—‚ªs‚í‚ê‚½‚©ƒ`ƒFƒbƒN(‚±‚ÌƒV[ƒ“‚Ì‰Šú‰»‚ªexe‹N“®‚©‚Ç‚¤‚©‚Ìƒ`ƒFƒbƒN)
+	//ç›´å‰ã®ã‚·ãƒ¼ãƒ³ã§ã‚·ãƒ¼ãƒ³ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†ãŒè¡Œã‚ã‚ŒãŸã‹ãƒã‚§ãƒƒã‚¯(ã“ã®ã‚·ãƒ¼ãƒ³ã®åˆæœŸåŒ–ãŒexeèµ·å‹•ã‹ã©ã†ã‹ã®ãƒã‚§ãƒƒã‚¯)
 	if (ShareData::isBeforeSceneClosed) {
 		ShareData::OpenSceneChange();
 	}
@@ -74,7 +76,7 @@ void GameTitleScene::Initialize()
 	sceneChangeSprite[0]->SetAnchorPoint({ 1.0f,0.0f });
 
 
-	//ƒtƒF[ƒY‚ğ‹¤’Êƒf[ƒ^‚©‚ç‚Á‚Ä‚­‚é
+	//ãƒ•ã‚§ãƒ¼ã‚ºã‚’å…±é€šãƒ‡ãƒ¼ã‚¿ã‹ã‚‰æŒã£ã¦ãã‚‹
 	phase = ShareData::titlePhase;
 
 
@@ -82,7 +84,7 @@ void GameTitleScene::Initialize()
 
 void GameTitleScene::Finalize()
 {
-	//ƒQ[ƒ€ƒ‹[ƒv‚Åg—p‚µ‚½•¨‚ğ‰ğ•úŒãAŠî”ÕƒVƒXƒeƒ€‚ÌŒãˆ—‚Æ‰ğ•ú‚ğs‚¤
+	//ã‚²ãƒ¼ãƒ ãƒ«ãƒ¼ãƒ—ã§ä½¿ç”¨ã—ãŸç‰©ã‚’è§£æ”¾å¾Œã€åŸºç›¤ã‚·ã‚¹ãƒ†ãƒ ã®å¾Œå‡¦ç†ã¨è§£æ”¾ã‚’è¡Œã†
 
 	//delete sprite;
 	//delete skyDome;
@@ -97,7 +99,7 @@ void GameTitleScene::Finalize()
 	for (int i = 0; i < 2; i++) {
 		delete	sceneChangeSprite[i];
 	}
-	//-------------‚±‚±‚Ü‚Å‚Éƒ‹[ƒv“à‚Åg—p‚µ‚½‚à‚Ì‚ÌŒãˆ—------------//
+	//-------------ã“ã“ã¾ã§ã«ãƒ«ãƒ¼ãƒ—å†…ã§ä½¿ç”¨ã—ãŸã‚‚ã®ã®å¾Œå‡¦ç†------------//
 
 
 
@@ -107,7 +109,7 @@ void GameTitleScene::Update()
 {
 
 
-	//----------------------ƒQ[ƒ€“àƒ‹[ƒv‚Í‚±‚±‚©‚ç---------------------//
+	//----------------------ã‚²ãƒ¼ãƒ å†…ãƒ«ãƒ¼ãƒ—ã¯ã“ã“ã‹ã‚‰---------------------//
 
 	ImGui::Begin("Easing data");
 
@@ -126,7 +128,7 @@ void GameTitleScene::Update()
 
 
 
-		//ƒXƒy[ƒXƒL[‚ÅƒXƒe[ƒW‘I‘ğ‚Ö
+		//ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ã§ã‚¹ãƒ†ãƒ¼ã‚¸é¸æŠã¸
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE))
 		{
 			phase = StageSelect;
@@ -138,7 +140,7 @@ void GameTitleScene::Update()
 		ImGui::Text("select stage to LEFT or RIGHT ");
 		ImGui::Text("stageNumber %d", ShareData::stageNumber);
 
-		//¶‰EƒL[‚ÅƒXƒe[ƒW”Ô†•ÏX
+		//å·¦å³ã‚­ãƒ¼ã§ã‚¹ãƒ†ãƒ¼ã‚¸ç•ªå·å¤‰æ›´
 		if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
 			ShareData::stageNumber--;
 		}
@@ -146,20 +148,20 @@ void GameTitleScene::Update()
 			ShareData::stageNumber++;
 		}
 
-		if (ShareData::stageNumber < Sample1)ShareData::stageNumber = Sample1;
-		else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = tutorial1;
+		if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
+		else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
 
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
-			//ƒV[ƒ“‚ÌØ‚è‘Ö‚¦‚ğˆË—Š
+			//ã‚·ãƒ¼ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆã‚’ä¾é ¼
 			ShareData::CloseSceneChange();
 		}
 
-		//Bƒ{ƒ^ƒ“‚Åƒ^ƒCƒgƒ‹‚Ö
+		//Bãƒœã‚¿ãƒ³ã§ã‚¿ã‚¤ãƒˆãƒ«ã¸
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
 			phase = WaitInputSpaceKey;
 		}
 
-			//ƒV[ƒ“ƒNƒ[ƒYƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚ÄAƒV[ƒ“ƒ`ƒFƒ“ƒWƒtƒ‰ƒO‚ª~‚è‚Ä‚¢‚é(ƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½)‚È‚çƒV[ƒ“Ø‘Ö‚ğˆË—Š
+			//ã‚·ãƒ¼ãƒ³ã‚¯ãƒ­ãƒ¼ã‚ºãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã¦ã€ã‚·ãƒ¼ãƒ³ãƒã‚§ãƒ³ã‚¸ãƒ•ãƒ©ã‚°ãŒé™ã‚Šã¦ã„ã‚‹(ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸ)ãªã‚‰ã‚·ãƒ¼ãƒ³åˆ‡æ›¿ã‚’ä¾é ¼
 		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 			sceneManager->ChangeScene("GAMEPLAY");
 		}
@@ -168,8 +170,8 @@ void GameTitleScene::Update()
 
 	}
 
-	//ƒV[ƒ“ƒ`ƒFƒ“ƒW—p‚ÌXV‚ÍƒtƒF[ƒY‚ğ–â‚í‚¸s‚¤
-	//ƒC[ƒWƒ“ƒOƒ^ƒCƒ}[§Œä—p‚ÌXV
+	//ã‚·ãƒ¼ãƒ³ãƒã‚§ãƒ³ã‚¸ç”¨ã®æ›´æ–°ã¯ãƒ•ã‚§ãƒ¼ã‚ºã‚’å•ã‚ãšè¡Œã†
+	//ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°ã‚¿ã‚¤ãƒãƒ¼åˆ¶å¾¡ç”¨ã®æ›´æ–°
 	ShareData::sceneChangeEase.Update();
 
 	for (int i = 0; i < 2; i++) {
@@ -188,14 +190,14 @@ void GameTitleScene::Update()
 
 
 	ImGui::End();
-	//----------------------ƒQ[ƒ€“àƒ‹[ƒv‚Í‚±‚±‚Ü‚Å---------------------//
+	//----------------------ã‚²ãƒ¼ãƒ å†…ãƒ«ãƒ¼ãƒ—ã¯ã“ã“ã¾ã§---------------------//
 
 
 }
 
 void GameTitleScene::Draw()
 {
-	//-------ƒXƒvƒ‰ƒCƒg•`‰æˆ—-------//
+	//-------ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæç”»å‡¦ç†-------//
 	SpriteManager::GetInstance()->beginDraw();
 
 	titleSprite->Draw();

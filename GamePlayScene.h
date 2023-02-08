@@ -58,10 +58,17 @@ public://メンバ変数
 	uint32_t clearTexture = 0;		//クリア画面
 	uint32_t goalTexture = 0;		//ゴールのテクスチャ
 	uint32_t menuTexture = 0;		//メニューのテクスチャ
+	uint32_t menuResetTexture = 0;		//メニューのResetのテクスチャ
+	uint32_t menuTitleTexture = 0;		//メニューのTitleのテクスチャ
+	uint32_t menuStageSerectTexture = 0;		//メニューのStageSerectのテクスチャ
 
 	uint32_t backGroundTexture = 0;	//背景画像(現在はダミー
 	Sprite* backGroundSprite = nullptr;
 	Sprite* menuSprite = nullptr;
+	Sprite* menuResetSprite = nullptr;
+	Sprite* menuTitleSprite = nullptr;
+	Sprite* menuStageSerectSprite = nullptr;
+
 
 	uint32_t selectBoxTexture = 0;
 	Sprite* selectBoxSprite = nullptr;
@@ -69,7 +76,9 @@ public://メンバ変数
 	uint32_t playUITexture =0;
 	Sprite* playUISprite = nullptr;
 
+
 	Sprite* sceneChangeSprite[2]{};
+
 
 	DirectX::XMFLOAT2 boxPos{};
 	DirectX::XMFLOAT2 selectBoxPos[3]{};
