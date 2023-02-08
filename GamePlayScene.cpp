@@ -74,7 +74,7 @@ void GamePlayScene::Initialize()
 	menuTitleSprite->Initialize(menuTitleTexture);
 	//アンカーポイントをスプライトの中心に
 	menuTitleSprite->SetAnchorPoint(XMFLOAT2(0.5f, 0.5f));
-	menuTitleSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2 + 40));
+	menuTitleSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2 + 120));
 	menuTitleSprite->Update();
 
 	//StageSerect
@@ -83,7 +83,7 @@ void GamePlayScene::Initialize()
 	menuStageSerectSprite->Initialize(menuStageSerectTexture);
 	//アンカーポイントをスプライトの中心に
 	menuStageSerectSprite->SetAnchorPoint(XMFLOAT2(0.5f, 0.5f));
-	menuStageSerectSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2 + 120));
+	menuStageSerectSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2 + 40));
 	menuStageSerectSprite->Update();
 
 	goalSprite.Initialize(clearTexture);
