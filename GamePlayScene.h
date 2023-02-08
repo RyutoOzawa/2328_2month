@@ -50,6 +50,7 @@ public://メンバ変数
 	uint32_t magnetTextureN = 0;	//N極のテクスチャ
 	uint32_t magnetTextureS = 0;	//S極のテクスチャ
 	uint32_t groundTexture = 0;		//地面のテクスチャ
+	uint32_t groundTextures[4]{};	//地面
 	uint32_t playerTexture = 0;		//プレイヤーのテクスチャ
 	uint32_t playerTextureN = 0;		//プレイヤーNのテクスチャ
 	uint32_t playerTextureS = 0;		//プレイヤーSのテクスチャ

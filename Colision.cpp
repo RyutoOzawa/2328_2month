@@ -2647,13 +2647,12 @@ void Colision::MagFall()
 
 		//くっついているブロックのどれかが落下しないなら自身も落下しない
 
-		for (int j = 3; j < 7; j++) {
+		for (int j = 3 ; j < 7; j++) {
 
-
-			if (magnetBlocks[i].GetContactNum(j) != 100 && magnetBlocks[i].GetContactNum(j) != j) {
+			if (magnetBlocks[i].GetContactNum(j) != 100 && magnetBlocks[i].GetContactNum(j) != i) {
 
 				if (bFall[magnetBlocks[i].GetContactNum(j)] == false) {
-					bFall[i] = false;
+					//bFall[i] = false;
 				}
 
 			}

@@ -17,16 +17,18 @@ void GameTitleScene::Initialize()
 	titleTexture = Texture::LoadTexture(L"Resources/dummyTitle.png");
 	uiButtonATexture = Texture::LoadTexture(L"Resources/dummyTitleUI_buttonA.png");
 	uiStageSelectTexture = Texture::LoadTexture(L"Resources/dummyTitleUI_SelectStage.png");
-	uiStageNumberTexture[0] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber1.png");
-	uiStageNumberTexture[1] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber2.png");
-	uiStageNumberTexture[2] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber3.png");
-	uiStageNumberTexture[3] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber4.png");
-	uiStageNumberTexture[4] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber5.png");
-	uiStageNumberTexture[5] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber6.png");
-	uiStageNumberTexture[6] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber7.png");
-	uiStageNumberTexture[7] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber8.png");
-	uiStageNumberTexture[8] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber9.png");
-	uiStageNumberTexture[9] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber10.png");
+
+	uiStageNumberTexture[0] = Texture::LoadTexture(L"Resources/mario.jpg");
+	uiStageNumberTexture[1] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber1.png");
+	uiStageNumberTexture[2] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber2.png");
+	uiStageNumberTexture[3] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber3.png");
+	uiStageNumberTexture[4] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber4.png");
+	uiStageNumberTexture[5] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber5.png");
+	uiStageNumberTexture[6] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber6.png");
+	uiStageNumberTexture[7] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber7.png");
+	uiStageNumberTexture[8] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber8.png");
+	uiStageNumberTexture[9] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber9.png");
+	uiStageNumberTexture[10] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber10.png");
 
 	titleSprite = new Sprite();
 	titleSprite->Initialize(titleTexture);
@@ -109,8 +111,8 @@ void GameTitleScene::Update()
 			ShareData::stageNumber++;
 		}
 
-		if (ShareData::stageNumber < Sample1)ShareData::stageNumber = Sample1;
-		else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = tutorial1;
+		if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
+		else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
 
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//ƒV[ƒ“‚ÌØ‚è‘Ö‚¦‚ğˆË—Š
