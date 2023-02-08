@@ -9,33 +9,43 @@
 #include"Input.h"
 #include"Sprite.h"
 #include"Util.h"
-#include "AudioManager.h"
+
+#include"AudioManager.h"
+
+enum StageSelectPosIndex {
+	LeftLeft,
+	Left,
+	Center,
+	Right,
+	RightRight,
+	StageSelectPosCount,
+};
 
 
 class GameTitleScene :public GameBaseScene
 {
 public:
-	//������
+	//初期化
 	void Initialize() override;
 
-	//�I��
+	//終了
 	void Finalize()override;
 
-	//�X�V
+	//更新
 	void Update()override;
 
-	//�`��
+	//描画
 	void Draw()override;
 
 
-public://�����o�ϐ�
+public://メンバ変数
 
-	ImguiManager* imguiManager = nullptr;	//imgui�p
+	ImguiManager* imguiManager = nullptr;	//imgui用
 	Input* input = nullptr;
 
-	//�Q�[�����Ŏg�p����ϐ��܂Ƃ�
+	//ゲーム内で使用する変数まとめ
 
-	uint32_t titleTexture = 0;	//�w�i�摜(���݂̓_�~�[
+	uint32_t titleTexture = 0;	//背景画像(現在はダミー
 	Sprite* titleSprite = nullptr;
 
 	uint32_t uiButtonATexture = 0;
@@ -53,12 +63,26 @@ public://�����o�ϐ�
 	uint32_t  titleBackTexture[4]{};
 	Sprite* titleBackSprite[4]{};
 
+	//アニメーション用の変数群
+	//ステージセレクトの基本位置(ど真ん中とイージング時の上下の制御に使う)
+	DirectX::XMFLOAT2 stageBasePos{};
+	DirectX::XMFLOAT2 stagePos[StageSelectPosCount]{};
+
+	//タイトル待機時とステージセレクトになって上に吹っ飛ばされた時の座標
+	DirectX::XMFLOAT2 titleSpritePos[2]{};
+
+	EaseingData stageNumEase;
+	EaseingData phaseChangeEase;
+
+	bool isLeftDown = false;
+
 	AudioManager *titleBGM;
 	float titleBGMVolume = 0.1f;
 	AudioManager *decisionSE;
 	float decisionSEVolume = 1.0f;
 	AudioManager *serectSE;
 	float serectSEVolume = 1.0f;
+
 
 	int phase = 0;
 	 

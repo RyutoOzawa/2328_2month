@@ -14,6 +14,15 @@ void GameTitleScene::Initialize()
 	//inputのインスタンス取得
 	input = Input::GetInstance();
 
+	//各種スプライト座標初期化
+	stageBasePos = { WindowsAPI::winW / 2,WindowsAPI::winH / 2 };
+
+
+	stagePos[LeftLeft] = { -WindowsAPI::winW / 2,stageBasePos.y };
+	stagePos[Left] = { 0,stageBasePos.y };
+	stagePos[Center] = stageBasePos;
+	stagePos[Right] = { WindowsAPI::winW,stageBasePos.y };
+	stagePos[RightRight] = { WindowsAPI::winW + WindowsAPI::winW / 2,stageBasePos.y };
 
 	//音
 	titleBGM = new AudioManager();
@@ -24,6 +33,7 @@ void GameTitleScene::Initialize()
 
 	serectSE = new AudioManager();
 	serectSE->SoundLoadWave("Resources/Audio/serectSE.wav");
+
 
 	//テクスチャデータ初期化
 	titleTexture = Texture::LoadTexture(L"Resources/titleRogo.png");
@@ -142,24 +152,12 @@ void GameTitleScene::Update()
 
 	//----------------------ゲーム内ループはここから---------------------//
 
-	ImGui::Begin("Easing data");
-
-	ImGui::Text("timeRate:%f", ShareData::sceneChangeEase.timeRate);
-
-	ImGui::End();
-	ImGui::Begin("debug");
 
 	//タイトルBGM流す
 	titleBGM->SoundPlayWave(true, titleBGMVolume);
 
+
 	if (phase == WaitInputSpaceKey) {
-		ImGui::Text("phase:WaitInputSpaceKey");
-		ImGui::Text("PUSH PAD A GO TO STAGE SELECT");
-
-		ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
-		ImGui::Text("window position leftTop : %f,%f", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-		ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2), ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2));
-
 
 
 
@@ -172,12 +170,12 @@ void GameTitleScene::Update()
 		}
 	}
 	else if (phase == StageSelect) {
+		ImGui::Begin("stage select Animation");
+		ImGui::Text("timerate %f", stageNumEase.timeRate);
 
-		ImGui::Text("phase:StageSelect");
-		ImGui::Text("select stage to LEFT or RIGHT ");
-		ImGui::Text("stageNumber %d", ShareData::stageNumber);
-
+		ImGui::End();
 		//左右キーでステージ番号変更
+
 		if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
 			ShareData::stageNumber--;
 			serectSE->StopWave();
@@ -189,8 +187,21 @@ void GameTitleScene::Update()
 			serectSE->SoundPlayWave(false, serectSEVolume);
 		}
 
-		if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
-		else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
+
+		//ステージ番号移動のイージングが終わっているなら操作可能
+		if (!stageNumEase.GetActive()) {
+
+			if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
+				ShareData::stageNumber--;
+				stageNumEase.Start(0.5f);
+				isLeftDown = true;
+			}
+			else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
+				ShareData::stageNumber++;
+				stageNumEase.Start(0.5f);
+				isLeftDown = false;
+			}
+
 
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//シーンの切り替えを依頼
@@ -206,15 +217,98 @@ void GameTitleScene::Update()
 			decisionSE->SoundPlayWave(false,decisionSEVolume);
 		}
 
+			if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
+			else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
+
 		//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
 		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 			sceneManager->ChangeScene("GAMEPLAY");
 			titleBGM->StopWave();
 		}
-
-
-
 	}
+
+	//ステージ番号イージングの更新
+	stageNumEase.Update();
+
+	//ステージ番号のY座標は常にbaseに追従
+	for (int i = 0; i < StageSelectPosCount; i++) {
+		stagePos[i].y = stageBasePos.y;
+	}
+	ImGui::Begin("spritepos");
+
+
+	//ステージ番号の移動処理
+	XMFLOAT2 easeStagePos;
+	for (int i = 0; i < StageIndexCount; i++) {
+		//スティックが左に倒された(ステージの選択番号が下がった)なら
+		if (stageNumEase.GetActive()) {
+			if (!isLeftDown) {
+				//ステージインデックスとステージナンバーが一致している(操作で選択された番号)ならposがcenterになるように
+				if (i == ShareData::stageNumber) {
+					//左に倒されているので座標は右端から中央へ動く(right→center)
+					easeStagePos = EaseOut2D(stagePos[Right], stagePos[Center], stageNumEase.timeRate);
+				}//インデックスが1小さい(選択番号の左となり)は中央から左端へ
+				else if (i == ShareData::stageNumber - 1) {
+					easeStagePos = EaseOut2D(stagePos[Center], stagePos[Left], stageNumEase.timeRate);
+				}//インデックスが1大きい(選択番号の右となり)は右側画面外から右端
+				else if (i == ShareData::stageNumber + 1) {
+					easeStagePos = EaseOut2D(stagePos[RightRight], stagePos[Right], stageNumEase.timeRate);
+				}//インデックスが2小さいやつは左端から左側画面外へ(アニメーションの整合性を保つ)
+				else if (i == ShareData::stageNumber - 2) {
+					easeStagePos = EaseOut2D(stagePos[Left], stagePos[LeftLeft], stageNumEase.timeRate);
+				}//それ以外でインデックスより数が若いものは左側画面外で固定(値が変動しない)
+				else if (i > ShareData::stageNumber) {
+					easeStagePos = stagePos[LeftLeft];
+				}//それ以外でインデックスより大きい数は右側画面外で固定(値が変動しない)
+				else if (i < ShareData::stageNumber) {
+					easeStagePos = stagePos[RightRight];
+				}
+			}//こっちはスティックが右に倒されたパターン(数が上がったのでindex誤差+-2の部分が逆になる)
+			else {
+				//ステージインデックスとステージナンバーが一致している(操作で選択された番号)ならposがcenterになるように
+				if (i == ShareData::stageNumber) {
+					easeStagePos = EaseOut2D(stagePos[Left], stagePos[Center], stageNumEase.timeRate);
+				}
+				else if (i == ShareData::stageNumber - 1) {
+					easeStagePos = EaseOut2D(stagePos[LeftLeft], stagePos[Left], stageNumEase.timeRate);
+				}
+				else if (i == ShareData::stageNumber + 1) {
+					easeStagePos = EaseOut2D(stagePos[Center], stagePos[Right], stageNumEase.timeRate);
+				}
+				else if (i == ShareData::stageNumber + 2) {
+					easeStagePos = EaseOut2D(stagePos[Right], stagePos[RightRight], stageNumEase.timeRate);
+				}
+				else if (i > ShareData::stageNumber) {
+					easeStagePos = stagePos[LeftLeft];
+				}
+				else if (i < ShareData::stageNumber) {
+					easeStagePos = stagePos[RightRight];
+				}
+			}
+		}
+		else {
+			//イージングが起きていない時
+			if (i == ShareData::stageNumber) {
+				easeStagePos = stagePos[Center];
+			}
+			else if (i == ShareData::stageNumber+1) {
+				easeStagePos = stagePos[Right];
+			}
+			else if (i == ShareData::stageNumber - 1) {
+				easeStagePos = stagePos[Left];
+			}
+			else {
+				easeStagePos = stagePos[LeftLeft];
+			}
+		}
+
+		//変動した座標をセット
+		uiStageNumberSprite[i]->SetPos(easeStagePos);
+		ImGui::Text("pos[%d] %f,%f",i, uiStageNumberSprite[i]->GetPosition().x, uiStageNumberSprite[i]->GetPosition().y);
+	}
+
+
+	ImGui::End();
 
 	//シーンチェンジ用の更新はフェーズを問わず行う
 	//イージングタイマー制御用の更新
@@ -234,7 +328,7 @@ void GameTitleScene::Update()
 		sceneChangeSprite[i]->Update();
 	}
 
-	
+
 
 	sinAngle += 2.0f;
 	if (sinAngle > 360.0f)sinAngle -= 360.0f;
@@ -245,7 +339,7 @@ void GameTitleScene::Update()
 		ImGui::Text("alpha[%d] %f", i, titleBackSprite[i]->color.w);
 	}
 
-	ImGui::End();
+
 	//----------------------ゲーム内ループはここまで---------------------//
 
 
@@ -264,9 +358,7 @@ void GameTitleScene::Draw()
 		titleSprite->Draw();
 	}
 
-	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
-		sceneChangeSprite[i]->Draw();
-	}
+	
 
 	if (phase == WaitInputSpaceKey) {
 		uiButtonASprite->Draw();
@@ -274,10 +366,14 @@ void GameTitleScene::Draw()
 	else if (phase == StageSelect) {
 		uiStageSelectSprite->Draw();
 		for (int i = 0; i < _countof(uiStageNumberSprite); i++) {
-			uiStageNumberSprite[ShareData::stageNumber]->Draw();
+			if (i <= ShareData::stageNumber + 2 && i >= ShareData::stageNumber - 2) {
+				uiStageNumberSprite[i]->Draw();
+			}
 		}
 	}
 
-
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		sceneChangeSprite[i]->Draw();
+	}
 
 }
