@@ -190,12 +190,17 @@ void Player::OnMapCollisionZ2()
 
 void Player::ChangeState()
 {
-	if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
-		state++;
-		//state = SouthPole;
-		if (state > SouthPole) {
-			state = UnMagnet;
-		}
+
+	if (input->IsPadTrigger(XINPUT_GAMEPAD_LEFT_SHOULDER)) {
+		state = SouthPole;
+	}
+
+	if (input->IsPadTrigger(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+		state = NorthPole;
+	}
+
+	if (input->IsPadPress(XINPUT_GAMEPAD_LEFT_SHOULDER) && input->IsPadPress(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+		state = UnMagnet;
 	}
 }
 
