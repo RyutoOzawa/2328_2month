@@ -17,20 +17,22 @@ void GameTitleScene::Initialize()
 
 
 	//テクスチャデータ初期化
-	titleTexture = Texture::LoadTexture(L"Resources/dummyTitle.png");
+	titleTexture = Texture::LoadTexture(L"Resources/playGameBack.png");
 	uiButtonATexture = Texture::LoadTexture(L"Resources/dummyTitleUI_buttonA.png");
 	uiStageSelectTexture = Texture::LoadTexture(L"Resources/dummyTitleUI_SelectStage.png");
 
-	uiStageNumberTexture[0] = Texture::LoadTexture(L"Resources/mario.jpg");
-	uiStageNumberTexture[1] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber2.png");
-	uiStageNumberTexture[2] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber3.png");
-	uiStageNumberTexture[3] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber4.png");
-	uiStageNumberTexture[4] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber5.png");
-	uiStageNumberTexture[5] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber6.png");
-	uiStageNumberTexture[6] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber7.png");
-	uiStageNumberTexture[7] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber8.png");
-	uiStageNumberTexture[8] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber9.png");
-	uiStageNumberTexture[9] = Texture::LoadTexture(L"Resources/dummyUI_stageNumber10.png");
+	uiStageNumberTexture[0] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/tuto.png");
+	uiStageNumberTexture[1] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/1.png");
+	uiStageNumberTexture[2] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/2.png");
+	uiStageNumberTexture[3] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/3.png");
+	uiStageNumberTexture[4] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/4.png");
+	uiStageNumberTexture[5] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/5.png");
+	uiStageNumberTexture[6] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/6.png");
+	uiStageNumberTexture[7] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/7.png");
+	uiStageNumberTexture[8] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/8.png");
+	uiStageNumberTexture[9] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/9.png");
+	uiStageNumberTexture[10] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/10.png");
+
 	sceneChangeTexture[0] = Texture::LoadTexture(L"Resources/magnetN.png");
 	sceneChangeTexture[1] = Texture::LoadTexture(L"Resources/magnetS.png");
 
@@ -54,6 +56,7 @@ void GameTitleScene::Initialize()
 		uiStageNumberSprite[i]->Initialize(uiStageNumberTexture[i]);
 		uiStageNumberSprite[i]->SetAnchorPoint({ 0.5f,0.5f });
 		uiStageNumberSprite[i]->SetPos({ WindowsAPI::winW / 2,WindowsAPI::winH / 2 });
+		//uiStageNumberSprite[i]->SetSize(XMFLOAT2(160.0f,160.0f));
 		uiStageNumberSprite[i]->Update();
 	}
 
