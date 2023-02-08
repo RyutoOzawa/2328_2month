@@ -29,7 +29,12 @@ void GamePlayScene::Initialize()
 	backGroundTexture = Texture::LoadTexture(L"Resources/playGameBack.png");
 	clearTexture = Texture::LoadTexture(L"Resources/clear.png");
 	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
-	menuTexture = Texture::LoadTexture(L"Resources/dummyIngameMenu.png");
+	menuTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menu.png");
+	menuResetTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menuReset.png");
+	menuTitleTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menuTitle.png");
+	menuStageSerectTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menuStageSerect.png");
+
+
 	playerTextureN = Texture::LoadTexture(L"Resources/playerN.png");
 	playerTextureS = Texture::LoadTexture(L"Resources/playerS.png");
 
@@ -40,7 +45,7 @@ void GamePlayScene::Initialize()
 	selectBoxSprite->Update();
 	boxPos = selectBoxSprite->GetPosition();
 
-	playUITexture = Texture::LoadTexture(L"Resources/playGameUI.png");
+	playUITexture = Texture::LoadTexture(L"Resources/UI/playGameUI.png");
 	playUISprite = new Sprite();
 	playUISprite->Initialize(playUITexture);
 	playUISprite->SetAnchorPoint({ 0.0f,1.0f });
@@ -50,12 +55,41 @@ void GamePlayScene::Initialize()
 	backGroundSprite = new Sprite();
 	backGroundSprite->Initialize(backGroundTexture);
 
+	//メニューUI
+
 	menuSprite = new Sprite();
 	menuSprite->Initialize(menuTexture);
 	//アンカーポイントをスプライトの中心に
 	menuSprite->SetAnchorPoint(XMFLOAT2(0.5f, 0.5f));
 	menuSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2));
 	menuSprite->Update();
+
+	//Reset
+
+	menuResetSprite = new Sprite();
+	menuResetSprite->Initialize(menuResetTexture);
+	//アンカーポイントをスプライトの中心に
+	menuResetSprite->SetAnchorPoint(XMFLOAT2(0.5f, 0.5f));
+	menuResetSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2 - 40));
+	menuResetSprite->Update();
+
+	//Title
+
+	menuTitleSprite = new Sprite();
+	menuTitleSprite->Initialize(menuTitleTexture);
+	//アンカーポイントをスプライトの中心に
+	menuTitleSprite->SetAnchorPoint(XMFLOAT2(0.5f, 0.5f));
+	menuTitleSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2 + 120));
+	menuTitleSprite->Update();
+
+	//StageSerect
+
+	menuStageSerectSprite = new Sprite();
+	menuStageSerectSprite->Initialize(menuStageSerectTexture);
+	//アンカーポイントをスプライトの中心に
+	menuStageSerectSprite->SetAnchorPoint(XMFLOAT2(0.5f, 0.5f));
+	menuStageSerectSprite->SetPos(XMFLOAT2(WindowsAPI::winW / 2, WindowsAPI::winH / 2 + 40));
+	menuStageSerectSprite->Update();
 
 	goalSprite.Initialize(clearTexture);
 	goalSprite.SetPos(XMFLOAT2(400, 200));
@@ -365,6 +399,10 @@ void GamePlayScene::Draw()
 	if (isMenu) {
 		menuSprite->Draw();
 		selectBoxSprite->Draw();
+
+		menuResetSprite->Draw();
+		menuTitleSprite->Draw();
+		menuStageSerectSprite->Draw();
 	}
 
 
@@ -387,8 +425,10 @@ void GamePlayScene::SetStage(int stageNumber)
 
 	switch (stageNumber)
 	{
+
 	case Tutoattract:
 		stageStr = "map/Tutoattract.csv";
+
 		stageSize = { 20,3,20 };
 		break;
 	case Whichload:
