@@ -114,6 +114,24 @@ void GamePlayScene::Initialize()
 	selectBoxPos[1] = { WindowsAPI::winW / 2,400.0f };
 	selectBoxPos[2] = { WindowsAPI::winW / 2,480.0f };
 
+	//シーン遷移の初期化	//直前のシーンでシーンクローズ処理が行われたかチェック(このシーンの初期化がexe起動かどうかのチェック)
+	if (ShareData::isBeforeSceneClosed) {
+		ShareData::OpenSceneChange();
+	}
+	uint32_t sceneChangeTexture[2];
+	sceneChangeTexture[0] = magnetTextureN;
+	sceneChangeTexture[1] = magnetTextureS;
+	//シーンチェンジ用の変数
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		//ShareData::nextPos[i] = ShareData::easePos[i][1];
+		sceneChangeSprite[i] = new Sprite();
+		sceneChangeSprite[i]->Initialize(sceneChangeTexture[i]);
+		sceneChangeSprite[i]->SetSize({ WindowsAPI::winH,WindowsAPI::winH });
+		sceneChangeSprite[i]->SetPos(ShareData::easePos[i][1]);
+	}
+
+	sceneChangeSprite[0]->SetAnchorPoint({ 1.0f,0.0f });
+
 	//カメラ初期化
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
@@ -142,6 +160,10 @@ void GamePlayScene::Finalize()
 	delete selectBoxSprite;
 	delete playUISprite;
 	delete colision;
+
+	for (int i = 0; i < 2; i++) {
+		delete sceneChangeSprite[i];
+	}
 	//-------------ここまでにループ内で使用したものの後処理------------//
 }
 
@@ -149,6 +171,33 @@ void GamePlayScene::Update()
 {
 
 	//----------------------ゲーム内ループはここから---------------------//
+
+
+	//シーンチェンジ用の更新はフェーズを問わず行う
+//イージングタイマー制御用の更新
+	ShareData::sceneChangeEase.Update();
+
+	ImGui::Begin("Easing data");
+
+	ImGui::Text("timeRate:%f", ShareData::sceneChangeEase.timeRate);
+	ImGui::Text("nowCount:%lld", ShareData::sceneChangeEase.nowCount);
+	ImGui::Text("startCount:%lld", ShareData::sceneChangeEase.startCount);
+
+	ImGui::End();
+
+	for (int i = 0; i < 2; i++) {
+		if (!ShareData::sceneChangeEase.GetActive()) {
+			sceneChangeSprite[i]->SetPos(ShareData::nextPos[i]);
+			ShareData::isActiveSceneChange = false;
+		}
+		else {
+			XMFLOAT2 spritePos = EaseIn2D(ShareData::easePos[i][1], ShareData::easePos[i][0],
+				ShareData::sceneChangeEase.timeRate);
+			sceneChangeSprite[i]->SetPos(spritePos);
+
+		}
+		sceneChangeSprite[i]->Update();
+	}
 
 	if (goal->isGoal) {
 		//スティック左右でメニューを選ぶ
@@ -207,15 +256,20 @@ void GamePlayScene::Update()
 
 					//共通データのフェーズをステージ選択に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::StageSelect;
-					sceneManager->ChangeScene("TITLE");
+					ShareData::CloseSceneChange();
 				}
 				else if (selectMenuNumber == Title) {
 
 					//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::WaitInputSpaceKey;
-					sceneManager->ChangeScene("TITLE");
+					ShareData::CloseSceneChange();
 				}
 
+			}
+
+			//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
+			if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
+				sceneManager->ChangeScene("TITLE");
 			}
 
 			ImGui::Begin("menu");
@@ -375,6 +429,7 @@ void GamePlayScene::Update()
 		}
 	}
 
+
 	//----------------------ゲーム内ループはここまで---------------------//
 
 
@@ -440,6 +495,10 @@ void GamePlayScene::Draw()
 		menuStageSerectSprite->Draw();
 	}
 
+	//シーン遷移用スプライト描画
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		sceneChangeSprite[i]->Draw();
+	}
 
 }
 

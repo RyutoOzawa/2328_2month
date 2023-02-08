@@ -46,8 +46,5 @@ void MyGame::Draw()
 	sceneManager->Draw();
 
 	imguiManager->Draw();
-
-	//imguiManager->Draw();
 	directX->EndDraw();
-\
 }
