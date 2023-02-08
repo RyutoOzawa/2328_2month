@@ -30,6 +30,15 @@ void GamePlayScene::Initialize()
 		}
 	}
 
+	//音
+	playBGM = new AudioManager();
+	playBGM->SoundLoadWave("Resources/Audio/playBGM.wav");
+
+	decisionSE = new AudioManager();
+	decisionSE->SoundLoadWave("Resources/Audio/decisionSE.wav");
+
+	serectSE = new AudioManager();
+	serectSE->SoundLoadWave("Resources/Audio/serectSE.wav");
 
 	//テクスチャデータ初期化
 	magnetTextureN = Texture::LoadTexture(L"Resources/magnetN.png");
@@ -178,7 +187,10 @@ void GamePlayScene::Finalize()
 	delete map_;
 	delete player;
 
-	delete backGroundSprite;
+	for (int i = 0; i < 4; i++) {
+		delete backGroundSprite[i];
+	}
+
 	delete menuSprite;
 	delete selectBoxSprite;
 	delete playUISprite;
@@ -208,6 +220,9 @@ void GamePlayScene::Update()
 
 	ImGui::End();
 
+	//gameplayBGM流す
+	playBGM->SoundPlayWave(true, playBGMVolume);
+
 	for (int i = 0; i < 2; i++) {
 		if (!ShareData::sceneChangeEase.GetActive()) {
 			sceneChangeSprite[i]->SetPos(ShareData::nextPos[i]);
@@ -225,9 +240,14 @@ void GamePlayScene::Update()
 	if (goal->isGoal) {
 		//スティック上下でメニューを選ぶ
 		if (input->IsTriggerLStickDown() || input->IsKeyTrigger(DIK_D)) {
+			serectSE->StopWave();
+			serectSE->SoundPlayWave(false, serectSEVolume);
 			clearMenuNumber++;
+
 		}
 		else if (input->IsTriggerLStickUp() || input->IsKeyTrigger(DIK_A)) {
+			serectSE->StopWave();
+			serectSE->SoundPlayWave(false, serectSEVolume);
 			clearMenuNumber--;
 		}
 
@@ -247,6 +267,8 @@ void GamePlayScene::Update()
 
 		//Aボタンで決定
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
+			decisionSE->StopWave();
+			decisionSE->SoundPlayWave(false, decisionSEVolume);
 			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
 			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::Mislead) {
 				ShareData::stageNumber++;
@@ -256,6 +278,7 @@ void GamePlayScene::Update()
 				//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 				ShareData::titlePhase = TitlePhaseIndex::StageSelect;
 				sceneManager->ChangeScene("TITLE");
+				playBGM->StopWave();
 			}
 
 		}
@@ -267,13 +290,19 @@ void GamePlayScene::Update()
 			//スタートボタンでメニューを閉じる
 			if (input->IsPadTrigger(XINPUT_GAMEPAD_START) || input->IsKeyTrigger(DIK_M)) {
 				isMenu = false;
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 			}
 
 			//スティック上下でメニューを選ぶ
 			if (input->IsTriggerLStickDown() || input->IsKeyTrigger(DIK_S)) {
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 				selectMenuNumber++;
 			}
 			else if (input->IsTriggerLStickUp() || input->IsKeyTrigger(DIK_W)) {
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 				selectMenuNumber--;
 			}
 			//メニュー選択
@@ -298,7 +327,8 @@ void GamePlayScene::Update()
 			else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
 
 			if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
-
+				decisionSE->StopWave();
+				decisionSE->SoundPlayWave(false, decisionSEVolume);
 				if (selectMenuNumber == Reset) {
 					StageInitialize(ShareData::stageNumber);
 				}
@@ -307,12 +337,14 @@ void GamePlayScene::Update()
 					//共通データのフェーズをステージ選択に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::StageSelect;
 					ShareData::CloseSceneChange();
+
 				}
 				else if (selectMenuNumber == Title) {
 
 					//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::WaitInputSpaceKey;
 					ShareData::CloseSceneChange();
+
 				}
 
 			}
@@ -320,6 +352,7 @@ void GamePlayScene::Update()
 			//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
 			if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 				sceneManager->ChangeScene("TITLE");
+				playBGM->StopWave();
 			}
 
 			ImGui::Begin("menu");
@@ -348,6 +381,8 @@ void GamePlayScene::Update()
 				isMenu = true;
 				//選択は初期はリセット
 				selectMenuNumber = Reset;
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 			}
 
 

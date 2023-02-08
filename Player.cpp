@@ -22,7 +22,8 @@ void Player::Initialize(const uint32_t& texW, const uint32_t& texR, const uint32
 	obj.scale = XMFLOAT3(size / 10, size / 10, size / 10);
 	obj.rotation = XMFLOAT3(0, 0, 270 * (PI / 180));
 
-
+	magPowerSE = new AudioManager();
+	magPowerSE->SoundLoadWave("Resources/Audio/magPowerSE.wav");
 
 	this->map = map;
 	this->goal = goal;
@@ -193,14 +194,24 @@ void Player::ChangeState()
 
 	if (input->IsPadTrigger(XINPUT_GAMEPAD_LEFT_SHOULDER)) {
 		state = SouthPole;
+
+		magPowerSE->StopWave();
+		magPowerSE->SoundPlayWave(false,magPowerSEVolume);
+
 	}
 
 	if (input->IsPadTrigger(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 		state = NorthPole;
+
+		magPowerSE->StopWave();
+		magPowerSE->SoundPlayWave(false, magPowerSEVolume);
 	}
 
 	if (input->IsPadPress(XINPUT_GAMEPAD_LEFT_SHOULDER) && input->IsPadPress(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 		state = UnMagnet;
+
+		magPowerSE->StopWave();
+		magPowerSE->SoundPlayWave(false, magPowerSEVolume);
 	}
 }
 

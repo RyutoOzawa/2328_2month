@@ -16,6 +16,8 @@ void Goal::Initialize(Input* input,const uint32_t& tex,XMFLOAT3 pos)
 
 	this->input = input;
 
+	goalSE = new AudioManager();
+	goalSE->SoundLoadWave("Resources/Audio/goalSE.wav");
 }
 
 void Goal::Update()
@@ -52,5 +54,8 @@ void Goal::InGoal()
 {
 
 	isGoal = true;
+
+	goalSE->StopWave();
+	goalSE->SoundPlayWave(false,goalSEVolume);
 
 }

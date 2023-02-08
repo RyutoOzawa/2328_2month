@@ -15,6 +15,15 @@ void GameTitleScene::Initialize()
 	input = Input::GetInstance();
 
 
+	//音
+	titleBGM = new AudioManager();
+	titleBGM->SoundLoadWave("Resources/Audio/titleBGM.wav");
+
+	decisionSE = new AudioManager();
+	decisionSE->SoundLoadWave("Resources/Audio/decisionSE.wav");
+
+	serectSE = new AudioManager();
+	serectSE->SoundLoadWave("Resources/Audio/serectSE.wav");
 
 	//テクスチャデータ初期化
 	titleTexture = Texture::LoadTexture(L"Resources/titleRogo.png");
@@ -108,6 +117,12 @@ void GameTitleScene::Finalize()
 	delete titleSprite;
 	delete uiButtonASprite;
 	delete uiStageSelectSprite;
+
+	for (int i = 0; i < 4; i++) {
+		delete titleBackSprite[i];
+	}
+
+
 	for (int i = 0; i < 10; i++) {
 		delete uiStageNumberSprite[i];
 	}
@@ -133,6 +148,10 @@ void GameTitleScene::Update()
 
 	ImGui::End();
 	ImGui::Begin("debug");
+
+	//タイトルBGM流す
+	titleBGM->SoundPlayWave(true, titleBGMVolume);
+
 	if (phase == WaitInputSpaceKey) {
 		ImGui::Text("phase:WaitInputSpaceKey");
 		ImGui::Text("PUSH PAD A GO TO STAGE SELECT");
@@ -148,6 +167,8 @@ void GameTitleScene::Update()
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE))
 		{
 			phase = StageSelect;
+			decisionSE->StopWave();
+			decisionSE->SoundPlayWave(false,decisionSEVolume);
 		}
 	}
 	else if (phase == StageSelect) {
@@ -159,9 +180,13 @@ void GameTitleScene::Update()
 		//左右キーでステージ番号変更
 		if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
 			ShareData::stageNumber--;
+			serectSE->StopWave();
+			serectSE->SoundPlayWave(false, serectSEVolume);
 		}
 		else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
 			ShareData::stageNumber++;
+			serectSE->StopWave();
+			serectSE->SoundPlayWave(false, serectSEVolume);
 		}
 
 		if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
@@ -170,16 +195,21 @@ void GameTitleScene::Update()
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//シーンの切り替えを依頼
 			ShareData::CloseSceneChange();
+			decisionSE->StopWave();
+			decisionSE->SoundPlayWave(false, decisionSEVolume);
 		}
 
 		//Bボタンでタイトルへ
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
 			phase = WaitInputSpaceKey;
+			decisionSE->StopWave();
+			decisionSE->SoundPlayWave(false,decisionSEVolume);
 		}
 
 		//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
 		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 			sceneManager->ChangeScene("GAMEPLAY");
+			titleBGM->StopWave();
 		}
 
 
@@ -208,7 +238,6 @@ void GameTitleScene::Update()
 	for (int i = 1; i < _countof(titleBackSprite); i++) {
 		titleBackSprite[i]->color.w = sin(clock() / (100 + (i * 200)));
 	}
-
 
 	ImGui::End();
 	//----------------------ゲーム内ループはここまで---------------------//
