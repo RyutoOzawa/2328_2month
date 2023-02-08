@@ -35,7 +35,7 @@ struct FormatChunk {
 
 class AudioManager final
 {
-private:
+public:
 	AudioManager();
 	~AudioManager();
 

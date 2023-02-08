@@ -60,6 +60,8 @@ public:
 
 	void UpdateCameraVec();
 
+	bool GetisMoveEye() { return isMoveEye; }
+
 private:
 
 	//0é©ã@í«è],1è„2â∫3ç∂4âE

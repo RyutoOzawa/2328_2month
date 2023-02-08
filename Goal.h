@@ -2,6 +2,8 @@
 #include"Object3d.h"
 #include "Sprite.h"
 #include "Input.h"
+#include "AudioManager.h"
+
 using namespace DirectX;
 
 class Goal
@@ -22,6 +24,9 @@ public:
 	void SetPos(XMFLOAT3 setPos) { this->pos = setPos; }
 
 public:
+
+	AudioManager* goalSE;
+	float goalSEVolume = 1.0f;
 
 	Object3d obj;
 

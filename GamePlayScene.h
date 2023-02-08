@@ -8,6 +8,7 @@
 #include"Input.h"
 #include"Sprite.h"
 #include"Goal.h"
+#include "AudioManager.h"
 
 enum MenuIndex {
 	Reset,
@@ -115,27 +116,18 @@ public://メンバ変数
 	//ステージ大きさ
 	Vector3 stageSize = {};
 
+	//音
+	AudioManager* playBGM;
+	float playBGMVolume = 0.1f;
+	AudioManager* decisionSE;
+	float decisionSEVolume = 1.0f;
+	AudioManager* serectSE;
+	float serectSEVolume = 1.0f;
+
 	//メニューを開いているかどうか
 	bool isMenu = false;
 	int selectMenuNumber = 0;
 	int clearMenuNumber = 0;
-
-	////↓------ベジエ曲線-------↓
-
-	////時間計測に必要なデータ
-	//long long elapsedCount = 0;
-
-	////補間で使うデータ
-	////start -> end　を [s] で完了させる
-	//Vector3 start;	//スタート地点
-	//Vector3 p ;	//制御点
-	//Vector3 end ;	//エンド地点
-
-	//float maxTime = 5.0f;		//全体時間[s]
-	//float timeRate;				//何％時間が進んだか(率)
-
-	//Vector3 cameraPosition;
-	//bool cameraMove = false;
 
 	int cameraState = 0;
 

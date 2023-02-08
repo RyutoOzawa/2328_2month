@@ -3,6 +3,7 @@
 #include"Input.h"
 #include "Map.h"
 #include "Goal.h"
+#include "AudioManager.h"
 
 enum stateIndex {
 	UnMagnet,
@@ -92,6 +93,10 @@ private:
 	uint32_t blueTexture = 0;
 	uint32_t redTexture = 0;
 	uint32_t playerTexture = 0;
+
+	//音
+	AudioManager* magPowerSE;
+	float magPowerSEVolume = 0.5f;
 
 	Map* map = nullptr;
 

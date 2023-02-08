@@ -30,6 +30,15 @@ void GamePlayScene::Initialize()
 		}
 	}
 
+	//音
+	playBGM = new AudioManager();
+	playBGM->SoundLoadWave("Resources/Audio/playBGM.wav");
+
+	decisionSE = new AudioManager();
+	decisionSE->SoundLoadWave("Resources/Audio/decisionSE.wav");
+
+	serectSE = new AudioManager();
+	serectSE->SoundLoadWave("Resources/Audio/serectSE.wav");
 
 	//テクスチャデータ初期化
 	magnetTextureN = Texture::LoadTexture(L"Resources/magnetN.png");
@@ -223,6 +232,17 @@ void GamePlayScene::Update()
 //イージングタイマー制御用の更新
 	ShareData::sceneChangeEase.Update();
 
+	ImGui::Begin("Easing data");
+
+	ImGui::Text("timeRate:%f", ShareData::sceneChangeEase.timeRate);
+	ImGui::Text("nowCount:%lld", ShareData::sceneChangeEase.nowCount);
+	ImGui::Text("startCount:%lld", ShareData::sceneChangeEase.startCount);
+
+	ImGui::End();
+
+	//gameplayBGM流す
+	playBGM->SoundPlayWave(true, playBGMVolume);
+
 	for (int i = 0; i < 2; i++) {
 		if (!ShareData::sceneChangeEase.GetActive()) {
 			sceneChangeSprite[i]->SetPos(ShareData::nextPos[i]);
@@ -240,9 +260,14 @@ void GamePlayScene::Update()
 	if (goal->isGoal) {
 		//スティック上下でメニューを選ぶ
 		if (input->IsTriggerLStickDown() || input->IsKeyTrigger(DIK_D)) {
+			serectSE->StopWave();
+			serectSE->SoundPlayWave(false, serectSEVolume);
 			clearMenuNumber++;
+
 		}
 		else if (input->IsTriggerLStickUp() || input->IsKeyTrigger(DIK_A)) {
+			serectSE->StopWave();
+			serectSE->SoundPlayWave(false, serectSEVolume);
 			clearMenuNumber--;
 		}
 
@@ -262,6 +287,8 @@ void GamePlayScene::Update()
 
 		//Aボタンで決定
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
+			decisionSE->StopWave();
+			decisionSE->SoundPlayWave(false, decisionSEVolume);
 			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
 			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::Mislead) {
 				ShareData::stageNumber++;
@@ -271,6 +298,7 @@ void GamePlayScene::Update()
 				//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 				ShareData::titlePhase = TitlePhaseIndex::StageSelect;
 				sceneManager->ChangeScene("TITLE");
+				playBGM->StopWave();
 			}
 
 		}
@@ -282,13 +310,19 @@ void GamePlayScene::Update()
 			//スタートボタンでメニューを閉じる
 			if (input->IsPadTrigger(XINPUT_GAMEPAD_START) || input->IsKeyTrigger(DIK_M)) {
 				isMenu = false;
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 			}
 
 			//スティック上下でメニューを選ぶ
 			if (input->IsTriggerLStickDown() || input->IsKeyTrigger(DIK_S)) {
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 				selectMenuNumber++;
 			}
 			else if (input->IsTriggerLStickUp() || input->IsKeyTrigger(DIK_W)) {
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 				selectMenuNumber--;
 			}
 			//メニュー選択
@@ -313,7 +347,8 @@ void GamePlayScene::Update()
 			else if (selectMenuNumber < MenuIndex::Reset)selectMenuNumber = Reset;
 
 			if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
-
+				decisionSE->StopWave();
+				decisionSE->SoundPlayWave(false, decisionSEVolume);
 				if (selectMenuNumber == Reset) {
 					StageInitialize(ShareData::stageNumber);
 				}
@@ -322,12 +357,14 @@ void GamePlayScene::Update()
 					//共通データのフェーズをステージ選択に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::StageSelect;
 					ShareData::CloseSceneChange();
+
 				}
 				else if (selectMenuNumber == Title) {
 
 					//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::WaitInputSpaceKey;
 					ShareData::CloseSceneChange();
+
 				}
 
 			}
@@ -335,6 +372,7 @@ void GamePlayScene::Update()
 			//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
 			if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 				sceneManager->ChangeScene("TITLE");
+				playBGM->StopWave();
 			}
 
 
@@ -351,6 +389,8 @@ void GamePlayScene::Update()
 				isMenu = true;
 				//選択は初期はリセット
 				selectMenuNumber = Reset;
+				serectSE->StopWave();
+				serectSE->SoundPlayWave(false, serectSEVolume);
 			}
 
 
@@ -394,63 +434,67 @@ void GamePlayScene::Update()
 
 			//↓------------カメラ--------------↓
 
+			if (camera.GetisMoveEye() == false) {
 
-			if (input->IsKeyTrigger(DIK_UP) || input->IsTriggerRStickUp()) {
+				if (input->IsKeyTrigger(DIK_UP) || input->IsTriggerRStickUp()) {
 
-				if (cameraState == 0) {
-					cameraState = 1;
-				}
-				else if (cameraState != 0) {
-					cameraState = 0;
-				}
+					if (cameraState == 0) {
+						cameraState = 1;
+					}
+					else if (cameraState != 0) {
+						cameraState = 0;
+					}
 
-				camera.ChangeState(cameraState);
-			}
-			else if (input->IsKeyTrigger(DIK_DOWN) || input->IsTriggerRStickDown()) {
+					camera.ChangeState(cameraState);
+				}
+				else if (input->IsKeyTrigger(DIK_DOWN) || input->IsTriggerRStickDown()) {
 
-				if (cameraState == 0) {
-					cameraState = 2;
+					if (cameraState == 0) {
+						cameraState = 2;
+					}
+
+					camera.ChangeState(cameraState);
 				}
-				camera.ChangeState(cameraState);
-			}
-			else if (input->IsKeyTrigger(DIK_LEFT) || input->IsTriggerRStickLeft()) {
+				else if (input->IsKeyTrigger(DIK_LEFT) || input->IsTriggerRStickLeft()) {
 
 
-				if (cameraState == 0) {
-					cameraState = 3;
-				}
-				else if (cameraState == 1) {
-					cameraState = 4;
-				}
-				else if (cameraState == 2) {
-					cameraState = 3;
-				}
-				else if (cameraState == 3) {
-					cameraState = 1;
-				}
-				else if (cameraState == 4) {
-					cameraState = 2;
-				}
-				camera.ChangeState(cameraState);
-			}
-			else if (input->IsKeyTrigger(DIK_RIGHT) || input->IsTriggerRStickRight()) {
+					if (cameraState == 0) {
+						cameraState = 3;
+					}
+					else if (cameraState == 1) {
+						cameraState = 4;
+					}
+					else if (cameraState == 2) {
+						cameraState = 3;
+					}
+					else if (cameraState == 3) {
+						cameraState = 1;
+					}
+					else if (cameraState == 4) {
+						cameraState = 2;
+					}
 
-				if (cameraState == 0) {
-					cameraState = 4;
+					camera.ChangeState(cameraState);
 				}
-				else if (cameraState == 1) {
-					cameraState = 3;
+				else if (input->IsKeyTrigger(DIK_RIGHT) || input->IsTriggerRStickRight()) {
+
+					if (cameraState == 0) {
+						cameraState = 4;
+					}
+					else if (cameraState == 1) {
+						cameraState = 3;
+					}
+					else if (cameraState == 2) {
+						cameraState = 4;
+					}
+					else if (cameraState == 3) {
+						cameraState = 2;
+					}
+					else if (cameraState == 4) {
+						cameraState = 1;
+					}
+					camera.ChangeState(cameraState);
 				}
-				else if (cameraState == 2) {
-					cameraState = 4;
-				}
-				else if (cameraState == 3) {
-					cameraState = 2;
-				}
-				else if (cameraState == 4) {
-					cameraState = 1;
-				}
-				camera.ChangeState(cameraState);
 			}
 
 			camera.Update(player->GetPosition());
