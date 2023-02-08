@@ -77,6 +77,8 @@ public://メンバ変数
 	Sprite* playUISprite = nullptr;
 
 
+	Sprite* sceneChangeSprite[2]{};
+
 
 	DirectX::XMFLOAT2 boxPos{};
 	DirectX::XMFLOAT2 selectBoxPos[3]{};
