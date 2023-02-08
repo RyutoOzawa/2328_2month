@@ -468,6 +468,8 @@ void GamePlayScene::Draw()
 		magnetBlocks[i].Draw(magnetTextureN, magnetTextureS);
 	}
 
+	menuResetSprite->color.z = sin(clock());
+
 	//マップの描画
 	for (int i = 0; i < map_->blockY; i++)
 	{
@@ -512,6 +514,15 @@ void GamePlayScene::Draw()
 	if (isMenu) {
 		menuSprite->Draw();
 		selectBoxSprite->Draw();
+
+		//menuResetSprite->color = {0,0,0,1};
+		//menuTitleSprite->color = { 0,0,0,1 };
+		//menuStageSerectSprite->color = { 0,0,0,1 };
+
+		menuResetSprite->Update();
+		menuTitleSprite->Update();
+		menuStageSerectSprite->Update();
+
 
 		menuResetSprite->Draw();
 		menuTitleSprite->Draw();
