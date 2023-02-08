@@ -41,7 +41,12 @@ void GamePlayScene::Initialize()
 	groundTextures[2] = Texture::LoadTexture(L"Resources/groundPattern3.png");
 	groundTextures[3] = Texture::LoadTexture(L"Resources/groundPattern4.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white.png");
-	backGroundTexture = Texture::LoadTexture(L"Resources/gameBack/gameBack1.png");
+
+	backGroundTexture[0] = Texture::LoadTexture(L"Resources/gameBack/gameBack.png");
+	backGroundTexture[1] = Texture::LoadTexture(L"Resources/gameBack/gameBackStar1.png");
+	backGroundTexture[2] = Texture::LoadTexture(L"Resources/gameBack/gameBackStar2.png");
+	backGroundTexture[3] = Texture::LoadTexture(L"Resources/gameBack/gameBackStar3.png");
+
 	clearTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clear.png");
 	clearNextTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearNext.png");
 	clearStageSerectTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearStageSerect.png");
@@ -69,8 +74,11 @@ void GamePlayScene::Initialize()
 	playUISprite->SetPos({ 0.0f, WindowsAPI::winH });
 	playUISprite->Update();
 
-	backGroundSprite = new Sprite();
-	backGroundSprite->Initialize(backGroundTexture);
+	for (int i = 0; i < _countof(backGroundSprite); i++) {
+		backGroundSprite[i] = new Sprite();
+		backGroundSprite[i]->Initialize(backGroundTexture[i]);
+	}
+
 
 	//メニューUI
 
@@ -460,6 +468,10 @@ void GamePlayScene::Update()
 
 			//↑------------カメラ--------------↑
 
+				//背景の星を点滅させる
+			for (int i = 1; i < _countof(backGroundSprite); i++) {
+				backGroundSprite[i]->color.w = sin(clock() / (100 + (i * 200)));
+			}
 
 		}
 	}
@@ -475,8 +487,9 @@ void GamePlayScene::Draw()
 	//-------背景スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
-	backGroundSprite->Draw();
-
+	for (int i = 0; i < _countof(backGroundSprite); i++) {
+		backGroundSprite[i]->Draw();
+	}
 	//-------3Dオブジェクト描画処理-------//
 	Object3d::BeginDraw(camera);
 

@@ -65,8 +65,9 @@ public://メンバ変数
 	uint32_t menuTitleTexture = 0;		//メニューのTitleのテクスチャ
 	uint32_t menuStageSerectTexture = 0;		//メニューのStageSerectのテクスチャ
 
-	uint32_t backGroundTexture = 0;	//背景画像(現在はダミー
-	Sprite* backGroundSprite = nullptr;
+	uint32_t  backGroundTexture[4]{};//背景
+	Sprite* backGroundSprite[4]{};
+
 	Sprite* menuSprite = nullptr;
 	Sprite* menuResetSprite = nullptr;
 	Sprite* menuTitleSprite = nullptr;

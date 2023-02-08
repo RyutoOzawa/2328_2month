@@ -36,17 +36,22 @@ void GameTitleScene::Initialize()
 	sceneChangeTexture[0] = Texture::LoadTexture(L"Resources/magnetN.png");
 	sceneChangeTexture[1] = Texture::LoadTexture(L"Resources/magnetS.png");
 
-	titleBackTexture = Texture::LoadTexture(L"Resources/gameBack/gameBack1.png");
-
+	titleBackTexture[0] = Texture::LoadTexture(L"Resources/gameBack/gameBack.png");
+	titleBackTexture[1] = Texture::LoadTexture(L"Resources/gameBack/gameBackStar1.png");
+	titleBackTexture[2] = Texture::LoadTexture(L"Resources/gameBack/gameBackStar2.png");
+	titleBackTexture[3] = Texture::LoadTexture(L"Resources/gameBack/gameBackStar3.png");
 
 	titleSprite = new Sprite();
 	titleSprite->Initialize(titleTexture);
 
-	titleSprite->SetPos(XMFLOAT2(370,200));
+	titleSprite->SetAnchorPoint({ 0.5f,0.5f });
+	titleSprite->SetPos({ WindowsAPI::winW / 2,WindowsAPI::winH / 2 - 100 });
 	titleSprite->Update();
 
-	titleBackSprite = new Sprite();
-	titleBackSprite->Initialize(titleBackTexture);
+	for (int i = 0; i < _countof(titleBackSprite); i++) {
+		titleBackSprite[i] = new Sprite();
+		titleBackSprite[i]->Initialize(titleBackTexture[i]);
+	}
 
 	uiButtonASprite = new Sprite();
 	uiButtonASprite->Initialize(uiButtonATexture);
@@ -172,12 +177,12 @@ void GameTitleScene::Update()
 			phase = WaitInputSpaceKey;
 		}
 
-			//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
+		//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
 		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 			sceneManager->ChangeScene("GAMEPLAY");
 		}
 
-		
+
 
 	}
 
@@ -199,6 +204,11 @@ void GameTitleScene::Update()
 		sceneChangeSprite[i]->Update();
 	}
 
+	//背景の星を点滅させる
+	for (int i = 1; i < _countof(titleBackSprite); i++) {
+		titleBackSprite[i]->color.w = sin(clock() / (100 + (i * 200)));
+	}
+
 
 	ImGui::End();
 	//----------------------ゲーム内ループはここまで---------------------//
@@ -211,7 +221,9 @@ void GameTitleScene::Draw()
 	//-------スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
-	titleBackSprite->Draw();
+	for (int i = 0; i < _countof(titleBackSprite); i++) {
+		titleBackSprite[i]->Draw();
+	}
 
 	if (phase == WaitInputSpaceKey) {
 		titleSprite->Draw();

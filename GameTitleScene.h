@@ -50,8 +50,8 @@ public://ƒƒ“ƒo•Ï”
 	uint32_t sceneChangeTexture[2]{};
 	Sprite* sceneChangeSprite[2]{};
 
-	uint32_t  titleBackTexture = 0;
-	Sprite* titleBackSprite;
+	uint32_t  titleBackTexture[4]{};
+	Sprite* titleBackSprite[4]{};
 
 	int phase = 0;
 
