@@ -58,13 +58,13 @@ void Player::Update(int cameraState)
 	//行列更新
 	obj.Update();
 
-	ImGui::Begin("jump");
-	ImGui::Text("%d", isJump);
-	ImGui::End();
+	//ImGui::Begin("jump");
+	//ImGui::Text("%d", isJump);
+	//ImGui::End();
 
-	ImGui::Begin("fall");
-	ImGui::Text("%d", fall);
-	ImGui::End();
+	//ImGui::Begin("fall");
+	//ImGui::Text("%d", fall);
+	//ImGui::End();
 
 }
 
