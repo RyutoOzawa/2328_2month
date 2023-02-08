@@ -17,6 +17,20 @@ void GamePlayScene::Initialize()
 	//inputのインスタンス取得
 	input = Input::GetInstance();
 
+	blockModel = Model::CreateModel("cube");
+
+	//ブロック
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 20; j++) {
+			for (int k = 0; k < 20; k++) {
+				blockObj[i][j][k].Initialize();
+				
+				blockObj[i][j][k].SetModel(blockModel);
+			}
+		}
+	}
+
+
 	//テクスチャデータ初期化
 	magnetTextureN = Texture::LoadTexture(L"Resources/magnetN.png");
 	magnetTextureS = Texture::LoadTexture(L"Resources/magnetS.png");
@@ -258,6 +272,27 @@ void GamePlayScene::Update()
 			//playUISprite->color.z = 0.0f;
 			//playUISprite->Update();
 
+			ImGui::Begin("block");
+			ImGui::SliderFloat("rotaX", &rota.x, 0.0f, 10.0f);
+			ImGui::SliderFloat("rotaY", &rota.y, 0.0f, 10.0f);
+			ImGui::SliderFloat("rotaZ", &rota.z, 0.0f, 10.0f);
+			if (ImGui::Button("rota reset")) {
+				rota = { 0,0,0 };
+			}
+			ImGui::End();
+			//マップの描画
+			for (int i = 0; i < map_->blockY; i++)
+			{
+				for (int j = 0; j < map_->blockZ; j++)
+				{
+					for (int k = 0; k < map_->blockX; k++)
+					{
+					//	blockObj[i][j][k].rotation = rota;
+						blockObj[i][j][k].Update();
+					}
+				}
+			}
+
 			//↓------------カメラ--------------↓
 
 
@@ -374,9 +409,9 @@ void GamePlayScene::Draw()
 			{
 				if (map_->map[i][j][k] == 1)
 				{
-					if (i != 1) {
+					/*if (i != 1) {
 						blockObj[i][j][k].model->textureIndex = groundTexture;
-					}
+					}*/
 
 
 					blockObj[i][j][k].Draw();
@@ -506,13 +541,15 @@ void GamePlayScene::StageInitialize(int stageNumber)
 			for (int k = 0; k < map_->blockX; k++)
 			{
 				blockObj[i][j][k].Initialize();
-				blockObj[i][j][k].model = Model::CreateModel();
-				blockObj[i][j][k].model->textureIndex = groundTextures[static_cast<int>(Random(0,4))];
+			//	blockObj[i][j][k].model = Model::CreateModel();
+			//	blockObj[i][j][k].model->textureIndex = groundTextures[static_cast<int>(Random(0,4))];
 				blockObj[i][j][k].position.x = k * blockSize * blockScale;
 				blockObj[i][j][k].position.y = i * blockSize * blockScale;
 				blockObj[i][j][k].position.z = j * blockSize * blockScale;
-				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
-				blockObj[i][j][k].rotation.x = XM_PI / 2.0f;
+			//	blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
+				blockObj[i][j][k].scale = { 0.5f,0.5f,0.5f };
+				//blockObj[i][j][k].rotation.y =( XM_PI );
+				blockObj[i][j][k].rotation.z =( XM_PI / 2.0f);
 				blockObj[i][j][k].Update();
 
 				if (map_->map[i][j][k] == 2) {
