@@ -41,7 +41,7 @@ void GamePlayScene::Initialize()
 	groundTextures[2] = Texture::LoadTexture(L"Resources/groundPattern3.png");
 	groundTextures[3] = Texture::LoadTexture(L"Resources/groundPattern4.png");
 	playerTexture = Texture::LoadTexture(L"Resources/white.png");
-	backGroundTexture = Texture::LoadTexture(L"Resources/playGameBack.png");
+	backGroundTexture = Texture::LoadTexture(L"Resources/gameBack/gameBack1.png");
 	clearTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clear.png");
 	clearNextTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearNext.png");
 	clearStageSerectTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearStageSerect.png");
@@ -55,12 +55,12 @@ void GamePlayScene::Initialize()
 	playerTextureN = Texture::LoadTexture(L"Resources/playerN.png");
 	playerTextureS = Texture::LoadTexture(L"Resources/playerS.png");
 
-	selectBoxTexture = Texture::LoadTexture(L"Resources/dummyUI_selectBox.png");
-	selectBoxSprite = new Sprite();
-	selectBoxSprite->Initialize(selectBoxTexture);
-	selectBoxSprite->SetAnchorPoint({ 0.5f,0.5f });
-	selectBoxSprite->Update();
-	boxPos = selectBoxSprite->GetPosition();
+	//selectBoxTexture = Texture::LoadTexture(L"Resources/dummyUI_selectBox.png");
+	//selectBoxSprite = new Sprite();
+	//selectBoxSprite->Initialize(selectBoxTexture);
+	//selectBoxSprite->SetAnchorPoint({ 0.5f,0.5f });
+	//selectBoxSprite->Update();
+	//boxPos = selectBoxSprite->GetPosition();
 
 	playUITexture = Texture::LoadTexture(L"Resources/UI/playGameUI.png");
 	playUISprite = new Sprite();
@@ -121,7 +121,7 @@ void GamePlayScene::Initialize()
 
 	clearStageSerectSprite = new Sprite();
 	clearStageSerectSprite->Initialize(clearStageSerectTexture);
-	clearStageSerectSprite->SetPos(XMFLOAT2(450, 420));
+	clearStageSerectSprite->SetPos(XMFLOAT2(450, 410));
 	clearStageSerectSprite->Update();
 
 
@@ -324,8 +324,8 @@ void GamePlayScene::Update()
 			ImGui::SliderFloat("boxPosY", &boxPos.y, 0.0f, WindowsAPI::winH);
 			ImGui::End();
 
-			selectBoxSprite->SetPos(selectBoxPos[selectMenuNumber]);
-			selectBoxSprite->Update();
+			//selectBoxSprite->SetPos(selectBoxPos[selectMenuNumber]);
+			//selectBoxSprite->Update();
 
 		}
 		else {

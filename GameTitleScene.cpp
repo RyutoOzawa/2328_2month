@@ -17,9 +17,9 @@ void GameTitleScene::Initialize()
 
 
 	//テクスチャデータ初期化
-	titleTexture = Texture::LoadTexture(L"Resources/playGameBack.png");
-	uiButtonATexture = Texture::LoadTexture(L"Resources/dummyTitleUI_buttonA.png");
-	uiStageSelectTexture = Texture::LoadTexture(L"Resources/dummyTitleUI_SelectStage.png");
+	titleTexture = Texture::LoadTexture(L"Resources/titleRogo.png");
+	uiButtonATexture = Texture::LoadTexture(L"Resources/UI/pushA.png");
+	uiStageSelectTexture = Texture::LoadTexture(L"Resources/UI/stageSerectUI/stageSerect.png");
 
 	uiStageNumberTexture[0] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/tuto.png");
 	uiStageNumberTexture[1] = Texture::LoadTexture(L"Resources/UI/stageSerectUI/1.png");
@@ -36,9 +36,17 @@ void GameTitleScene::Initialize()
 	sceneChangeTexture[0] = Texture::LoadTexture(L"Resources/magnetN.png");
 	sceneChangeTexture[1] = Texture::LoadTexture(L"Resources/magnetS.png");
 
+	titleBackTexture = Texture::LoadTexture(L"Resources/gameBack/gameBack1.png");
+
 
 	titleSprite = new Sprite();
 	titleSprite->Initialize(titleTexture);
+
+	titleSprite->SetPos(XMFLOAT2(370,200));
+	titleSprite->Update();
+
+	titleBackSprite = new Sprite();
+	titleBackSprite->Initialize(titleBackTexture);
 
 	uiButtonASprite = new Sprite();
 	uiButtonASprite->Initialize(uiButtonATexture);
@@ -203,7 +211,11 @@ void GameTitleScene::Draw()
 	//-------スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
-	titleSprite->Draw();
+	titleBackSprite->Draw();
+
+	if (phase == WaitInputSpaceKey) {
+		titleSprite->Draw();
+	}
 
 	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
 		sceneChangeSprite[i]->Draw();
