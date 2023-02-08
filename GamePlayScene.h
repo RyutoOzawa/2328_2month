@@ -131,5 +131,7 @@ public://メンバ変数
 
 	int cameraState = 0;
 
+	float sinAngle = 0.0f;
+
 };
 

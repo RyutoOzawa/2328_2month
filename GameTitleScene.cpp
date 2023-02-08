@@ -234,6 +234,8 @@ void GameTitleScene::Update()
 		sceneChangeSprite[i]->Update();
 	}
 
+	
+
 	//背景の星を点滅させる
 	for (int i = 1; i < _countof(titleBackSprite); i++) {
 		titleBackSprite[i]->color.w = sin(clock() / (100 + (i * 200)));

@@ -60,9 +60,6 @@ void Colision::Update() {
 		setPos[i].y += bMoveVec[i].y;
 		setPos[i].z += bMoveVec[i].z;
 
-		ImGui::Begin("setPos");
-		ImGui::Text("%d = %f,%f,%f \n", i, setPos[i].x, setPos[i].y, setPos[i].z);
-		ImGui::End();
 
 		magnetBlocks[i].SetPos(setPos[i]);
 
@@ -128,17 +125,17 @@ void Colision::MapCollision()
 	{
 
 		player->SetFall(false);
-		ImGui::Begin("fall");
-		ImGui::Text("false");
-		ImGui::End();
+		//ImGui::Begin("fall");
+		//ImGui::Text("false");
+		//ImGui::End();
 
 	}
 	else {
 
 		player->SetFall(true);
-		ImGui::Begin("fall");
-		ImGui::Text("true");
-		ImGui::End();
+		//ImGui::Begin("fall");
+		//ImGui::Text("true");
+		//ImGui::End();
 
 	}
 
@@ -408,9 +405,9 @@ void Colision::MapCollision()
 	{
 
 
-		ImGui::Begin("col");
-		ImGui::Text("true");
-		ImGui::End();
+		//ImGui::Begin("col");
+		//ImGui::Text("true");
+		//ImGui::End();
 
 		if (player->GetMove().z < 0 && ColZ.y == 0) {
 			//１ピクセル先に壁が来るまで移動
@@ -469,9 +466,9 @@ void Colision::MapCollision()
 		//右に仮想的に移動して当たったら
 		if (map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, downmagnetBlocks, backmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, upmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(rightmagnetBlocks + bMoveVec[i].x, upmagnetBlocks, backmagnetBlocks))
 		{
-			ImGui::Begin("x+");
-			ImGui::Text("true");
-			ImGui::End();
+			//ImGui::Begin("x+");
+			//ImGui::Text("true");
+			//ImGui::End();
 			bMoveVec[i].x = 0;
 			magnetBlocks[i].SetRockMove(true, 4);
 
@@ -494,9 +491,9 @@ void Colision::MapCollision()
 		//左に仮想的に移動して当たったら
 		else if (map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, downmagnetBlocks, backmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, upmagnetBlocks, frontmagnetBlocks) || map_->mapInGoalCol(leftmagnetBlocks + bMoveVec[i].x, upmagnetBlocks, backmagnetBlocks))
 		{
-			ImGui::Begin("x-");
-			ImGui::Text("true");
-			ImGui::End();
+			//ImGui::Begin("x-");
+			//ImGui::Text("true");
+			//ImGui::End();
 			bMoveVec[i].x = 0;
 			magnetBlocks[i].SetRockMove(true, 3);
 
@@ -549,9 +546,9 @@ void Colision::MapCollision()
 		if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks, backmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks, backmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks, backmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks, backmagnetBlocks + bMoveVec[i].z))
 		{
 
-			ImGui::Begin("z+");
-			ImGui::Text("true");
-			ImGui::End();
+			//ImGui::Begin("z+");
+			//ImGui::Text("true");
+			//ImGui::End();
 			bMoveVec[i].z = 0;
 
 			magnetBlocks[i].SetRockMove(true, 5);
@@ -575,9 +572,9 @@ void Colision::MapCollision()
 		//手前に仮想的に移動して当たったら
 		else if (map_->mapInGoalCol(leftmagnetBlocks, downmagnetBlocks, frontmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, downmagnetBlocks, frontmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(leftmagnetBlocks, upmagnetBlocks, frontmagnetBlocks + bMoveVec[i].z) || map_->mapInGoalCol(rightmagnetBlocks, upmagnetBlocks, frontmagnetBlocks + bMoveVec[i].z))
 		{
-			ImGui::Begin("z-");
-			ImGui::Text("true");
-			ImGui::End();
+			//ImGui::Begin("z-");
+			//ImGui::Text("true");
+			//ImGui::End();
 			bMoveVec[i].z = 0;
 			magnetBlocks[i].SetRockMove(true, 6);
 
@@ -918,9 +915,9 @@ void Colision::MapCollision()
 						}
 					}
 
-					ImGui::Begin("GetRockMove");
+			/*		ImGui::Begin("GetRockMove");
 					ImGui::Text("%d = %d \n", i, magnetBlocks[i].GetRockMove(3));
-					ImGui::End();
+					ImGui::End();*/
 
 
 				}
@@ -1759,9 +1756,9 @@ void Colision::PosCollision()
 
 	for (int i = 0; i < magnetBlocks.size(); i++) {
 
-		ImGui::Begin("contact");
-		ImGui::Text("%d = %d \n", i, magnetBlocks[i].GetContactNum(3));
-		ImGui::End();
+		//ImGui::Begin("contact");
+		//ImGui::Text("%d = %d \n", i, magnetBlocks[i].GetContactNum(3));
+		//ImGui::End();
 
 	}
 }

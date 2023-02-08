@@ -258,7 +258,7 @@ void GamePlayScene::Update()
 		}
 		else if (clearMenuNumber == 1) {
 			clearStageSerectSprite->color.z = sin(clock());
-			clearNextSprite->color= { 1,1,1,1 };
+			clearNextSprite->color = { 1,1,1,1 };
 		}
 
 		//最大値、最小値を超えないように
@@ -355,15 +355,6 @@ void GamePlayScene::Update()
 				playBGM->StopWave();
 			}
 
-			ImGui::Begin("menu");
-			ImGui::Text("menuNumber %d", selectMenuNumber);
-			ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
-			ImGui::Text("window position leftTop : %f,%f", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-			ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2), ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2));
-			ImGui::SliderFloat("alpha", &menuSprite->color.w, 0.0f, 1.0f);
-			ImGui::SliderFloat("boxPosX", &boxPos.x, 0.0f, WindowsAPI::winW);
-			ImGui::SliderFloat("boxPosY", &boxPos.y, 0.0f, WindowsAPI::winH);
-			ImGui::End();
 
 			//selectBoxSprite->SetPos(selectBoxPos[selectMenuNumber]);
 			//selectBoxSprite->Update();
@@ -371,10 +362,7 @@ void GamePlayScene::Update()
 		}
 		else {
 
-			//fps表示
-			ImGui::Begin("fps");
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::End();
+
 
 			//スタートボタンでメニューへ
 			if (input->IsPadTrigger(XINPUT_GAMEPAD_START) || input->IsKeyTrigger(DIK_M)) {
@@ -411,14 +399,6 @@ void GamePlayScene::Update()
 			//playUISprite->color.z = 0.0f;
 			//playUISprite->Update();
 
-			ImGui::Begin("block");
-			ImGui::SliderFloat("rotaX", &rota.x, 0.0f, 10.0f);
-			ImGui::SliderFloat("rotaY", &rota.y, 0.0f, 10.0f);
-			ImGui::SliderFloat("rotaZ", &rota.z, 0.0f, 10.0f);
-			if (ImGui::Button("rota reset")) {
-				rota = { 0,0,0 };
-			}
-			ImGui::End();
 			//マップの描画
 			for (int i = 0; i < map_->blockY; i++)
 			{
@@ -495,19 +475,21 @@ void GamePlayScene::Update()
 
 			camera.Update(player->GetPosition());
 
-			//fps表示
-			ImGui::Begin("fcamera");
-			ImGui::Text("cameraState = %d", cameraState);
-			ImGui::End();
-
 
 			//↑------------カメラ--------------↑
 
-				//背景の星を点滅させる
-			for (int i = 1; i < _countof(backGroundSprite); i++) {
-				backGroundSprite[i]->color.w = sin(clock() / (100 + (i * 200)));
-			}
+			ImGui::Begin("color");
 
+
+			sinAngle += 2.0f;
+			if (sinAngle > 360.0f)sinAngle -= 360.0f;
+			ImGui::Text("angle %f", sinAngle);
+			//背景の星を点滅させる
+			for (int i = 1; i < _countof(backGroundSprite); i++) {
+				backGroundSprite[i]->color.w = (sin((sinAngle + i * 120.0f) * XM_PI / 180.0f)) / 2.0f + 0.5f;
+				ImGui::Text("alpha[%d] %f", i, backGroundSprite[i]->color.w);
+			}
+			ImGui::End();
 		}
 	}
 
