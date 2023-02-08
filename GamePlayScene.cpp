@@ -4,6 +4,7 @@
 #include"SpriteManager.h"
 #include"GameSceneManager.h"
 #include"ShareData.h"
+#include"Util.h"
 
 using namespace DirectX;
 
@@ -15,6 +16,20 @@ void GamePlayScene::Initialize()
 
 	//inputのインスタンス取得
 	input = Input::GetInstance();
+
+	blockModel = Model::CreateModel("cube");
+
+	//ブロック
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 20; j++) {
+			for (int k = 0; k < 20; k++) {
+				blockObj[i][j][k].Initialize();
+				
+				blockObj[i][j][k].SetModel(blockModel);
+			}
+		}
+	}
+
 
 	//テクスチャデータ初期化
 	magnetTextureN = Texture::LoadTexture(L"Resources/magnetN.png");
@@ -115,6 +130,24 @@ void GamePlayScene::Initialize()
 	selectBoxPos[1] = { WindowsAPI::winW / 2,400.0f };
 	selectBoxPos[2] = { WindowsAPI::winW / 2,480.0f };
 
+	//シーン遷移の初期化	//直前のシーンでシーンクローズ処理が行われたかチェック(このシーンの初期化がexe起動かどうかのチェック)
+	if (ShareData::isBeforeSceneClosed) {
+		ShareData::OpenSceneChange();
+	}
+	uint32_t sceneChangeTexture[2];
+	sceneChangeTexture[0] = magnetTextureN;
+	sceneChangeTexture[1] = magnetTextureS;
+	//シーンチェンジ用の変数
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		//ShareData::nextPos[i] = ShareData::easePos[i][1];
+		sceneChangeSprite[i] = new Sprite();
+		sceneChangeSprite[i]->Initialize(sceneChangeTexture[i]);
+		sceneChangeSprite[i]->SetSize({ WindowsAPI::winH,WindowsAPI::winH });
+		sceneChangeSprite[i]->SetPos(ShareData::easePos[i][1]);
+	}
+
+	sceneChangeSprite[0]->SetAnchorPoint({ 1.0f,0.0f });
+
 	//カメラ初期化
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
@@ -143,6 +176,10 @@ void GamePlayScene::Finalize()
 	delete selectBoxSprite;
 	delete playUISprite;
 	delete colision;
+
+	for (int i = 0; i < 2; i++) {
+		delete sceneChangeSprite[i];
+	}
 	//-------------ここまでにループ内で使用したものの後処理------------//
 }
 
@@ -150,6 +187,33 @@ void GamePlayScene::Update()
 {
 
 	//----------------------ゲーム内ループはここから---------------------//
+
+
+	//シーンチェンジ用の更新はフェーズを問わず行う
+//イージングタイマー制御用の更新
+	ShareData::sceneChangeEase.Update();
+
+	ImGui::Begin("Easing data");
+
+	ImGui::Text("timeRate:%f", ShareData::sceneChangeEase.timeRate);
+	ImGui::Text("nowCount:%lld", ShareData::sceneChangeEase.nowCount);
+	ImGui::Text("startCount:%lld", ShareData::sceneChangeEase.startCount);
+
+	ImGui::End();
+
+	for (int i = 0; i < 2; i++) {
+		if (!ShareData::sceneChangeEase.GetActive()) {
+			sceneChangeSprite[i]->SetPos(ShareData::nextPos[i]);
+			ShareData::isActiveSceneChange = false;
+		}
+		else {
+			XMFLOAT2 spritePos = EaseIn2D(ShareData::easePos[i][1], ShareData::easePos[i][0],
+				ShareData::sceneChangeEase.timeRate);
+			sceneChangeSprite[i]->SetPos(spritePos);
+
+		}
+		sceneChangeSprite[i]->Update();
+	}
 
 	if (goal->isGoal) {
 		//スティック左右でメニューを選ぶ
@@ -167,7 +231,7 @@ void GamePlayScene::Update()
 		//Aボタンで決定
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
 			//メニュー選択番号が0かつ、最終ステージでないならなら次のステージへ
-			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::tutorial1) {
+			if (clearMenuNumber == 0 && ShareData::stageNumber < StageIndex::Mislead) {
 				ShareData::stageNumber++;
 				StageInitialize(ShareData::stageNumber);
 			}//それ以外(ステージ選択ボタンが押されたか、ステージが一番最後)だったらステージ選択に戻る
@@ -208,27 +272,30 @@ void GamePlayScene::Update()
 
 					//共通データのフェーズをステージ選択に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::StageSelect;
-					sceneManager->ChangeScene("TITLE");
+					ShareData::CloseSceneChange();
 				}
 				else if (selectMenuNumber == Title) {
 
 					//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::WaitInputSpaceKey;
-					sceneManager->ChangeScene("TITLE");
+					ShareData::CloseSceneChange();
 				}
 
 			}
 
+			//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
+			if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
+				sceneManager->ChangeScene("TITLE");
+			}
+
 			ImGui::Begin("menu");
 			ImGui::Text("menuNumber %d", selectMenuNumber);
-
 			ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
 			ImGui::Text("window position leftTop : %f,%f", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 			ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2), ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2));
-
+			ImGui::SliderFloat("alpha", &menuSprite->color.w, 0.0f, 1.0f);
 			ImGui::SliderFloat("boxPosX", &boxPos.x, 0.0f, WindowsAPI::winW);
 			ImGui::SliderFloat("boxPosY", &boxPos.y, 0.0f, WindowsAPI::winH);
-
 			ImGui::End();
 
 			selectBoxSprite->SetPos(selectBoxPos[selectMenuNumber]);
@@ -275,6 +342,27 @@ void GamePlayScene::Update()
 			//playUISprite->color.z = 0.0f;
 			//playUISprite->Update();
 
+			ImGui::Begin("block");
+			ImGui::SliderFloat("rotaX", &rota.x, 0.0f, 10.0f);
+			ImGui::SliderFloat("rotaY", &rota.y, 0.0f, 10.0f);
+			ImGui::SliderFloat("rotaZ", &rota.z, 0.0f, 10.0f);
+			if (ImGui::Button("rota reset")) {
+				rota = { 0,0,0 };
+			}
+			ImGui::End();
+			//マップの描画
+			for (int i = 0; i < map_->blockY; i++)
+			{
+				for (int j = 0; j < map_->blockZ; j++)
+				{
+					for (int k = 0; k < map_->blockX; k++)
+					{
+					//	blockObj[i][j][k].rotation = rota;
+						blockObj[i][j][k].Update();
+					}
+				}
+			}
+
 			//↓------------カメラ--------------↓
 
 
@@ -293,7 +381,7 @@ void GamePlayScene::Update()
 				}
 				else if (cameraState != 0) {
 					cameraState = 0;
-				}				
+				}
 
 				camera.ChangeState(cameraState);
 			}
@@ -311,13 +399,13 @@ void GamePlayScene::Update()
 				}
 				else if (cameraState == 1) {
 					cameraState = 4;
-				}				
+				}
 				else if (cameraState == 2) {
 					cameraState = 3;
-				}				
+				}
 				else if (cameraState == 3) {
 					cameraState = 1;
-				}				
+				}
 				else if (cameraState == 4) {
 					cameraState = 2;
 				}
@@ -330,16 +418,16 @@ void GamePlayScene::Update()
 				}
 				else if (cameraState == 1) {
 					cameraState = 3;
-				}				
+				}
 				else if (cameraState == 2) {
 					cameraState = 4;
-				}				
+				}
 				else if (cameraState == 3) {
 					cameraState = 2;
-				}				
+				}
 				else if (cameraState == 4) {
 					cameraState = 1;
-				}				
+				}
 				camera.ChangeState(cameraState);
 			}
 
@@ -356,6 +444,7 @@ void GamePlayScene::Update()
 
 		}
 	}
+
 
 	//----------------------ゲーム内ループはここまで---------------------//
 
@@ -383,12 +472,19 @@ void GamePlayScene::Draw()
 	//マップの描画
 	for (int i = 0; i < map_->blockY; i++)
 	{
+		
+
 		for (int j = 0; j < map_->blockZ; j++)
 		{
 			for (int k = 0; k < map_->blockX; k++)
 			{
 				if (map_->map[i][j][k] == 1)
 				{
+					/*if (i != 1) {
+						blockObj[i][j][k].model->textureIndex = groundTexture;
+					}*/
+
+
 					blockObj[i][j][k].Draw();
 				}
 
@@ -401,7 +497,7 @@ void GamePlayScene::Draw()
 	//-------前景スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
-	playUISprite->Draw();
+	//playUISprite->Draw();
 
 	if (goal->isGoal) {
 		clearSprite->Draw();
@@ -421,33 +517,78 @@ void GamePlayScene::Draw()
 		menuStageSerectSprite->Draw();
 	}
 
+	//シーン遷移用スプライト描画
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		sceneChangeSprite[i]->Draw();
+	}
 
 }
 
 void GamePlayScene::SetStage(int stageNumber)
 {
+
+	//Tutoattract,	//0
+	//	Whichload,		//1
+	//	Dontpanic,		//2
+	//	Switching,		//3
+	//	Down,			//4
+	//	Order,			//5
+	//	Tutorepulsion,	//6
+	//	Direction,		//7
+	//	Needmagnet,		//8
+	//	Jam,			//9
+	//	Mislead,		//10
+
 	switch (stageNumber)
 	{
-	case Sample1:
-		stageStr = "map/zisyakukazu.csv";
-		stageSize = { 20,5,20 };
-		break;
-	case Sample2:
-		stageStr = "map/order.csv";
+
+	case Tutoattract:
+		stageStr = "map/Tutoattract.csv";
+
 		stageSize = { 20,3,20 };
 		break;
-	case Sample3:
+	case Whichload:
 		stageStr = "map/whichload.csv";
 		stageSize = { 20,4,20 };
 		break;
-	case Sample4:
+	case Dontpanic:
 		stageStr = "map/dontpanic.csv";
 		stageSize = { 20,3,20 };
 		break;
-	case tutorial1:
-		stageStr = "map/Tuto1.csv";
+	case Switching:
+		stageStr = "map/switching.csv";
+		stageSize = { 3,5,20 };
+		break;
+	case Down:
+		stageStr = "map/down.csv";
+		stageSize = { 20,4,20 };
+		break;
+	case Order:
+		stageStr = "map/order.csv";
 		stageSize = { 20,3,20 };
 		break;
+	case Tutorepulsion:
+		stageStr = "map/Tutorepulsion.csv";
+		stageSize = { 20,3,20 };
+		break;
+	case Direction:
+		stageStr = "map/direction.csv";
+		stageSize = { 20,4,20 };
+		break;
+	case Needmagnet:
+		stageStr = "map/needmagnet.csv";
+		stageSize = { 20,4,20 };
+		break;
+	case Jam:
+		stageStr = "map/Jam.csv";
+		stageSize = { 20,3,20 };
+		break;
+	case Mislead:
+		stageStr = "map/mislead.csv";
+		stageSize = { 20,5,20 };
+		break;
+
+
 	default:
 		break;
 	}
@@ -481,13 +622,15 @@ void GamePlayScene::StageInitialize(int stageNumber)
 			for (int k = 0; k < map_->blockX; k++)
 			{
 				blockObj[i][j][k].Initialize();
-				blockObj[i][j][k].model = Model::CreateModel();
-				blockObj[i][j][k].model->textureIndex = groundTexture;
+			//	blockObj[i][j][k].model = Model::CreateModel();
+			//	blockObj[i][j][k].model->textureIndex = groundTextures[static_cast<int>(Random(0,4))];
 				blockObj[i][j][k].position.x = k * blockSize * blockScale;
 				blockObj[i][j][k].position.y = i * blockSize * blockScale;
 				blockObj[i][j][k].position.z = j * blockSize * blockScale;
-				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
-
+			//	blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
+				blockObj[i][j][k].scale = { 0.5f,0.5f,0.5f };
+				//blockObj[i][j][k].rotation.y =( XM_PI );
+				blockObj[i][j][k].rotation.z =( XM_PI / 2.0f);
 				blockObj[i][j][k].Update();
 
 				if (map_->map[i][j][k] == 2) {
