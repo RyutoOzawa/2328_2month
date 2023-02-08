@@ -17,11 +17,23 @@ void GameTitleScene::Initialize()
 	//各種スプライト座標初期化
 	stageBasePos = { WindowsAPI::winW / 2,WindowsAPI::winH / 2 };
 
+
 	stagePos[LeftLeft] = { -WindowsAPI::winW / 2,stageBasePos.y };
 	stagePos[Left] = { 0,stageBasePos.y };
 	stagePos[Center] = stageBasePos;
 	stagePos[Right] = { WindowsAPI::winW,stageBasePos.y };
 	stagePos[RightRight] = { WindowsAPI::winW + WindowsAPI::winW / 2,stageBasePos.y };
+
+	//音
+	titleBGM = new AudioManager();
+	titleBGM->SoundLoadWave("Resources/Audio/titleBGM.wav");
+
+	decisionSE = new AudioManager();
+	decisionSE->SoundLoadWave("Resources/Audio/decisionSE.wav");
+
+	serectSE = new AudioManager();
+	serectSE->SoundLoadWave("Resources/Audio/serectSE.wav");
+
 
 	//テクスチャデータ初期化
 	titleTexture = Texture::LoadTexture(L"Resources/titleRogo.png");
@@ -115,6 +127,12 @@ void GameTitleScene::Finalize()
 	delete titleSprite;
 	delete uiButtonASprite;
 	delete uiStageSelectSprite;
+
+	for (int i = 0; i < 4; i++) {
+		delete titleBackSprite[i];
+	}
+
+
 	for (int i = 0; i < 10; i++) {
 		delete uiStageNumberSprite[i];
 	}
@@ -134,6 +152,11 @@ void GameTitleScene::Update()
 
 	//----------------------ゲーム内ループはここから---------------------//
 
+
+	//タイトルBGM流す
+	titleBGM->SoundPlayWave(true, titleBGMVolume);
+
+
 	if (phase == WaitInputSpaceKey) {
 
 
@@ -142,6 +165,8 @@ void GameTitleScene::Update()
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE))
 		{
 			phase = StageSelect;
+			decisionSE->StopWave();
+			decisionSE->SoundPlayWave(false,decisionSEVolume);
 		}
 	}
 	else if (phase == StageSelect) {
@@ -150,6 +175,18 @@ void GameTitleScene::Update()
 
 		ImGui::End();
 		//左右キーでステージ番号変更
+
+		if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
+			ShareData::stageNumber--;
+			serectSE->StopWave();
+			serectSE->SoundPlayWave(false, serectSEVolume);
+		}
+		else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
+			ShareData::stageNumber++;
+			serectSE->StopWave();
+			serectSE->SoundPlayWave(false, serectSEVolume);
+		}
+
 
 		//ステージ番号移動のイージングが終わっているなら操作可能
 		if (!stageNumEase.GetActive()) {
@@ -166,23 +203,27 @@ void GameTitleScene::Update()
 			}
 
 
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
+			//シーンの切り替えを依頼
+			ShareData::CloseSceneChange();
+			decisionSE->StopWave();
+			decisionSE->SoundPlayWave(false, decisionSEVolume);
+		}
+
+		//Bボタンでタイトルへ
+		if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
+			phase = WaitInputSpaceKey;
+			decisionSE->StopWave();
+			decisionSE->SoundPlayWave(false,decisionSEVolume);
+		}
+
 			if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
 			else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
 
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
-				//シーンの切り替えを依頼
-				ShareData::CloseSceneChange();
-			}
-
-			//Bボタンでタイトルへ
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
-				phase = WaitInputSpaceKey;
-			}
-
-		}
 		//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
 		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 			sceneManager->ChangeScene("GAMEPLAY");
+			titleBGM->StopWave();
 		}
 	}
 
@@ -289,9 +330,13 @@ void GameTitleScene::Update()
 
 
 
+	sinAngle += 2.0f;
+	if (sinAngle > 360.0f)sinAngle -= 360.0f;
+	ImGui::Text("angle %f", sinAngle);
 	//背景の星を点滅させる
 	for (int i = 1; i < _countof(titleBackSprite); i++) {
-		titleBackSprite[i]->color.w = sin(clock() / (100 + (i * 200)));
+		titleBackSprite[i]->color.w = (sin((sinAngle + i * 120.0f) * XM_PI / 180.0f)) / 2.0f + 0.5f;
+		ImGui::Text("alpha[%d] %f", i, titleBackSprite[i]->color.w);
 	}
 
 

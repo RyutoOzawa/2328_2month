@@ -9,6 +9,7 @@
 #include"Input.h"
 #include"Sprite.h"
 #include"Util.h"
+
 #include"AudioManager.h"
 
 enum StageSelectPosIndex {
@@ -20,30 +21,31 @@ enum StageSelectPosIndex {
 	StageSelectPosCount,
 };
 
+
 class GameTitleScene :public GameBaseScene
 {
 public:
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void Initialize() override;
 
-	//I—¹
+	//çµ‚äº†
 	void Finalize()override;
 
-	//XV
+	//æ›´æ–°
 	void Update()override;
 
-	//•`‰æ
+	//æç”»
 	void Draw()override;
 
 
-public://ƒƒ“ƒo•Ï”
+public://ãƒ¡ãƒ³ãƒå¤‰æ•°
 
-	ImguiManager* imguiManager = nullptr;	//imgui—p
+	ImguiManager* imguiManager = nullptr;	//imguiç”¨
 	Input* input = nullptr;
 
-	//ƒQ[ƒ€“à‚Åg—p‚·‚é•Ï”‚Ü‚Æ‚ß
+	//ã‚²ãƒ¼ãƒ å†…ã§ä½¿ç”¨ã™ã‚‹å¤‰æ•°ã¾ã¨ã‚
 
-	uint32_t titleTexture = 0;	//”wŒi‰æ‘œ(Œ»İ‚Íƒ_ƒ~[
+	uint32_t titleTexture = 0;	//èƒŒæ™¯ç”»åƒ(ç¾åœ¨ã¯ãƒ€ãƒŸãƒ¼
 	Sprite* titleSprite = nullptr;
 
 	uint32_t uiButtonATexture = 0;
@@ -61,12 +63,12 @@ public://ƒƒ“ƒo•Ï”
 	uint32_t  titleBackTexture[4]{};
 	Sprite* titleBackSprite[4]{};
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“—p‚Ì•Ï”ŒQ
-	//ƒXƒe[ƒWƒZƒŒƒNƒg‚ÌŠî–{ˆÊ’u(‚Ç^‚ñ’†‚ÆƒC[ƒWƒ“ƒO‚Ìã‰º‚Ì§Œä‚Ég‚¤)
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ç”¨ã®å¤‰æ•°ç¾¤
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆã®åŸºæœ¬ä½ç½®(ã©çœŸã‚“ä¸­ã¨ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°æ™‚ã®ä¸Šä¸‹ã®åˆ¶å¾¡ã«ä½¿ã†)
 	DirectX::XMFLOAT2 stageBasePos{};
 	DirectX::XMFLOAT2 stagePos[StageSelectPosCount]{};
 
-	//ƒ^ƒCƒgƒ‹‘Ò‹@‚ÆƒXƒe[ƒWƒZƒŒƒNƒg‚É‚È‚Á‚Äã‚É‚Á”ò‚Î‚³‚ê‚½‚ÌÀ•W
+	//ã‚¿ã‚¤ãƒˆãƒ«å¾…æ©Ÿæ™‚ã¨ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆã«ãªã£ã¦ä¸Šã«å¹ã£é£›ã°ã•ã‚ŒãŸæ™‚ã®åº§æ¨™
 	DirectX::XMFLOAT2 titleSpritePos[2]{};
 
 	EaseingData stageNumEase;
@@ -74,7 +76,17 @@ public://ƒƒ“ƒo•Ï”
 
 	bool isLeftDown = false;
 
+	AudioManager *titleBGM;
+	float titleBGMVolume = 0.1f;
+	AudioManager *decisionSE;
+	float decisionSEVolume = 1.0f;
+	AudioManager *serectSE;
+	float serectSEVolume = 1.0f;
+
+
 	int phase = 0;
+	 
+	float sinAngle = 0.0f;
 
 };
 
