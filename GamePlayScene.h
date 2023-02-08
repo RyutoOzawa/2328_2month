@@ -72,6 +72,11 @@ public://メンバ変数
 	Sprite* menuTitleSprite = nullptr;
 	Sprite* menuStageSerectSprite = nullptr;
 
+	//クリア画面
+	Sprite* clearSprite = nullptr;
+	Sprite *clearNextSprite = nullptr;
+	Sprite *clearStageSerectSprite = nullptr;
+
 
 	uint32_t selectBoxTexture = 0;
 	Sprite* selectBoxSprite = nullptr;
@@ -84,11 +89,16 @@ public://メンバ変数
 	Sprite* clearNextSprite = nullptr;
 	Sprite* clearStageSerectSprite = nullptr;
 
+	Sprite* sceneChangeSprite[2]{};
+
 
 	DirectX::XMFLOAT2 boxPos{};
 	DirectX::XMFLOAT2 selectBoxPos[3]{};
 
 	Object3d blockObj[20][20][20];	//ブロック(マップのオブジェクト)
+	Model* blockModel = nullptr;
+
+	DirectX::XMFLOAT3 rota;
 
 	Player* player = nullptr;		//プレイヤー
 
@@ -102,7 +112,6 @@ public://メンバ変数
 	Map* map_ = nullptr;					//マップ情報
 
 	Goal* goal;
-	Sprite goalSprite;
 
 	//ステージファイル名
 	std::string stageStr;

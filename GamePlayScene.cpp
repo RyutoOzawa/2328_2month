@@ -17,10 +17,25 @@ void GamePlayScene::Initialize()
 	//inputのインスタンス取得
 	input = Input::GetInstance();
 
+	blockModel = Model::CreateModel("cube");
+
+	//ブロック
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 20; j++) {
+			for (int k = 0; k < 20; k++) {
+				blockObj[i][j][k].Initialize();
+				
+				blockObj[i][j][k].SetModel(blockModel);
+			}
+		}
+	}
+
+
 	//テクスチャデータ初期化
 	magnetTextureN = Texture::LoadTexture(L"Resources/magnetN.png");
 	magnetTextureS = Texture::LoadTexture(L"Resources/magnetS.png");
 	groundTexture = Texture::LoadTexture(L"Resources/testGround.png");
+
 	groundTextures[0] = Texture::LoadTexture(L"Resources/groundPattern1.png");
 	groundTextures[1] = Texture::LoadTexture(L"Resources/groundPattern2.png");
 	groundTextures[2] = Texture::LoadTexture(L"Resources/groundPattern3.png");
@@ -114,6 +129,24 @@ void GamePlayScene::Initialize()
 	selectBoxPos[1] = { WindowsAPI::winW / 2,400.0f };
 	selectBoxPos[2] = { WindowsAPI::winW / 2,480.0f };
 
+	//シーン遷移の初期化	//直前のシーンでシーンクローズ処理が行われたかチェック(このシーンの初期化がexe起動かどうかのチェック)
+	if (ShareData::isBeforeSceneClosed) {
+		ShareData::OpenSceneChange();
+	}
+	uint32_t sceneChangeTexture[2];
+	sceneChangeTexture[0] = magnetTextureN;
+	sceneChangeTexture[1] = magnetTextureS;
+	//シーンチェンジ用の変数
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		//ShareData::nextPos[i] = ShareData::easePos[i][1];
+		sceneChangeSprite[i] = new Sprite();
+		sceneChangeSprite[i]->Initialize(sceneChangeTexture[i]);
+		sceneChangeSprite[i]->SetSize({ WindowsAPI::winH,WindowsAPI::winH });
+		sceneChangeSprite[i]->SetPos(ShareData::easePos[i][1]);
+	}
+
+	sceneChangeSprite[0]->SetAnchorPoint({ 1.0f,0.0f });
+
 	//カメラ初期化
 	XMFLOAT3 eye(5, 25, 6);	//視点座標
 	XMFLOAT3 target(5, 0, 6);	//注視点座標
@@ -142,6 +175,10 @@ void GamePlayScene::Finalize()
 	delete selectBoxSprite;
 	delete playUISprite;
 	delete colision;
+
+	for (int i = 0; i < 2; i++) {
+		delete sceneChangeSprite[i];
+	}
 	//-------------ここまでにループ内で使用したものの後処理------------//
 }
 
@@ -149,6 +186,33 @@ void GamePlayScene::Update()
 {
 
 	//----------------------ゲーム内ループはここから---------------------//
+
+
+	//シーンチェンジ用の更新はフェーズを問わず行う
+//イージングタイマー制御用の更新
+	ShareData::sceneChangeEase.Update();
+
+	ImGui::Begin("Easing data");
+
+	ImGui::Text("timeRate:%f", ShareData::sceneChangeEase.timeRate);
+	ImGui::Text("nowCount:%lld", ShareData::sceneChangeEase.nowCount);
+	ImGui::Text("startCount:%lld", ShareData::sceneChangeEase.startCount);
+
+	ImGui::End();
+
+	for (int i = 0; i < 2; i++) {
+		if (!ShareData::sceneChangeEase.GetActive()) {
+			sceneChangeSprite[i]->SetPos(ShareData::nextPos[i]);
+			ShareData::isActiveSceneChange = false;
+		}
+		else {
+			XMFLOAT2 spritePos = EaseIn2D(ShareData::easePos[i][1], ShareData::easePos[i][0],
+				ShareData::sceneChangeEase.timeRate);
+			sceneChangeSprite[i]->SetPos(spritePos);
+
+		}
+		sceneChangeSprite[i]->Update();
+	}
 
 	if (goal->isGoal) {
 		//スティック左右でメニューを選ぶ
@@ -207,15 +271,20 @@ void GamePlayScene::Update()
 
 					//共通データのフェーズをステージ選択に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::StageSelect;
-					sceneManager->ChangeScene("TITLE");
+					ShareData::CloseSceneChange();
 				}
 				else if (selectMenuNumber == Title) {
 
 					//共通データのフェーズを入力待ち(タイトル画面)に変更し、タイトルシーンへ戻る
 					ShareData::titlePhase = TitlePhaseIndex::WaitInputSpaceKey;
-					sceneManager->ChangeScene("TITLE");
+					ShareData::CloseSceneChange();
 				}
 
+			}
+
+			//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
+			if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
+				sceneManager->ChangeScene("TITLE");
 			}
 
 			ImGui::Begin("menu");
@@ -271,6 +340,27 @@ void GamePlayScene::Update()
 
 			//playUISprite->color.z = 0.0f;
 			//playUISprite->Update();
+
+			ImGui::Begin("block");
+			ImGui::SliderFloat("rotaX", &rota.x, 0.0f, 10.0f);
+			ImGui::SliderFloat("rotaY", &rota.y, 0.0f, 10.0f);
+			ImGui::SliderFloat("rotaZ", &rota.z, 0.0f, 10.0f);
+			if (ImGui::Button("rota reset")) {
+				rota = { 0,0,0 };
+			}
+			ImGui::End();
+			//マップの描画
+			for (int i = 0; i < map_->blockY; i++)
+			{
+				for (int j = 0; j < map_->blockZ; j++)
+				{
+					for (int k = 0; k < map_->blockX; k++)
+					{
+					//	blockObj[i][j][k].rotation = rota;
+						blockObj[i][j][k].Update();
+					}
+				}
+			}
 
 			//↓------------カメラ--------------↓
 
@@ -354,6 +444,7 @@ void GamePlayScene::Update()
 		}
 	}
 
+
 	//----------------------ゲーム内ループはここまで---------------------//
 
 
@@ -388,13 +479,14 @@ void GamePlayScene::Draw()
 			{
 				if (map_->map[i][j][k] == 1)
 				{
-					if (i != 1) {
+					/*if (i != 1) {
 						blockObj[i][j][k].model->textureIndex = groundTexture;
-					}
+					}*/
 
 
 					blockObj[i][j][k].Draw();
 				}
+
 			}
 		}
 	}
@@ -414,6 +506,7 @@ void GamePlayScene::Draw()
 		clearNextSprite->Draw();
 		clearStageSerectSprite->Draw();
 
+
 	}
 
 	if (isMenu) {
@@ -425,6 +518,10 @@ void GamePlayScene::Draw()
 		menuStageSerectSprite->Draw();
 	}
 
+	//シーン遷移用スプライト描画
+	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
+		sceneChangeSprite[i]->Draw();
+	}
 
 }
 
@@ -526,13 +623,15 @@ void GamePlayScene::StageInitialize(int stageNumber)
 			for (int k = 0; k < map_->blockX; k++)
 			{
 				blockObj[i][j][k].Initialize();
-				blockObj[i][j][k].model = Model::CreateModel();
-				blockObj[i][j][k].model->textureIndex = groundTextures[static_cast<int>(Random(0,4))];
+			//	blockObj[i][j][k].model = Model::CreateModel();
+			//	blockObj[i][j][k].model->textureIndex = groundTextures[static_cast<int>(Random(0,4))];
 				blockObj[i][j][k].position.x = k * blockSize * blockScale;
 				blockObj[i][j][k].position.y = i * blockSize * blockScale;
 				blockObj[i][j][k].position.z = j * blockSize * blockScale;
-				blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
-				blockObj[i][j][k].rotation.x = XM_PI / 2.0f;
+			//	blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
+				blockObj[i][j][k].scale = { 0.5f,0.5f,0.5f };
+				//blockObj[i][j][k].rotation.y =( XM_PI );
+				blockObj[i][j][k].rotation.z =( XM_PI / 2.0f);
 				blockObj[i][j][k].Update();
 
 				if (map_->map[i][j][k] == 2) {
