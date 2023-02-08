@@ -64,7 +64,9 @@ void GameTitleScene::Initialize()
 	titleSprite->Initialize(titleTexture);
 
 	titleSprite->SetAnchorPoint({ 0.5f,0.5f });
-	titleSprite->SetPos({ WindowsAPI::winW / 2,WindowsAPI::winH / 2 - 100 });
+	titleSpritePos[0] = { WindowsAPI::winW / 2,WindowsAPI::winH / 2 - 100 };
+	titleSpritePos[1] = { WindowsAPI::winW / 2,WindowsAPI::winH / 2 - 100 - WindowsAPI::winW / 2 };
+	titleSprite->SetPos(titleSpritePos[0]);
 	titleSprite->Update();
 
 	for (int i = 0; i < _countof(titleBackSprite); i++) {
@@ -156,10 +158,11 @@ void GameTitleScene::Update()
 	//タイトルBGM流す
 	titleBGM->SoundPlayWave(true, titleBGMVolume);
 
+	ImGui::Begin("phase change");
+	ImGui::Text("timeRate %f", phaseChangeEase.timeRate);
+	ImGui::End();
 
 	if (phase == WaitInputSpaceKey) {
-
-
 
 		//スペースキーでステージ選択へ
 		if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE))
@@ -167,7 +170,31 @@ void GameTitleScene::Update()
 			phase = StageSelect;
 			decisionSE->StopWave();
 			decisionSE->SoundPlayWave(false, decisionSEVolume);
+			//ステージセレクトへのイージングを開始
+			phaseChangeEase.Start(1.0f);
 		}
+
+		stageBasePos = EaseIn2D({ WindowsAPI::winW / 2, WindowsAPI::winH / 2 }, { WindowsAPI::winW / 2,WindowsAPI::winH + WindowsAPI::winW / 2 },
+			phaseChangeEase.timeRate);
+
+		XMFLOAT2 tPos;
+		tPos = EaseIn2D(titleSpritePos[1], titleSpritePos[0], phaseChangeEase.timeRate);
+
+		//ステージ番号のy座標はウィンドウ横幅の半分下にずらす
+		if (!phaseChangeEase.GetActive()) {
+			stageBasePos.y = WindowsAPI::winH + WindowsAPI::winW / 2;
+
+			tPos.x = titleSpritePos[0].x;
+			tPos.y = (sin(titleAngle * XM_PI / 180.0f)/4+1.0f) * titleSpritePos[0].y;
+
+			
+
+
+			titleAngle++;
+			if (titleAngle > 360.0f)titleAngle -= 360.0f;
+
+		}
+		titleSprite->SetPos(tPos);
 	}
 	else if (phase == StageSelect) {
 		ImGui::Begin("stage select Animation");
@@ -177,55 +204,76 @@ void GameTitleScene::Update()
 		//左右キーでステージ番号変更
 		//ステージ番号移動のイージングが終わっているなら操作可能
 		if (!stageNumEase.GetActive()) {
+			if (!phaseChangeEase.GetActive()) {
 
-			if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
-				if (ShareData::stageNumber > 0) {
-					ShareData::stageNumber--;
-					//数値が変動したならイージングを始める
-					stageNumEase.Start(0.5f);
-					isLeftDown = true;
+
+				if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
+					if (ShareData::stageNumber > 0) {
+						ShareData::stageNumber--;
+						//数値が変動したならイージングを始める
+						stageNumEase.Start(0.5f);
+						isLeftDown = true;
+					}
+					serectSE->StopWave();
+					serectSE->SoundPlayWave(false, serectSEVolume);
+
 				}
-				serectSE->StopWave();
-				serectSE->SoundPlayWave(false, serectSEVolume);
-
-			}
-			else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
-				if (ShareData::stageNumber < StageIndexCount-1) {
-					ShareData::stageNumber++;
-					stageNumEase.Start(0.5f);
-					isLeftDown = false;
+				else if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
+					if (ShareData::stageNumber < StageIndexCount - 1) {
+						ShareData::stageNumber++;
+						stageNumEase.Start(0.5f);
+						isLeftDown = false;
+					}
+					serectSE->StopWave();
+					serectSE->SoundPlayWave(false, serectSEVolume);
 				}
-				serectSE->StopWave();
-				serectSE->SoundPlayWave(false, serectSEVolume);
+
+
+				if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
+					//シーンの切り替えを依頼
+					ShareData::CloseSceneChange();
+					decisionSE->StopWave();
+					decisionSE->SoundPlayWave(false, decisionSEVolume);
+				}
+
+				//Bボタンでタイトルへ
+				if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
+					phase = WaitInputSpaceKey;
+					decisionSE->StopWave();
+					decisionSE->SoundPlayWave(false, decisionSEVolume);
+					phaseChangeEase.Start(1.0f);
+				}
+
+				if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
+				else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
 			}
-
-
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_A) || input->IsKeyTrigger(DIK_SPACE)) {
-				//シーンの切り替えを依頼
-				ShareData::CloseSceneChange();
-				decisionSE->StopWave();
-				decisionSE->SoundPlayWave(false, decisionSEVolume);
-			}
-
-			//Bボタンでタイトルへ
-			if (input->IsPadTrigger(XINPUT_GAMEPAD_B) || input->IsKeyTrigger(DIK_B)) {
-				phase = WaitInputSpaceKey;
-				decisionSE->StopWave();
-				decisionSE->SoundPlayWave(false, decisionSEVolume);
-			}
-
-			if (ShareData::stageNumber < Tutoattract)ShareData::stageNumber = Tutoattract;
-			else if (ShareData::stageNumber >= StageIndexCount)ShareData::stageNumber = Mislead;
 		}
 		//シーンクローズフラグが立っていて、シーンチェンジフラグが降りている(アニメーションが終了した)ならシーン切替を依頼
 		if (ShareData::isBeforeSceneClosed && !ShareData::isActiveSceneChange) {
 			sceneManager->ChangeScene("GAMEPLAY");
 			titleBGM->StopWave();
 		}
+
+		//ステージセレクトフェーズのイージング処理
+		stageBasePos = EaseOut2D({ WindowsAPI::winW / 2,WindowsAPI::winH + WindowsAPI::winW / 2 }, { WindowsAPI::winW / 2, WindowsAPI::winH / 2 },
+			phaseChangeEase.timeRate);
+
+		XMFLOAT2 tPos;
+		tPos = EaseOut2D(titleSpritePos[0], titleSpritePos[1], phaseChangeEase.timeRate);
+		titleSprite->SetPos(tPos);
+
+		//フェーズ変更アニメーションが終わってるならデフォルトの位置
+		if (!phaseChangeEase.GetActive()) {
+			stageBasePos = { WindowsAPI::winW / 2, WindowsAPI::winH / 2 };
+			titleSprite->SetPos(titleSpritePos[1]);
+		}
 	}
 
-	//ステージ番号イージングの更新
+	//イージングの更新
+	phaseChangeEase.Update();
 	stageNumEase.Update();
+
+
 
 	//ステージ番号のY座標は常にbaseに追従
 	for (int i = 0; i < StageSelectPosCount; i++) {
@@ -351,23 +399,20 @@ void GameTitleScene::Draw()
 		titleBackSprite[i]->Draw();
 	}
 
-	if (phase == WaitInputSpaceKey) {
-		titleSprite->Draw();
-	}
-
-
+	titleSprite->Draw();
 
 	if (phase == WaitInputSpaceKey) {
 		uiButtonASprite->Draw();
 	}
-	else if (phase == StageSelect) {
+	else {
 		uiStageSelectSprite->Draw();
-		for (int i = 0; i < _countof(uiStageNumberSprite); i++) {
-			if (i <= ShareData::stageNumber + 2 && i >= ShareData::stageNumber - 2) {
-				uiStageNumberSprite[i]->Draw();
-			}
+	}
+	for (int i = 0; i < _countof(uiStageNumberSprite); i++) {
+		if (i <= ShareData::stageNumber + 2 && i >= ShareData::stageNumber - 2) {
+			uiStageNumberSprite[i]->Draw();
 		}
 	}
+
 
 	for (int i = 0; i < _countof(sceneChangeSprite); i++) {
 		sceneChangeSprite[i]->Draw();

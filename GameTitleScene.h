@@ -83,7 +83,7 @@ public://メンバ変数
 	AudioManager *serectSE;
 	float serectSEVolume = 1.0f;
 
-
+	float titleAngle = 0.0f;
 	int phase = 0;
 	 
 	float sinAngle = 0.0f;
