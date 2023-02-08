@@ -24,7 +24,7 @@ void GamePlayScene::Initialize()
 		for (int j = 0; j < 20; j++) {
 			for (int k = 0; k < 20; k++) {
 				blockObj[i][j][k].Initialize();
-				
+
 				blockObj[i][j][k].SetModel(blockModel);
 			}
 		}
@@ -215,12 +215,22 @@ void GamePlayScene::Update()
 	}
 
 	if (goal->isGoal) {
-		//スティック左右でメニューを選ぶ
-		if (input->IsTriggerLStickRight() || input->IsKeyTrigger(DIK_D)) {
+		//スティック上下でメニューを選ぶ
+		if (input->IsTriggerLStickDown() || input->IsKeyTrigger(DIK_D)) {
 			clearMenuNumber++;
 		}
-		else if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
+		else if (input->IsTriggerLStickUp() || input->IsKeyTrigger(DIK_A)) {
 			clearMenuNumber--;
+		}
+
+		if (clearMenuNumber == 0) {
+
+			clearNextSprite->color.z = sin(clock());
+			clearStageSerectSprite->color = { 1,1,1,1 };
+		}
+		else if (clearMenuNumber == 1) {
+			clearStageSerectSprite->color.z = sin(clock());
+			clearNextSprite->color= { 1,1,1,1 };
 		}
 
 		//最大値、最小値を超えないように
@@ -245,6 +255,7 @@ void GamePlayScene::Update()
 	}
 	else {
 		if (isMenu) {
+
 			//スタートボタンでメニューを閉じる
 			if (input->IsPadTrigger(XINPUT_GAMEPAD_START) || input->IsKeyTrigger(DIK_M)) {
 				isMenu = false;
@@ -256,6 +267,22 @@ void GamePlayScene::Update()
 			}
 			else if (input->IsTriggerLStickUp() || input->IsKeyTrigger(DIK_W)) {
 				selectMenuNumber--;
+			}
+			//メニュー選択
+			if (selectMenuNumber == Reset) {
+				menuResetSprite->color.z = sin(clock());
+				menuTitleSprite->color = { 1,1,1,1 };
+				menuStageSerectSprite->color = { 1,1,1,1 };
+			}
+			else if (selectMenuNumber == StageSelect_MENU) {
+				menuStageSerectSprite->color.z = sin(clock());
+				menuResetSprite->color = { 1,1,1,1 };
+				menuTitleSprite->color = { 1,1,1,1 };
+			}
+			else if (selectMenuNumber == Title) {
+				menuTitleSprite->color.z = sin(clock());
+				menuResetSprite->color = { 1,1,1,1 };
+				menuStageSerectSprite->color = { 1,1,1,1 };
 			}
 
 			//最大値、最小値を超えないように
@@ -356,7 +383,7 @@ void GamePlayScene::Update()
 				{
 					for (int k = 0; k < map_->blockX; k++)
 					{
-					//	blockObj[i][j][k].rotation = rota;
+						//	blockObj[i][j][k].rotation = rota;
 						blockObj[i][j][k].Update();
 					}
 				}
@@ -461,12 +488,10 @@ void GamePlayScene::Draw()
 		magnetBlocks[i].Draw(magnetTextureN, magnetTextureS);
 	}
 
-	//menuResetSprite->color.z = sin(clock());
-
 	//マップの描画
 	for (int i = 0; i < map_->blockY; i++)
 	{
-		
+
 
 		for (int j = 0; j < map_->blockZ; j++)
 		{
@@ -496,7 +521,7 @@ void GamePlayScene::Draw()
 	if (goal->isGoal) {
 		clearSprite->Draw();
 
-		clearNextSprite->color = { 0,0,0,1 };
+		/*clearNextSprite->color = { 0,0,0,1 };*/
 		clearNextSprite->Update();
 		clearNextSprite->Draw();
 		clearStageSerectSprite->Draw();
@@ -506,7 +531,7 @@ void GamePlayScene::Draw()
 
 	if (isMenu) {
 		menuSprite->Draw();
-		selectBoxSprite->Draw();
+		/*selectBoxSprite->Draw();*/
 
 		//menuResetSprite->color = {0,0,0,1};
 		//menuTitleSprite->color = { 0,0,0,1 };
@@ -627,15 +652,15 @@ void GamePlayScene::StageInitialize(int stageNumber)
 			for (int k = 0; k < map_->blockX; k++)
 			{
 				blockObj[i][j][k].Initialize();
-			//	blockObj[i][j][k].model = Model::CreateModel();
-			//	blockObj[i][j][k].model->textureIndex = groundTextures[static_cast<int>(Random(0,4))];
+				//	blockObj[i][j][k].model = Model::CreateModel();
+				//	blockObj[i][j][k].model->textureIndex = groundTextures[static_cast<int>(Random(0,4))];
 				blockObj[i][j][k].position.x = k * blockSize * blockScale;
 				blockObj[i][j][k].position.y = i * blockSize * blockScale;
 				blockObj[i][j][k].position.z = j * blockSize * blockScale;
-			//	blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
+				//	blockObj[i][j][k].scale = { blockScale,blockScale,blockScale };
 				blockObj[i][j][k].scale = { 0.5f,0.5f,0.5f };
 				//blockObj[i][j][k].rotation.y =( XM_PI );
-				blockObj[i][j][k].rotation.z =( XM_PI / 2.0f);
+				blockObj[i][j][k].rotation.z = (XM_PI / 2.0f);
 				blockObj[i][j][k].Update();
 
 				if (map_->map[i][j][k] == 2) {
