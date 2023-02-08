@@ -46,7 +46,6 @@ void GamePlayScene::Initialize()
 	clearNextTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearNext.png");
 	clearStageSerectTexture = Texture::LoadTexture(L"Resources/UI/clearUI/clearStageSerect.png");
 
-	goalTexture = Texture::LoadTexture(L"Resources/yellow1x1.png");
 	menuTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menu.png");
 	menuResetTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menuReset.png");
 	menuTitleTexture = Texture::LoadTexture(L"Resources/UI/menuUI/menuTitle.png");
@@ -497,15 +496,17 @@ void GamePlayScene::Draw()
 	//-------前景スプライト描画処理-------//
 	SpriteManager::GetInstance()->beginDraw();
 
-	//playUISprite->Draw();
+	playUISprite->Draw();
 
 	if (goal->isGoal) {
 		clearSprite->Draw();
 
-		clearNextSprite->color = {0,0,0,1};
+		clearNextSprite->color = { 0,0,0,1 };
 		clearNextSprite->Update();
 		clearNextSprite->Draw();
 		clearStageSerectSprite->Draw();
+
+
 	}
 
 	if (isMenu) {

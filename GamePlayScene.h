@@ -84,6 +84,10 @@ public://メンバ変数
 	uint32_t playUITexture =0;
 	Sprite* playUISprite = nullptr;
 
+	//クリア画面
+	Sprite* clearSprite = nullptr;
+	Sprite* clearNextSprite = nullptr;
+	Sprite* clearStageSerectSprite = nullptr;
 
 	Sprite* sceneChangeSprite[2]{};
 
