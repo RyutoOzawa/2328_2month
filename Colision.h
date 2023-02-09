@@ -55,12 +55,6 @@ public:
 	//座標などの情報を更新
 	void InforUpdate();
 
-	//くっついたブロックの移動ベクトルを統一させる
-	void StickMag();
-
-	//くっついたブロックは何か
-	void SetStickMag();
-
 	//移動ベクトルを足したMagnetBlocksに更新(変わるのはbPos関係のみ)
 	void InforUpdateMagnetPos();
 
@@ -72,6 +66,8 @@ public:
 
 	//ステージ読み解く
 	void ReSet();
+
+	void Finalize();
 
 	//pos2 - pos1　で pos1　から pos2　のベクトルを求める
 	XMFLOAT3 GetVec(XMFLOAT3 pos1, XMFLOAT3 pos2);
@@ -91,7 +87,7 @@ public: // メンバ変数
 
 	Player* player = nullptr;
 
-	Map* map_ = new Map;
+	Map* map_ = nullptr;
 
 	//std::vector<MagnetData> magnetDatas;
 
@@ -101,19 +97,6 @@ public: // メンバ変数
 	XMFLOAT2 ColX = { 0,0 };
 	XMFLOAT2 ColY = { 0,0 };
 	XMFLOAT2 ColZ = { 0,0 };
-
-	//くっついているブロックの番号
-	bool stickBlockMass[20] = { 0,0,0,0 };
-
-	//くっついているブロックの中でどれが1番プレイヤーに近いか
-	int mostNearPlayerBlock = 0;
-	bool mostNear;
-
-	//周りの4面のみ
-	int mostNearPlayerBlockFour = 0;
-	bool mostNearFour;
-
-	int a;
 
 	//ブロックの最大数
 	static const int blockSizeMax = 20;

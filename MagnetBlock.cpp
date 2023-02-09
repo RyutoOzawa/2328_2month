@@ -5,6 +5,7 @@
 
 MagnetBlock::~MagnetBlock()
 {
+
 }
 
 void MagnetBlock::Initialize(MagnetData magnetData)

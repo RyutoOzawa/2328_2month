@@ -122,8 +122,7 @@ void GameTitleScene::Finalize()
 		delete titleBackSprite[i];
 	}
 
-
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 11; i++) {
 		delete uiStageNumberSprite[i];
 	}
 
@@ -142,23 +141,23 @@ void GameTitleScene::Update()
 
 	//----------------------ゲーム内ループはここから---------------------//
 
-	ImGui::Begin("Easing data");
+	//ImGui::Begin("Easing data");
 
-	ImGui::Text("timeRate:%f", ShareData::sceneChangeEase.timeRate);
+	//ImGui::Text("timeRate:%f", ShareData::sceneChangeEase.timeRate);
 
-	ImGui::End();
-	ImGui::Begin("debug");
+	//ImGui::End();
+	//ImGui::Begin("debug");
 
 	//タイトルBGM流す
 	titleBGM->SoundPlayWave(true, titleBGMVolume);
 
 	if (phase == WaitInputSpaceKey) {
-		ImGui::Text("phase:WaitInputSpaceKey");
-		ImGui::Text("PUSH PAD A GO TO STAGE SELECT");
+		//ImGui::Text("phase:WaitInputSpaceKey");
+		//ImGui::Text("PUSH PAD A GO TO STAGE SELECT");
 
-		ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
-		ImGui::Text("window position leftTop : %f,%f", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-		ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2), ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2));
+		//ImGui::Text("this window size: %f,%f", ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
+		//ImGui::Text("window position leftTop : %f,%f", ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+		//ImGui::Text("window position center  : %f,%f", ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2), ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2));
 
 
 
@@ -173,9 +172,9 @@ void GameTitleScene::Update()
 	}
 	else if (phase == StageSelect) {
 
-		ImGui::Text("phase:StageSelect");
-		ImGui::Text("select stage to LEFT or RIGHT ");
-		ImGui::Text("stageNumber %d", ShareData::stageNumber);
+		//ImGui::Text("phase:StageSelect");
+		//ImGui::Text("select stage to LEFT or RIGHT ");
+		//ImGui::Text("stageNumber %d", ShareData::stageNumber);
 
 		//左右キーでステージ番号変更
 		if (input->IsTriggerLStickLeft() || input->IsKeyTrigger(DIK_A)) {
@@ -238,14 +237,14 @@ void GameTitleScene::Update()
 
 	sinAngle += 2.0f;
 	if (sinAngle > 360.0f)sinAngle -= 360.0f;
-	ImGui::Text("angle %f", sinAngle);
+	//ImGui::Text("angle %f", sinAngle);
 	//背景の星を点滅させる
 	for (int i = 1; i < _countof(titleBackSprite); i++) {
 		titleBackSprite[i]->color.w = (sin((sinAngle + i * 120.0f) * XM_PI / 180.0f)) / 2.0f + 0.5f;
-		ImGui::Text("alpha[%d] %f", i, titleBackSprite[i]->color.w);
+		//ImGui::Text("alpha[%d] %f", i, titleBackSprite[i]->color.w);
 	}
 
-	ImGui::End();
+	//ImGui::End();
 	//----------------------ゲーム内ループはここまで---------------------//
 
 

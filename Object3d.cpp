@@ -27,6 +27,7 @@ Object3d::Object3d()
 
 Object3d::~Object3d()
 {
+	//delete model;	//モデルデータ
 }
 
 void Object3d::StaticInitialize(ReDirectX* directX_)
@@ -127,6 +128,11 @@ void Object3d::Draw()
 	
 	//モデルデータの描画用コマンドのまとまり
 	model->Draw(commandList, 2);
+}
+
+void Object3d::Finarize()
+{
+	delete model;
 }
 
 void Object3d::CreatePipeline3D()

@@ -92,7 +92,7 @@ public://メンバ変数
 	DirectX::XMFLOAT2 boxPos{};
 	DirectX::XMFLOAT2 selectBoxPos[3]{};
 
-	Object3d blockObj[20][20][20];	//ブロック(マップのオブジェクト)
+	Object3d *blockObj[20][20][20];	//ブロック(マップのオブジェクト)
 	Model* blockModel = nullptr;
 
 	DirectX::XMFLOAT3 rota;

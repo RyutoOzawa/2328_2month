@@ -7,7 +7,7 @@
 #include"Sprite.h"
 #include"Object3d.h"
 #include"Camera.h"
-#include"ImguiManager.h"
+//#include"ImguiManager.h"
 #include"AudioManager.h"
 #include"GameSceneManager.h"
 #include"SceneFactory.h"
@@ -40,7 +40,7 @@ public:
 	ReDirectX* directX = nullptr;
 	Input* input = nullptr;
 	SpriteManager* spriteManager = nullptr;
-	ImguiManager* imguiManager = nullptr;
+	//ImguiManager* imguiManager = nullptr;
 
 protected:
 	GameSceneManager* sceneManager = nullptr;

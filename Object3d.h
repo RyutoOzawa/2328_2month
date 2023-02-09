@@ -59,6 +59,8 @@ public:
 	void Draw();
 	void SetModel(Model* model_) { model = model_; }
 	
+	void Finarize();
+
 private:
 	static void CreatePipeline3D();
 };

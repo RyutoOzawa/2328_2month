@@ -27,13 +27,13 @@ void MyGame::Finalize()
 void MyGame::Update()
 {
 	//imgui開始処理
-	imguiManager->Begin();
+	//imguiManager->Begin();
 
 	//基底クラスの更新処理
 	KEngineFramework::Update();
 
 	//imgui終了
-	imguiManager->End();
+	//imguiManager->End();
 
 
 }
@@ -45,6 +45,6 @@ void MyGame::Draw()
 	//シーン描画処理
 	sceneManager->Draw();
 
-	imguiManager->Draw();
+	//imguiManager->Draw();
 	directX->EndDraw();
 }

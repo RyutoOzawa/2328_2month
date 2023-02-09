@@ -34,9 +34,9 @@ void KEngineFramework::Initialize()
 	//オーディオ初期化
 	AudioManager::StaticInitialize();
 
-	//デバッグテキスト(imgui初期化)
-	imguiManager = ImguiManager::GetInstance();
-	imguiManager->Initialize();
+	////デバッグテキスト(imgui初期化)
+	//imguiManager = ImguiManager::GetInstance();
+	//imguiManager->Initialize();
 
 	//シーンマネージャの生成
 	sceneManager = GameSceneManager::GetInstance();
@@ -45,7 +45,7 @@ void KEngineFramework::Initialize()
 void KEngineFramework::Finalize()
 {
 	delete sceneFactory;
-	imguiManager->Finalize();
+	//imguiManager->Finalize();
 
 	windowsAPI->Finalize();
 }
